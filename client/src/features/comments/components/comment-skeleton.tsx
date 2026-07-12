@@ -1,3 +1,3 @@
 export function CommentSkeleton() {
-  return null;
+  return <div className="placeholder-glow py-3" />;
 }

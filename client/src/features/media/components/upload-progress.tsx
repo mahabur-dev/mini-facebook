@@ -1,3 +1,3 @@
 export function UploadProgress() {
-  return null;
+  return <div className="progress"><div className="progress-bar" style={{ width: "50%" }} /></div>;
 }

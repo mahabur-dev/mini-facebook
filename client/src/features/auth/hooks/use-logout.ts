@@ -1,3 +1,10 @@
+"use client";
+
+import { useMutation } from "@tanstack/react-query";
+import { logoutApi } from "../api/logout.api";
+
 export function useLogout() {
-  return {};
+  return useMutation({
+    mutationFn: logoutApi,
+  });
 }
