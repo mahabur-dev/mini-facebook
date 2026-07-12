@@ -3,5 +3,5 @@ type PostVisibilityBadgeProps = {
 };
 
 export function PostVisibilityBadge({ visibility }: PostVisibilityBadgeProps) {
-  return <span className="_feed_inner_timeline_post_box_para">{visibility}</span>;
+  return <a href="#0">{visibility}</a>;
 }

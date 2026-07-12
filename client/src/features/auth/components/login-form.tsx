@@ -7,6 +7,7 @@ import { loginSchema } from "../schemas/login.schema";
 import { useAuthSession } from "../hooks/use-auth-session";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SocialAuthButton } from "@/components/forms/social-auth-button";
 
 export function LoginForm() {
   const { login } = useAuthSession();
@@ -30,6 +31,12 @@ export function LoginForm() {
         await login();
       })}
     >
+      <SocialAuthButton
+        iconSrc="/assets/images/google.svg"
+        text="Or sign-in with google"
+        className="_social_login_content_btn _mar_b40"
+        aria-label="Sign in with Google"
+      />
       <div className="row">
         <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
           <div className="_social_login_form_input _mar_b14">
