@@ -1,0 +1,179 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum PostVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+model User {
+  id            String         @id @default(uuid()) @db.Uuid
+  firstName     String         @map("first_name") @db.VarChar(100)
+  lastName      String         @map("last_name") @db.VarChar(100)
+  email         String         @unique @db.VarChar(255)
+  passwordHash  String         @map("password_hash") @db.VarChar(255)
+  status        UserStatus     @default(ACTIVE)
+  lastLoginAt   DateTime?      @map("last_login_at")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  deletedAt     DateTime?      @map("deleted_at")
+  sessions      UserSession[]
+  posts         Post[]
+  mediaUploads  PostMedia[]
+  comments      Comment[]
+  commentLikes  CommentLike[]
+  postLikes     PostLike[]
+
+  @@map("users")
+}
+
+model UserSession {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @map("user_id") @db.Uuid
+  refreshTokenHash  String   @map("refresh_token_hash") @db.VarChar(255)
+  expiresAt         DateTime @map("expires_at")
+  revokedAt         DateTime? @map("revoked_at")
+  ipAddress         String?  @map("ip_address") @db.VarChar(45)
+  userAgent         String?  @map("user_agent")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([refreshTokenHash])
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([userId, revokedAt])
+  @@map("user_sessions")
+}
+
+model Post {
+  id         String       @id @default(uuid()) @db.Uuid
+  authorId   String       @map("author_id") @db.Uuid
+  content    String?
+  visibility PostVisibility
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+  deletedAt  DateTime?    @map("deleted_at")
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  media  PostMedia?
+  statistics PostStatistics?
+  comments Comment[]
+  likes PostLike[]
+
+  @@index([authorId])
+  @@index([createdAt(sort: Desc), id(sort: Desc)])
+  @@index([visibility, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([authorId, createdAt(sort: Desc), id(sort: Desc)])
+  @@map("posts")
+}
+
+model PostStatistics {
+  postId       String   @id @map("post_id") @db.Uuid
+  likeCount    Int      @default(0) @map("like_count")
+  commentCount Int      @default(0) @map("comment_count")
+  replyCount   Int      @default(0) @map("reply_count")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("post_statistics")
+}
+
+model Comment {
+  id                String    @id @default(uuid()) @db.Uuid
+  postId            String    @map("post_id") @db.Uuid
+  authorId          String    @map("author_id") @db.Uuid
+  parentCommentId   String?   @map("parent_comment_id") @db.Uuid
+  content           String
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+  deletedAt         DateTime? @map("deleted_at")
+
+  post              Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author            User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parentComment     Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
+  replies           Comment[]  @relation("CommentReplies")
+  statistics        CommentStatistics?
+  likes             CommentLike[]
+
+  @@index([postId, createdAt, id])
+  @@index([parentCommentId, createdAt, id])
+  @@index([authorId])
+  @@map("comments")
+}
+
+model CommentStatistics {
+  commentId    String   @id @map("comment_id") @db.Uuid
+  likeCount    Int      @default(0) @map("like_count")
+  replyCount   Int      @default(0) @map("reply_count")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@map("comment_statistics")
+}
+
+model CommentLike {
+  id         String   @id @default(uuid()) @db.Uuid
+  commentId  String   @map("comment_id") @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+  @@index([commentId, createdAt, id])
+  @@index([userId, createdAt])
+  @@map("comment_likes")
+}
+
+model PostLike {
+  id         String   @id @default(uuid()) @db.Uuid
+  postId    String   @map("post_id") @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([postId, createdAt, id])
+  @@index([userId, createdAt])
+  @@map("post_likes")
+}
+
+model PostMedia {
+  id         String   @id @default(uuid()) @db.Uuid
+  ownerId   String   @map("owner_id") @db.Uuid
+  postId    String?  @unique @map("post_id") @db.Uuid
+  imageUrl  String   @map("image_url")
+  storageKey String   @map("storage_key")
+  mimeType  String   @map("mime_type") @db.VarChar(100)
+  fileSize  BigInt   @map("file_size")
+  width     Int?
+  height    Int?
+  createdAt DateTime @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  post  Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([storageKey])
+  @@index([ownerId])
+  @@index([postId])
+  @@map("post_media")
+}
