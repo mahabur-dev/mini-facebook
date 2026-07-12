@@ -1,0 +1,85 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { LoginValues } from "../types/auth.types";
+import { loginSchema } from "../schemas/login.schema";
+import { useAuthSession } from "../hooks/use-auth-session";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+export function LoginForm() {
+  const { login } = useAuthSession();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      rememberMe: true,
+    },
+  });
+
+  return (
+    <form
+      className="_social_login_form"
+      onSubmit={handleSubmit(async () => {
+        await login();
+      })}
+    >
+      <div className="row">
+        <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+          <div className="_social_login_form_input _mar_b14">
+            <label className="_social_login_label _mar_b8" htmlFor="login-email">
+              Email
+            </label>
+            <Input id="login-email" type="email" className="_social_login_input" {...register("email")} />
+            {errors.email ? <p className="text-danger mt-2">{errors.email.message}</p> : null}
+          </div>
+        </div>
+        <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+          <div className="_social_login_form_input _mar_b14">
+            <label className="_social_login_label _mar_b8" htmlFor="login-password">
+              Password
+            </label>
+            <Input id="login-password" type="password" className="_social_login_input" {...register("password")} />
+            {errors.password ? <p className="text-danger mt-2">{errors.password.message}</p> : null}
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-lg-6 col-xl-6 col-md-6 col-sm-12">
+          <div className="form-check _social_login_form_check">
+            <input
+              className="form-check-input _social_login_form_check_input"
+              type="radio"
+              id="remember-me"
+              checked
+              readOnly
+            />
+            <label className="form-check-label _social_login_form_check_label" htmlFor="remember-me">
+              Remember me
+            </label>
+          </div>
+        </div>
+        <div className="col-lg-6 col-xl-6 col-md-6 col-sm-12">
+          <div className="_social_login_form_left">
+            <p className="_social_login_form_left_para">Forgot password?</p>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-lg-12 col-md-12 col-xl-12 col-sm-12">
+          <div className="_social_login_form_btn _mar_t40 _mar_b60">
+            <Button type="submit" className="_social_login_form_btn_link _btn1" disabled={isSubmitting}>
+              Login now
+            </Button>
+          </div>
+        </div>
+      </div>
+    </form>
+  );
+}
