@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
 
-export function PostFooter({ children }: { children?: ReactNode }) {
-  return <>{children}</>;
+type PostFooterProps = {
+  children?: ReactNode;
+};
+
+export function PostFooter({ children }: PostFooterProps) {
+  return <div>{children}</div>;
 }

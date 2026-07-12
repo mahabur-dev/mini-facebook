@@ -1,3 +1,3 @@
 export function ImageUpload() {
-  return null;
+  return <input type="file" accept="image/*" />;
 }

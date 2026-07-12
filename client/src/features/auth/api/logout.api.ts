@@ -1,3 +1,4 @@
 export async function logoutApi() {
-  return null;
+  await new Promise((resolve) => setTimeout(resolve, 60));
+  return { success: true };
 }

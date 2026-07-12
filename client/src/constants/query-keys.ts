@@ -4,5 +4,6 @@ export const queryKeys = {
   },
   feed: {
     list: ["feed", "list"] as const,
+    comments: (postId: string) => ["feed", "list", "comments", postId] as const,
   },
 } as const;

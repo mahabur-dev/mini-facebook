@@ -1,3 +1,3 @@
 export function ReactionUserList() {
-  return null;
+  return <div />;
 }
