@@ -1,6 +1,5 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useComments } from "@/features/comments/hooks/use-comments";
 import { CommentSection } from "@/features/comments/components/comment-section";
 import { useToggleReaction } from "@/features/reactions/hooks/use-toggle-reaction";
 import { queryKeys } from "@/constants/query-keys";
@@ -17,19 +16,29 @@ type FeedPostCardProps = {
 
 export function FeedPostCard({ post }: FeedPostCardProps) {
   const queryClient = useQueryClient();
-  const commentsQuery = useComments(post.id);
   const toggleReaction = useToggleReaction();
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(post.likes);
+  const [commentCount, setCommentCount] = useState(post.comments);
   const [menuOpen, setMenuOpen] = useState(false);
-  const comments = commentsQuery.data ?? [];
-
-  const commentCount = useMemo(() => comments.filter((comment) => !comment.parentCommentId).length, [comments]);
 
   const handleToggleLike = async () => {
     const nextLiked = !liked;
     setLiked(nextLiked);
     setLikes((value) => Math.max(0, value + (nextLiked ? 1 : -1)));
+    queryClient.setQueryData(queryKeys.feed.list, (existing: unknown) => {
+      if (!existing || typeof existing !== "object" || !("pages" in existing)) {
+        return existing;
+      }
+
+      return {
+        ...(existing as { pages: Array<{ items: Array<{ id: string; likes: number }> }> }),
+        pages: (existing as { pages: Array<{ items: Array<{ id: string; likes: number }> }> }).pages.map((page) => ({
+          ...page,
+          items: page.items.map((item) => (item.id === post.id ? { ...item, likes: Math.max(0, item.likes + (nextLiked ? 1 : -1)) } : item)),
+        })),
+      };
+    });
     await toggleReaction.mutateAsync({
       targetId: post.id,
       targetType: "post",
@@ -53,7 +62,7 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
         <PostContent text={post.text} />
         <PostMedia src={post.media} alt={`${post.author} post media`} />
         <PostActions liked={liked} likes={likes} comments={commentCount} shares={post.shares} onToggleLike={handleToggleLike} />
-        <CommentSection postId={post.id} />
+        <CommentSection postId={post.id} onCommentCreated={() => setCommentCount((value) => value + 1)} />
       </div>
     </div>
   );

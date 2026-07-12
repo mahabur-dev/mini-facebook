@@ -7,6 +7,7 @@ import { registerSchema } from "../schemas/register.schema";
 import { useAuthSession } from "../hooks/use-auth-session";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SocialAuthButton } from "@/components/forms/social-auth-button";
 
 export function RegisterForm() {
   const { register: createSession } = useAuthSession();
@@ -32,6 +33,12 @@ export function RegisterForm() {
         await createSession();
       })}
     >
+      <SocialAuthButton
+        iconSrc="/assets/images/google.svg"
+        text="Register with google"
+        className="_social_registration_content_btn _mar_b40"
+        aria-label="Register with Google"
+      />
       <div className="row">
         <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
           <div className="_social_registration_form_input _mar_b14">
@@ -80,8 +87,9 @@ export function RegisterForm() {
           <div className="form-check _social_registration_form_check">
             <input
               className="form-check-input _social_registration_form_check_input"
-              type="checkbox"
+              type="radio"
               id="agree-terms"
+              defaultChecked
               {...register("agreeToTerms")}
             />
             <label className="form-check-label _social_registration_form_check_label" htmlFor="agree-terms">
@@ -95,7 +103,7 @@ export function RegisterForm() {
         <div className="col-lg-12 col-md-12 col-xl-12 col-sm-12">
           <div className="_social_registration_form_btn _mar_t40 _mar_b60">
             <Button type="submit" className="_social_registration_form_btn_link _btn1" disabled={isSubmitting}>
-              Login now
+              Create New Account
             </Button>
           </div>
         </div>

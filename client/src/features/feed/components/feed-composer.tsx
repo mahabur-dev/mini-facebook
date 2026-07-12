@@ -12,7 +12,7 @@ export function FeedComposer() {
   const queryClient = useQueryClient();
   const currentUser = useCurrentUser();
   const createPost = useCreatePost();
-  const { text, visibility, setText, setVisibility, reset } = usePostComposerStore();
+  const { text, visibility, setText, reset } = usePostComposerStore();
 
   const handleSubmit = async () => {
     if (!text.trim()) {
@@ -31,29 +31,6 @@ export function FeedComposer() {
   };
 
   return (
-    <PostComposer value={text} visibility={visibility} onChange={setText} onVisibilityChange={setVisibility} onSubmit={handleSubmit} submitting={createPost.isPending}>
-        <div className="_feed_inner_text_area_item">
-          <div className="_feed_inner_text_area_bottom_photo _feed_common">
-            <button type="button" className="_feed_inner_text_area_bottom_photo_link">
-              <span className="_feed_inner_text_area_bottom_photo_iamge _mar_img">Photo</span>
-            </button>
-          </div>
-          <div className="_feed_inner_text_area_bottom_video _feed_common">
-            <button type="button" className="_feed_inner_text_area_bottom_photo_link">
-              <span className="_feed_inner_text_area_bottom_photo_iamge _mar_img">Video</span>
-            </button>
-          </div>
-          <div className="_feed_inner_text_area_bottom_event _feed_common">
-            <button type="button" className="_feed_inner_text_area_bottom_photo_link">
-              <span className="_feed_inner_text_area_bottom_photo_iamge _mar_img">Event</span>
-            </button>
-          </div>
-          <div className="_feed_inner_text_area_bottom_article _feed_common">
-            <button type="button" className="_feed_inner_text_area_bottom_photo_link">
-              <span className="_feed_inner_text_area_bottom_photo_iamge _mar_img">Article</span>
-            </button>
-          </div>
-        </div>
-    </PostComposer>
+    <PostComposer value={text} onChange={setText} onSubmit={handleSubmit} submitting={createPost.isPending} />
   );
 }

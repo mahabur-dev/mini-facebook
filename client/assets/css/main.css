@@ -216,6 +216,11 @@
 ._left_img {
     max-width: 633px;
 }
+._registration_left_img {
+    max-width: 690px;
+    width: 100%;
+    margin-top: -10px;
+}
 ._social_login_content {
     background: var(--bg2);
     padding: 48px;
@@ -400,6 +405,7 @@
     background: var(--bg2);
     border-radius: 6px;
     padding: 12px 60px;
+    min-width: 260px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -409,6 +415,7 @@
     -webkit-box-pack: center;
     -ms-flex-pack: center;
     justify-content: center;
+    white-space: nowrap;
 }
 ._social_registration_content_btn span {
     font-weight: 500;
@@ -1927,6 +1934,19 @@
     color: #000000;
     background:transparent;
     border:none;
+}
+._feed_inner_timeline_reaction_link > span {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    gap: 8px;
+}
+._feed_inner_timeline_reaction_link > span svg {
+    -ms-flex-negative: 0;
+        flex-shrink: 0;
 }
 ._feed_reaction:hover {
     background:#e4f1fd;
@@ -5973,14 +5993,15 @@
 }
 ._comment_reply_num {
     position: absolute;
-    bottom: -37px;
+    bottom: -43px;
 }
 ._comment_reply_list {
     display: flex;
     align-items: center;
+    column-gap: 14px;
 }
 ._comment_reply_list li {
-    margin:0 2px;
+    margin:0;
 }
 ._comment_reply_list li span {
     color:var(--color6);

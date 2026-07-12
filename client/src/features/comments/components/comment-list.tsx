@@ -8,20 +8,22 @@ type CommentListProps = {
 };
 
 export function CommentList({ comments, onReplySubmit, replyingCommentId }: CommentListProps) {
-  if (!comments.length) {
-    return <p className="mb-0 text-muted">No comments yet.</p>;
+  const topLevelComments = comments.filter((comment) => !comment.parentCommentId);
+
+  if (!topLevelComments.length) {
+    return null;
   }
 
   return (
-    <div className="mt-3">
-      {comments.map((comment) => {
-        const replies = comments.filter((candidate) => candidate.parentCommentId === comment.id);
-        if (comment.parentCommentId) {
-          return null;
-        }
-
-        return <CommentItem key={comment.id} comment={comment} replies={replies} onReplySubmit={onReplySubmit} replying={replyingCommentId === comment.id} />;
-      })}
+    <div className="_timline_comment_main">
+      <div className="_previous_comment">
+        <button type="button" className="_previous_comment_txt">
+          View 4 previous comments
+        </button>
+      </div>
+      {topLevelComments.map((comment) => (
+        <CommentItem key={comment.id} comment={comment} onReplySubmit={onReplySubmit} replying={replyingCommentId === comment.id} />
+      ))}
     </div>
   );
 }

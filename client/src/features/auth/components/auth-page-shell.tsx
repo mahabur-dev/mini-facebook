@@ -14,12 +14,14 @@ type AuthPageShellProps = {
   imageColumnClassName: string;
   imageOuterClassName: string;
   imageClassName: string;
+  imageElementClassName?: string;
   logoWrapperClassName: string;
   contentClassName: string;
   eyebrowClassName: string;
   titleClassName: string;
   footerClassName: string;
   footerTextClassName: string;
+  footerPrefixText?: string;
   secondaryImage?: string;
   secondaryImageAlt?: string;
   secondaryImageClassName?: string;
@@ -39,12 +41,14 @@ export function AuthPageShell({
   imageColumnClassName,
   imageOuterClassName,
   imageClassName,
+  imageElementClassName,
   logoWrapperClassName,
   contentClassName,
   eyebrowClassName,
   titleClassName,
   footerClassName,
   footerTextClassName,
+  footerPrefixText = "Dont have an account?",
   secondaryImage,
   secondaryImageAlt,
   secondaryImageClassName,
@@ -69,7 +73,7 @@ export function AuthPageShell({
             <div className={imageColumnClassName}>
               <div className={imageOuterClassName}>
                 <div className={imageClassName}>
-                  <img src={image} alt={imageAlt} className="_left_img" />
+                  <img src={image} alt={imageAlt} className={imageElementClassName ?? "_left_img"} />
                 </div>
               </div>
               {secondaryImage ? (
@@ -90,7 +94,7 @@ export function AuthPageShell({
                   <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                     <div className={footerClassName}>
                       <p className={footerTextClassName}>
-                        Dont have an account? <a href={footerHref}>{footerLabel}</a>
+                        {footerPrefixText} <a href={footerHref}>{footerLabel}</a>
                       </p>
                     </div>
                   </div>

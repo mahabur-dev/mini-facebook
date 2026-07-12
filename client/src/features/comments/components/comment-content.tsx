@@ -3,5 +3,11 @@ type CommentContentProps = {
 };
 
 export function CommentContent({ content }: CommentContentProps) {
-  return <p className="mb-2">{content}</p>;
+  return (
+    <div className="_comment_status">
+      <p className="_comment_status_text">
+        <span>{content}</span>
+      </p>
+    </div>
+  );
 }

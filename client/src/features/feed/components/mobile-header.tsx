@@ -1,6 +1,10 @@
 "use client";
 
+import { useNavigationStore } from "@/store/navigation.store";
+
 export function MobileHeader() {
+  const { toggleMobileMenu } = useNavigationStore();
+
   return (
     <div className="_header_mobile_menu">
       <div className="_header_mobile_menu_wrap">
@@ -23,6 +27,13 @@ export function MobileHeader() {
                         </svg>
                       </a>
                     </form>
+                    <div className="_header_mobile_toggle">
+                      <button type="button" className="_header_mobile_btn_link" value="go to mobile menu" onClick={toggleMobileMenu}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="14" fill="none" viewBox="0 0 18 14">
+                          <path stroke="#666" strokeLinecap="round" strokeWidth="1.5" d="M1 1h16M1 7h16M1 13h16" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
