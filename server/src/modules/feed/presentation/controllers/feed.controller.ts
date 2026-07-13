@@ -5,7 +5,7 @@ import { GetFeedDto } from "../dto/get-feed.dto";
 import { GetFeedService } from "../../application/services/get-feed.service";
 import { presentFeedPost } from "../presenters/feed.presenter";
 import { decodeCursor } from "../../../../common/pagination/cursor.pagination";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @Controller("feed")
 @UseGuards(JwtAuthGuard)
@@ -15,6 +15,7 @@ export class FeedController {
   constructor(private readonly getFeedService: GetFeedService) {}
 
   @Get()
+  @ApiOperation({ summary: "Get the personalized feed" })
   async getFeed(@CurrentUser() user: { sub: string }, @Query() query: GetFeedDto) {
     const cursor = this.parseCursor(query.cursor);
     const result = await this.getFeedService.execute({

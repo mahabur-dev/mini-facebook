@@ -1,8 +1,7 @@
-import { mockDb } from "@/lib/mock/mock-db";
+import { apiClient } from "@/lib/api/api-client";
+import type { CurrentUserResponse } from "../types/auth.types";
 
 export async function sessionApi() {
-  await new Promise((resolve) => setTimeout(resolve, 60));
-  return {
-    user: mockDb.currentUser,
-  };
+  const user = await apiClient<CurrentUserResponse["user"]>("/auth/me");
+  return { user };
 }

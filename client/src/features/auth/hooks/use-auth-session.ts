@@ -1,22 +1,38 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
-function setDemoSession() {
-  document.cookie = "buddy-session=demo-user; path=/; max-age=86400; samesite=lax";
-}
+import { loginApi } from "../api/login.api";
+import { logoutApi } from "../api/logout.api";
+import { registerApi } from "../api/register.api";
+import { clearClientSession, setClientSession } from "@/lib/auth/session";
+import type { LoginValues, RegisterValues } from "../types/auth.types";
 
 export function useAuthSession() {
   const router = useRouter();
 
   return {
-    login: async () => {
-      setDemoSession();
+    login: async (input: LoginValues) => {
+      const session = await loginApi({ email: input.email, password: input.password });
+      setClientSession(session.accessToken, session.user);
       router.replace("/feed");
     },
-    register: async () => {
-      setDemoSession();
+    register: async (input: RegisterValues) => {
+      const session = await registerApi({
+        firstName: input.firstName,
+        lastName: input.lastName,
+        email: input.email,
+        password: input.password,
+      });
+      setClientSession(session.accessToken, session.user);
       router.replace("/feed");
+    },
+    logout: async () => {
+      try {
+        await logoutApi();
+      } finally {
+        clearClientSession();
+        router.replace("/login");
+      }
     },
   };
 }

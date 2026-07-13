@@ -8,9 +8,11 @@ import { useAuthSession } from "../hooks/use-auth-session";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SocialAuthButton } from "@/components/forms/social-auth-button";
+import { useState } from "react";
 
 export function RegisterForm() {
   const { register: createSession } = useAuthSession();
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -29,8 +31,13 @@ export function RegisterForm() {
   return (
     <form
       className="_social_registration_form"
-      onSubmit={handleSubmit(async () => {
-        await createSession();
+      onSubmit={handleSubmit(async (values) => {
+        setSubmitError(null);
+        try {
+          await createSession(values);
+        } catch (error) {
+          setSubmitError(error instanceof Error ? error.message : "Failed to create account");
+        }
       })}
     >
       <SocialAuthButton
@@ -108,6 +115,7 @@ export function RegisterForm() {
           </div>
         </div>
       </div>
+      {submitError ? <p className="text-danger mt-2">{submitError}</p> : null}
     </form>
   );
 }

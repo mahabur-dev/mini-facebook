@@ -17,7 +17,7 @@ type FeedPostCardProps = {
 export function FeedPostCard({ post }: FeedPostCardProps) {
   const queryClient = useQueryClient();
   const toggleReaction = useToggleReaction();
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(Boolean(post.liked));
   const [likes, setLikes] = useState(post.likes);
   const [commentCount, setCommentCount] = useState(post.comments);
   const [menuOpen, setMenuOpen] = useState(false);

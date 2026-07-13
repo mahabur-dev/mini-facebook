@@ -9,6 +9,7 @@ export type FeedPostMock = {
   likes: number;
   comments: number;
   shares: number;
+  liked?: boolean;
 };
 
 export type FeedPageMock = {

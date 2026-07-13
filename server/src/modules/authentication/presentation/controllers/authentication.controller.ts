@@ -20,7 +20,7 @@ import { LoginUserService } from "../../application/services/login-user.service"
 import { RefreshSessionService } from "../../application/services/refresh-session.service";
 import { LogoutSessionService } from "../../application/services/logout-session.service";
 import { GetCurrentUserService } from "../../application/services/get-current-user.service";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @Controller("auth")
 @ApiTags("Auth")
@@ -34,6 +34,7 @@ export class AuthenticationController {
   ) {}
 
   @Post("register")
+  @ApiOperation({ summary: "Register a new account" })
   async register(@Body() dto: RegisterDto, @Req() request: Request, @Res({ passthrough: true }) response: Response) {
     const result = await this.registerUserService.execute(dto, {
       ipAddress: request.ip ?? null,
@@ -45,6 +46,7 @@ export class AuthenticationController {
   }
 
   @Post("login")
+  @ApiOperation({ summary: "Log in with email and password" })
   async login(@Body() dto: LoginDto, @Req() request: Request, @Res({ passthrough: true }) response: Response) {
     const result = await this.loginUserService.execute(dto, {
       ipAddress: request.ip ?? null,
@@ -56,6 +58,7 @@ export class AuthenticationController {
   }
 
   @Post("refresh")
+  @ApiOperation({ summary: "Refresh the current session" })
   async refresh(@Body() dto: RefreshDto, @Req() request: Request, @Res({ passthrough: true }) response: Response) {
     const result = await this.refreshSessionService.execute(this.getRefreshToken(dto, request));
     this.attachRefreshCookie(response, result.refreshToken);
@@ -63,6 +66,7 @@ export class AuthenticationController {
   }
 
   @Delete("logout")
+  @ApiOperation({ summary: "Log out and invalidate the refresh session" })
   async logout(@Body() dto: RefreshDto, @Req() request: Request, @Res({ passthrough: true }) response: Response) {
     await this.logoutSessionService.execute(this.getRefreshToken(dto, request));
     response.clearCookie("refresh_token", { path: "/api/v1/auth" });
@@ -72,6 +76,7 @@ export class AuthenticationController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get("me")
+  @ApiOperation({ summary: "Get the current user profile" })
   async me(@CurrentUser() user: { sub: string }) {
     return this.getCurrentUserService.execute(user.sub);
   }

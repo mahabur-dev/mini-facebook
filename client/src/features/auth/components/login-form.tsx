@@ -8,9 +8,11 @@ import { useAuthSession } from "../hooks/use-auth-session";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SocialAuthButton } from "@/components/forms/social-auth-button";
+import { useState } from "react";
 
 export function LoginForm() {
   const { login } = useAuthSession();
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -27,8 +29,13 @@ export function LoginForm() {
   return (
     <form
       className="_social_login_form"
-      onSubmit={handleSubmit(async () => {
-        await login();
+      onSubmit={handleSubmit(async (values) => {
+        setSubmitError(null);
+        try {
+          await login(values);
+        } catch (error) {
+          setSubmitError(error instanceof Error ? error.message : "Failed to log in");
+        }
       })}
     >
       <SocialAuthButton
@@ -87,6 +94,7 @@ export function LoginForm() {
           </div>
         </div>
       </div>
+      {submitError ? <p className="text-danger mt-2">{submitError}</p> : null}
     </form>
   );
 }

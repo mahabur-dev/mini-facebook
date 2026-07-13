@@ -8,7 +8,7 @@ import { CommentLikeService } from "../../application/services/comment-like.serv
 import { CommentUnlikeService } from "../../application/services/comment-unlike.service";
 import { GetCommentLikersService } from "../../application/services/get-comment-likers.service";
 import { ListLikersQueryDto } from "../dto/list-likers-query.dto";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @Controller()
 @UseGuards(JwtAuthGuard)
@@ -25,16 +25,19 @@ export class ReactionsController {
   ) {}
 
   @Put("posts/:postId/like")
+  @ApiOperation({ summary: "Like a post" })
   likePost(@CurrentUser() user: { sub: string }, @Param("postId") postId: string) {
     return this.postLikeService.execute(user.sub, postId);
   }
 
   @Delete("posts/:postId/like")
+  @ApiOperation({ summary: "Unlike a post" })
   unlikePost(@CurrentUser() user: { sub: string }, @Param("postId") postId: string) {
     return this.postUnlikeService.execute(user.sub, postId);
   }
 
   @Get("posts/:postId/likes")
+  @ApiOperation({ summary: "List post likers" })
   getPostLikers(@CurrentUser() user: { sub: string }, @Param("postId") postId: string, @Query() query: ListLikersQueryDto) {
     return this.getPostLikersService.execute(user.sub, postId, {
       limit: query.limit ?? 20,
@@ -43,16 +46,19 @@ export class ReactionsController {
   }
 
   @Put("comments/:commentId/like")
+  @ApiOperation({ summary: "Like a comment" })
   likeComment(@CurrentUser() user: { sub: string }, @Param("commentId") commentId: string) {
     return this.commentLikeService.execute(user.sub, commentId);
   }
 
   @Delete("comments/:commentId/like")
+  @ApiOperation({ summary: "Unlike a comment" })
   unlikeComment(@CurrentUser() user: { sub: string }, @Param("commentId") commentId: string) {
     return this.commentUnlikeService.execute(user.sub, commentId);
   }
 
   @Get("comments/:commentId/likes")
+  @ApiOperation({ summary: "List comment likers" })
   getCommentLikers(
     @CurrentUser() user: { sub: string },
     @Param("commentId") commentId: string,
