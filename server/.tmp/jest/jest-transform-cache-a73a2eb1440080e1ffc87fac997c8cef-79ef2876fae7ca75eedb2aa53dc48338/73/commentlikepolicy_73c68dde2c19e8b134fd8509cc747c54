@@ -1,0 +1,30 @@
+db618cd2e0f0666d580420b455a29ea5
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CommentLikePolicy = void 0;
+const common_1 = require("@nestjs/common");
+const comment_visibility_policy_1 = require("../../../comments/domain/policies/comment-visibility.policy");
+let CommentLikePolicy = class CommentLikePolicy {
+    commentVisibilityPolicy;
+    constructor(commentVisibilityPolicy) {
+        this.commentVisibilityPolicy = commentVisibilityPolicy;
+    }
+    async canLike(viewerId, comment) {
+        await this.commentVisibilityPolicy.canView(viewerId, comment);
+    }
+};
+exports.CommentLikePolicy = CommentLikePolicy;
+exports.CommentLikePolicy = CommentLikePolicy = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [comment_visibility_policy_1.CommentVisibilityPolicy])
+], CommentLikePolicy);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXHJlYWN0aW9uc1xcZG9tYWluXFxwb2xpY2llc1xcY29tbWVudC1saWtlLnBvbGljeS50cyIsIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7QUFBQSwyQ0FBNEM7QUFFNUMsMkdBQXNHO0FBRy9GLElBQU0saUJBQWlCLEdBQXZCLE1BQU0saUJBQWlCO0lBQ0M7SUFBN0IsWUFBNkIsdUJBQWdEO1FBQWhELDRCQUF1QixHQUF2Qix1QkFBdUIsQ0FBeUI7SUFBRyxDQUFDO0lBRWpGLEtBQUssQ0FBQyxPQUFPLENBQUMsUUFBZ0IsRUFBRSxPQUE2QjtRQUMzRCxNQUFNLElBQUksQ0FBQyx1QkFBdUIsQ0FBQyxPQUFPLENBQUMsUUFBUSxFQUFFLE9BQU8sQ0FBQyxDQUFDO0lBQ2hFLENBQUM7Q0FDRixDQUFBO0FBTlksOENBQWlCOzRCQUFqQixpQkFBaUI7SUFEN0IsSUFBQSxtQkFBVSxHQUFFO3FDQUUyQyxtREFBdUI7R0FEbEUsaUJBQWlCLENBTTdCIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkQ6XFxQcm9qZWN0XzFcXG1pbmktZmFjZWJvb2tcXHNlcnZlclxcc3JjXFxtb2R1bGVzXFxyZWFjdGlvbnNcXGRvbWFpblxccG9saWNpZXNcXGNvbW1lbnQtbGlrZS5wb2xpY3kudHMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gXCJAbmVzdGpzL2NvbW1vblwiO1xuaW1wb3J0IHsgQ29tbWVudEVudGl0eSB9IGZyb20gXCIuLi8uLi8uLi9jb21tZW50cy9kb21haW4vZW50aXRpZXMvY29tbWVudC5lbnRpdHlcIjtcbmltcG9ydCB7IENvbW1lbnRWaXNpYmlsaXR5UG9saWN5IH0gZnJvbSBcIi4uLy4uLy4uL2NvbW1lbnRzL2RvbWFpbi9wb2xpY2llcy9jb21tZW50LXZpc2liaWxpdHkucG9saWN5XCI7XG5cbkBJbmplY3RhYmxlKClcbmV4cG9ydCBjbGFzcyBDb21tZW50TGlrZVBvbGljeSB7XG4gIGNvbnN0cnVjdG9yKHByaXZhdGUgcmVhZG9ubHkgY29tbWVudFZpc2liaWxpdHlQb2xpY3k6IENvbW1lbnRWaXNpYmlsaXR5UG9saWN5KSB7fVxuXG4gIGFzeW5jIGNhbkxpa2Uodmlld2VySWQ6IHN0cmluZywgY29tbWVudDogQ29tbWVudEVudGl0eSB8IG51bGwpIHtcbiAgICBhd2FpdCB0aGlzLmNvbW1lbnRWaXNpYmlsaXR5UG9saWN5LmNhblZpZXcodmlld2VySWQsIGNvbW1lbnQpO1xuICB9XG59XG4iXSwidmVyc2lvbiI6M30=

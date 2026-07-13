@@ -1,0 +1,45 @@
+ca48fa27549a745a506414a16e2f02fa
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PostUnlikeService = void 0;
+const common_1 = require("@nestjs/common");
+const prisma_service_1 = require("../../../../infrastructure/database/prisma.service");
+let PostUnlikeService = class PostUnlikeService {
+    prisma;
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    async execute(userId, postId) {
+        return this.prisma.$transaction(async (tx) => {
+            const existing = await tx.postLike.findUnique({
+                where: { postId_userId: { postId, userId } },
+            });
+            if (!existing) {
+                return { liked: false };
+            }
+            await tx.postLike.delete({
+                where: { postId_userId: { postId, userId } },
+            });
+            await tx.postStatistics.update({
+                where: { postId },
+                data: { likeCount: { decrement: 1 } },
+            });
+            return { liked: false };
+        });
+    }
+};
+exports.PostUnlikeService = PostUnlikeService;
+exports.PostUnlikeService = PostUnlikeService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+], PostUnlikeService);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXHJlYWN0aW9uc1xcYXBwbGljYXRpb25cXHNlcnZpY2VzXFxwb3N0LXVubGlrZS5zZXJ2aWNlLnRzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7OztBQUFBLDJDQUE0QztBQUM1Qyx1RkFBbUY7QUFHNUUsSUFBTSxpQkFBaUIsR0FBdkIsTUFBTSxpQkFBaUI7SUFDQztJQUE3QixZQUE2QixNQUFxQjtRQUFyQixXQUFNLEdBQU4sTUFBTSxDQUFlO0lBQUcsQ0FBQztJQUV0RCxLQUFLLENBQUMsT0FBTyxDQUFDLE1BQWMsRUFBRSxNQUFjO1FBQzFDLE9BQU8sSUFBSSxDQUFDLE1BQU0sQ0FBQyxZQUFZLENBQUMsS0FBSyxFQUFFLEVBQUUsRUFBRSxFQUFFO1lBQzNDLE1BQU0sUUFBUSxHQUFHLE1BQU0sRUFBRSxDQUFDLFFBQVEsQ0FBQyxVQUFVLENBQUM7Z0JBQzVDLEtBQUssRUFBRSxFQUFFLGFBQWEsRUFBRSxFQUFFLE1BQU0sRUFBRSxNQUFNLEVBQUUsRUFBRTthQUM3QyxDQUFDLENBQUM7WUFFSCxJQUFJLENBQUMsUUFBUSxFQUFFLENBQUM7Z0JBQ2QsT0FBTyxFQUFFLEtBQUssRUFBRSxLQUFLLEVBQUUsQ0FBQztZQUMxQixDQUFDO1lBRUQsTUFBTSxFQUFFLENBQUMsUUFBUSxDQUFDLE1BQU0sQ0FBQztnQkFDdkIsS0FBSyxFQUFFLEVBQUUsYUFBYSxFQUFFLEVBQUUsTUFBTSxFQUFFLE1BQU0sRUFBRSxFQUFFO2FBQzdDLENBQUMsQ0FBQztZQUNILE1BQU0sRUFBRSxDQUFDLGNBQWMsQ0FBQyxNQUFNLENBQUM7Z0JBQzdCLEtBQUssRUFBRSxFQUFFLE1BQU0sRUFBRTtnQkFDakIsSUFBSSxFQUFFLEVBQUUsU0FBUyxFQUFFLEVBQUUsU0FBUyxFQUFFLENBQUMsRUFBRSxFQUFFO2FBQ3RDLENBQUMsQ0FBQztZQUNILE9BQU8sRUFBRSxLQUFLLEVBQUUsS0FBSyxFQUFFLENBQUM7UUFDMUIsQ0FBQyxDQUFDLENBQUM7SUFDTCxDQUFDO0NBQ0YsQ0FBQTtBQXZCWSw4Q0FBaUI7NEJBQWpCLGlCQUFpQjtJQUQ3QixJQUFBLG1CQUFVLEdBQUU7cUNBRTBCLDhCQUFhO0dBRHZDLGlCQUFpQixDQXVCN0IiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXHJlYWN0aW9uc1xcYXBwbGljYXRpb25cXHNlcnZpY2VzXFxwb3N0LXVubGlrZS5zZXJ2aWNlLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEluamVjdGFibGUgfSBmcm9tIFwiQG5lc3Rqcy9jb21tb25cIjtcbmltcG9ydCB7IFByaXNtYVNlcnZpY2UgfSBmcm9tIFwiLi4vLi4vLi4vLi4vaW5mcmFzdHJ1Y3R1cmUvZGF0YWJhc2UvcHJpc21hLnNlcnZpY2VcIjtcblxuQEluamVjdGFibGUoKVxuZXhwb3J0IGNsYXNzIFBvc3RVbmxpa2VTZXJ2aWNlIHtcbiAgY29uc3RydWN0b3IocHJpdmF0ZSByZWFkb25seSBwcmlzbWE6IFByaXNtYVNlcnZpY2UpIHt9XG5cbiAgYXN5bmMgZXhlY3V0ZSh1c2VySWQ6IHN0cmluZywgcG9zdElkOiBzdHJpbmcpIHtcbiAgICByZXR1cm4gdGhpcy5wcmlzbWEuJHRyYW5zYWN0aW9uKGFzeW5jICh0eCkgPT4ge1xuICAgICAgY29uc3QgZXhpc3RpbmcgPSBhd2FpdCB0eC5wb3N0TGlrZS5maW5kVW5pcXVlKHtcbiAgICAgICAgd2hlcmU6IHsgcG9zdElkX3VzZXJJZDogeyBwb3N0SWQsIHVzZXJJZCB9IH0sXG4gICAgICB9KTtcblxuICAgICAgaWYgKCFleGlzdGluZykge1xuICAgICAgICByZXR1cm4geyBsaWtlZDogZmFsc2UgfTtcbiAgICAgIH1cblxuICAgICAgYXdhaXQgdHgucG9zdExpa2UuZGVsZXRlKHtcbiAgICAgICAgd2hlcmU6IHsgcG9zdElkX3VzZXJJZDogeyBwb3N0SWQsIHVzZXJJZCB9IH0sXG4gICAgICB9KTtcbiAgICAgIGF3YWl0IHR4LnBvc3RTdGF0aXN0aWNzLnVwZGF0ZSh7XG4gICAgICAgIHdoZXJlOiB7IHBvc3RJZCB9LFxuICAgICAgICBkYXRhOiB7IGxpa2VDb3VudDogeyBkZWNyZW1lbnQ6IDEgfSB9LFxuICAgICAgfSk7XG4gICAgICByZXR1cm4geyBsaWtlZDogZmFsc2UgfTtcbiAgICB9KTtcbiAgfVxufVxuIl0sInZlcnNpb24iOjN9

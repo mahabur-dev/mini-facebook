@@ -1,0 +1,30 @@
+032a4c767513162294d3f895a81da418
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PostLikePolicy = void 0;
+const common_1 = require("@nestjs/common");
+const post_visibility_policy_1 = require("../../../posts/domain/policies/post-visibility.policy");
+let PostLikePolicy = class PostLikePolicy {
+    postVisibilityPolicy;
+    constructor(postVisibilityPolicy) {
+        this.postVisibilityPolicy = postVisibilityPolicy;
+    }
+    canLike(viewerId, post) {
+        this.postVisibilityPolicy.canView(viewerId, post);
+    }
+};
+exports.PostLikePolicy = PostLikePolicy;
+exports.PostLikePolicy = PostLikePolicy = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [post_visibility_policy_1.PostVisibilityPolicy])
+], PostLikePolicy);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXHJlYWN0aW9uc1xcZG9tYWluXFxwb2xpY2llc1xccG9zdC1saWtlLnBvbGljeS50cyIsIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7QUFBQSwyQ0FBNEM7QUFFNUMsa0dBQTZGO0FBR3RGLElBQU0sY0FBYyxHQUFwQixNQUFNLGNBQWM7SUFDSTtJQUE3QixZQUE2QixvQkFBMEM7UUFBMUMseUJBQW9CLEdBQXBCLG9CQUFvQixDQUFzQjtJQUFHLENBQUM7SUFFM0UsT0FBTyxDQUFDLFFBQWdCLEVBQUUsSUFBdUI7UUFDL0MsSUFBSSxDQUFDLG9CQUFvQixDQUFDLE9BQU8sQ0FBQyxRQUFRLEVBQUUsSUFBSSxDQUFDLENBQUM7SUFDcEQsQ0FBQztDQUNGLENBQUE7QUFOWSx3Q0FBYzt5QkFBZCxjQUFjO0lBRDFCLElBQUEsbUJBQVUsR0FBRTtxQ0FFd0MsNkNBQW9CO0dBRDVELGNBQWMsQ0FNMUIiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXHJlYWN0aW9uc1xcZG9tYWluXFxwb2xpY2llc1xccG9zdC1saWtlLnBvbGljeS50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBJbmplY3RhYmxlIH0gZnJvbSBcIkBuZXN0anMvY29tbW9uXCI7XG5pbXBvcnQgeyBQb3N0RW50aXR5IH0gZnJvbSBcIi4uLy4uLy4uL3Bvc3RzL2RvbWFpbi9lbnRpdGllcy9wb3N0LmVudGl0eVwiO1xuaW1wb3J0IHsgUG9zdFZpc2liaWxpdHlQb2xpY3kgfSBmcm9tIFwiLi4vLi4vLi4vcG9zdHMvZG9tYWluL3BvbGljaWVzL3Bvc3QtdmlzaWJpbGl0eS5wb2xpY3lcIjtcblxuQEluamVjdGFibGUoKVxuZXhwb3J0IGNsYXNzIFBvc3RMaWtlUG9saWN5IHtcbiAgY29uc3RydWN0b3IocHJpdmF0ZSByZWFkb25seSBwb3N0VmlzaWJpbGl0eVBvbGljeTogUG9zdFZpc2liaWxpdHlQb2xpY3kpIHt9XG5cbiAgY2FuTGlrZSh2aWV3ZXJJZDogc3RyaW5nLCBwb3N0OiBQb3N0RW50aXR5IHwgbnVsbCkge1xuICAgIHRoaXMucG9zdFZpc2liaWxpdHlQb2xpY3kuY2FuVmlldyh2aWV3ZXJJZCwgcG9zdCk7XG4gIH1cbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

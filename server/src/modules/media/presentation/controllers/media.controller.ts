@@ -6,12 +6,15 @@ import { UploadMediaService } from "../../application/services/upload-media.serv
 import { presentMedia } from "../presenters/media.presenter";
 import { ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from "@nestjs/common";
 import { UploadableImageFile } from "../../../../infrastructure/storage/storage.service";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
 @Controller("media")
+@ApiTags("Media")
 export class MediaController {
   constructor(private readonly uploadMediaService: UploadMediaService) {}
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Post("images")
   @UseInterceptors(FileInterceptor("file"))
   async uploadImage(

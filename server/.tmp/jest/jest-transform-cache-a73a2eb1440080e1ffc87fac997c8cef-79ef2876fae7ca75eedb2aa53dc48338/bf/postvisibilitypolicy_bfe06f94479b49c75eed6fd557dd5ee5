@@ -1,0 +1,28 @@
+307b24ebdb482d279fe811c0ae591ea7
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PostVisibilityPolicy = void 0;
+const common_1 = require("@nestjs/common");
+const post_not_visible_exception_1 = require("../exceptions/post-not-visible.exception");
+const post_visibility_enum_1 = require("../enums/post-visibility.enum");
+let PostVisibilityPolicy = class PostVisibilityPolicy {
+    canView(viewerId, post) {
+        if (!post || post.deletedAt) {
+            throw new post_not_visible_exception_1.PostNotVisibleException();
+        }
+        if (post.visibility === post_visibility_enum_1.PostVisibility.PRIVATE && post.authorId !== viewerId) {
+            throw new post_not_visible_exception_1.PostNotVisibleException();
+        }
+    }
+};
+exports.PostVisibilityPolicy = PostVisibilityPolicy;
+exports.PostVisibilityPolicy = PostVisibilityPolicy = __decorate([
+    (0, common_1.Injectable)()
+], PostVisibilityPolicy);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXHBvc3RzXFxkb21haW5cXHBvbGljaWVzXFxwb3N0LXZpc2liaWxpdHkucG9saWN5LnRzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7OztBQUFBLDJDQUE0QztBQUU1Qyx5RkFBbUY7QUFDbkYsd0VBQStEO0FBR3hELElBQU0sb0JBQW9CLEdBQTFCLE1BQU0sb0JBQW9CO0lBQy9CLE9BQU8sQ0FBQyxRQUFnQixFQUFFLElBQXVCO1FBQy9DLElBQUksQ0FBQyxJQUFJLElBQUksSUFBSSxDQUFDLFNBQVMsRUFBRSxDQUFDO1lBQzVCLE1BQU0sSUFBSSxvREFBdUIsRUFBRSxDQUFDO1FBQ3RDLENBQUM7UUFFRCxJQUFJLElBQUksQ0FBQyxVQUFVLEtBQUsscUNBQWMsQ0FBQyxPQUFPLElBQUksSUFBSSxDQUFDLFFBQVEsS0FBSyxRQUFRLEVBQUUsQ0FBQztZQUM3RSxNQUFNLElBQUksb0RBQXVCLEVBQUUsQ0FBQztRQUN0QyxDQUFDO0lBQ0gsQ0FBQztDQUNGLENBQUE7QUFWWSxvREFBb0I7K0JBQXBCLG9CQUFvQjtJQURoQyxJQUFBLG1CQUFVLEdBQUU7R0FDQSxvQkFBb0IsQ0FVaEMiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXHBvc3RzXFxkb21haW5cXHBvbGljaWVzXFxwb3N0LXZpc2liaWxpdHkucG9saWN5LnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEluamVjdGFibGUgfSBmcm9tIFwiQG5lc3Rqcy9jb21tb25cIjtcbmltcG9ydCB7IFBvc3RFbnRpdHkgfSBmcm9tIFwiLi4vZW50aXRpZXMvcG9zdC5lbnRpdHlcIjtcbmltcG9ydCB7IFBvc3ROb3RWaXNpYmxlRXhjZXB0aW9uIH0gZnJvbSBcIi4uL2V4Y2VwdGlvbnMvcG9zdC1ub3QtdmlzaWJsZS5leGNlcHRpb25cIjtcbmltcG9ydCB7IFBvc3RWaXNpYmlsaXR5IH0gZnJvbSBcIi4uL2VudW1zL3Bvc3QtdmlzaWJpbGl0eS5lbnVtXCI7XG5cbkBJbmplY3RhYmxlKClcbmV4cG9ydCBjbGFzcyBQb3N0VmlzaWJpbGl0eVBvbGljeSB7XG4gIGNhblZpZXcodmlld2VySWQ6IHN0cmluZywgcG9zdDogUG9zdEVudGl0eSB8IG51bGwpIHtcbiAgICBpZiAoIXBvc3QgfHwgcG9zdC5kZWxldGVkQXQpIHtcbiAgICAgIHRocm93IG5ldyBQb3N0Tm90VmlzaWJsZUV4Y2VwdGlvbigpO1xuICAgIH1cblxuICAgIGlmIChwb3N0LnZpc2liaWxpdHkgPT09IFBvc3RWaXNpYmlsaXR5LlBSSVZBVEUgJiYgcG9zdC5hdXRob3JJZCAhPT0gdmlld2VySWQpIHtcbiAgICAgIHRocm93IG5ldyBQb3N0Tm90VmlzaWJsZUV4Y2VwdGlvbigpO1xuICAgIH1cbiAgfVxufVxuIl0sInZlcnNpb24iOjN9

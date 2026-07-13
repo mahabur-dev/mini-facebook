@@ -1,13 +1,11 @@
 import { PostEntity } from "../../domain/entities/post.entity";
+import { presentUser } from "../../../../common/presenters/user.presenter";
+import { presentMedia } from "../../../media/presentation/presenters/media.presenter";
 
 export function presentPost(post: PostEntity) {
   return {
     ...post,
-    media: post.media
-      ? {
-          ...post.media,
-          fileSize: post.media.fileSize.toString(),
-        }
-      : null,
+    author: post.author ? presentUser(post.author) : undefined,
+    media: post.media ? presentMedia(post.media) : null,
   };
 }
