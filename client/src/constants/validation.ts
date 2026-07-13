@@ -1,3 +1,3 @@
 export const validation = {
-  passwordMinLength: 6,
+  passwordMinLength: 8,
 } as const;

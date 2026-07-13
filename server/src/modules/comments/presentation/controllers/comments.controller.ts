@@ -9,7 +9,7 @@ import { GetCommentsService } from "../../application/services/get-comments.serv
 import { GetRepliesService } from "../../application/services/get-replies.service";
 import { UpdateCommentService } from "../../application/services/update-comment.service";
 import { DeleteCommentService } from "../../application/services/delete-comment.service";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @Controller()
 @UseGuards(JwtAuthGuard)
@@ -25,6 +25,7 @@ export class CommentsController {
   ) {}
 
   @Post("posts/:postId/comments")
+  @ApiOperation({ summary: "Add a comment to a post" })
   async createComment(
     @CurrentUser() user: { sub: string },
     @Param("postId") postId: string,
@@ -39,6 +40,7 @@ export class CommentsController {
   }
 
   @Get("posts/:postId/comments")
+  @ApiOperation({ summary: "List post comments" })
   async getComments(
     @CurrentUser() user: { sub: string },
     @Param("postId") postId: string,
@@ -51,6 +53,7 @@ export class CommentsController {
   }
 
   @Post("comments/:commentId/replies")
+  @ApiOperation({ summary: "Reply to a comment" })
   async createReply(
     @CurrentUser() user: { sub: string },
     @Param("commentId") commentId: string,
@@ -64,6 +67,7 @@ export class CommentsController {
   }
 
   @Get("comments/:commentId/replies")
+  @ApiOperation({ summary: "List comment replies" })
   async getReplies(
     @CurrentUser() user: { sub: string },
     @Param("commentId") commentId: string,
@@ -76,6 +80,7 @@ export class CommentsController {
   }
 
   @Patch("comments/:commentId")
+  @ApiOperation({ summary: "Update a comment" })
   async updateComment(
     @CurrentUser() user: { sub: string },
     @Param("commentId") commentId: string,
@@ -85,6 +90,7 @@ export class CommentsController {
   }
 
   @Delete("comments/:commentId")
+  @ApiOperation({ summary: "Delete a comment" })
   async deleteComment(@CurrentUser() user: { sub: string }, @Param("commentId") commentId: string) {
     return this.deleteCommentService.execute(user.sub, commentId);
   }

@@ -1,0 +1,147 @@
+028471be44c6d031982ff205d0ca1368
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CommentsController = void 0;
+const common_1 = require("@nestjs/common");
+const current_user_decorator_1 = require("../../../../common/decorators/current-user.decorator");
+const jwt_auth_guard_1 = require("../../../../common/guards/jwt-auth.guard");
+const create_comment_dto_1 = require("../dto/create-comment.dto");
+const update_comment_dto_1 = require("../dto/update-comment.dto");
+const list_comments_query_dto_1 = require("../dto/list-comments-query.dto");
+const create_comment_service_1 = require("../../application/services/create-comment.service");
+const get_comments_service_1 = require("../../application/services/get-comments.service");
+const get_replies_service_1 = require("../../application/services/get-replies.service");
+const update_comment_service_1 = require("../../application/services/update-comment.service");
+const delete_comment_service_1 = require("../../application/services/delete-comment.service");
+const swagger_1 = require("@nestjs/swagger");
+let CommentsController = class CommentsController {
+    createCommentService;
+    getCommentsService;
+    getRepliesService;
+    updateCommentService;
+    deleteCommentService;
+    constructor(createCommentService, getCommentsService, getRepliesService, updateCommentService, deleteCommentService) {
+        this.createCommentService = createCommentService;
+        this.getCommentsService = getCommentsService;
+        this.getRepliesService = getRepliesService;
+        this.updateCommentService = updateCommentService;
+        this.deleteCommentService = deleteCommentService;
+    }
+    async createComment(user, postId, dto) {
+        return this.createCommentService.execute({
+            postId,
+            authorId: user.sub,
+            content: dto.content,
+            parentCommentId: dto.parentCommentId,
+        });
+    }
+    async getComments(user, postId, query) {
+        return this.getCommentsService.execute(user.sub, postId, {
+            limit: query.limit ?? 10,
+            cursor: query.cursor,
+        });
+    }
+    async createReply(user, commentId, dto) {
+        return this.createCommentService.execute({
+            authorId: user.sub,
+            content: dto.content,
+            parentCommentId: commentId,
+        });
+    }
+    async getReplies(user, commentId, query) {
+        return this.getRepliesService.execute(user.sub, commentId, {
+            limit: query.limit ?? 10,
+            cursor: query.cursor,
+        });
+    }
+    async updateComment(user, commentId, dto) {
+        return this.updateCommentService.execute(user.sub, commentId, dto);
+    }
+    async deleteComment(user, commentId) {
+        return this.deleteCommentService.execute(user.sub, commentId);
+    }
+};
+exports.CommentsController = CommentsController;
+__decorate([
+    (0, common_1.Post)("posts/:postId/comments"),
+    (0, swagger_1.ApiOperation)({ summary: "Add a comment to a post" }),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)("postId")),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, create_comment_dto_1.CreateCommentDto]),
+    __metadata("design:returntype", Promise)
+], CommentsController.prototype, "createComment", null);
+__decorate([
+    (0, common_1.Get)("posts/:postId/comments"),
+    (0, swagger_1.ApiOperation)({ summary: "List post comments" }),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)("postId")),
+    __param(2, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, list_comments_query_dto_1.ListCommentsQueryDto]),
+    __metadata("design:returntype", Promise)
+], CommentsController.prototype, "getComments", null);
+__decorate([
+    (0, common_1.Post)("comments/:commentId/replies"),
+    (0, swagger_1.ApiOperation)({ summary: "Reply to a comment" }),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)("commentId")),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, create_comment_dto_1.CreateCommentDto]),
+    __metadata("design:returntype", Promise)
+], CommentsController.prototype, "createReply", null);
+__decorate([
+    (0, common_1.Get)("comments/:commentId/replies"),
+    (0, swagger_1.ApiOperation)({ summary: "List comment replies" }),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)("commentId")),
+    __param(2, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, list_comments_query_dto_1.ListCommentsQueryDto]),
+    __metadata("design:returntype", Promise)
+], CommentsController.prototype, "getReplies", null);
+__decorate([
+    (0, common_1.Patch)("comments/:commentId"),
+    (0, swagger_1.ApiOperation)({ summary: "Update a comment" }),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)("commentId")),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, update_comment_dto_1.UpdateCommentDto]),
+    __metadata("design:returntype", Promise)
+], CommentsController.prototype, "updateComment", null);
+__decorate([
+    (0, common_1.Delete)("comments/:commentId"),
+    (0, swagger_1.ApiOperation)({ summary: "Delete a comment" }),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)("commentId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], CommentsController.prototype, "deleteComment", null);
+exports.CommentsController = CommentsController = __decorate([
+    (0, common_1.Controller)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiTags)("Comments"),
+    (0, swagger_1.ApiBearerAuth)(),
+    __metadata("design:paramtypes", [create_comment_service_1.CreateCommentService,
+        get_comments_service_1.GetCommentsService,
+        get_replies_service_1.GetRepliesService,
+        update_comment_service_1.UpdateCommentService,
+        delete_comment_service_1.DeleteCommentService])
+], CommentsController);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXGNvbW1lbnRzXFxwcmVzZW50YXRpb25cXGNvbnRyb2xsZXJzXFxjb21tZW50cy5jb250cm9sbGVyLnRzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7OztBQUFBLDJDQUFxRztBQUNyRyxpR0FBbUY7QUFDbkYsNkVBQXdFO0FBQ3hFLGtFQUE2RDtBQUM3RCxrRUFBNkQ7QUFDN0QsNEVBQXNFO0FBQ3RFLDhGQUF5RjtBQUN6RiwwRkFBcUY7QUFDckYsd0ZBQW1GO0FBQ25GLDhGQUF5RjtBQUN6Riw4RkFBeUY7QUFDekYsNkNBQXVFO0FBTWhFLElBQU0sa0JBQWtCLEdBQXhCLE1BQU0sa0JBQWtCO0lBRVY7SUFDQTtJQUNBO0lBQ0E7SUFDQTtJQUxuQixZQUNtQixvQkFBMEMsRUFDMUMsa0JBQXNDLEVBQ3RDLGlCQUFvQyxFQUNwQyxvQkFBMEMsRUFDMUMsb0JBQTBDO1FBSjFDLHlCQUFvQixHQUFwQixvQkFBb0IsQ0FBc0I7UUFDMUMsdUJBQWtCLEdBQWxCLGtCQUFrQixDQUFvQjtRQUN0QyxzQkFBaUIsR0FBakIsaUJBQWlCLENBQW1CO1FBQ3BDLHlCQUFvQixHQUFwQixvQkFBb0IsQ0FBc0I7UUFDMUMseUJBQW9CLEdBQXBCLG9CQUFvQixDQUFzQjtJQUMxRCxDQUFDO0lBSUUsQUFBTixLQUFLLENBQUMsYUFBYSxDQUNGLElBQXFCLEVBQ25CLE1BQWMsRUFDdkIsR0FBcUI7UUFFN0IsT0FBTyxJQUFJLENBQUMsb0JBQW9CLENBQUMsT0FBTyxDQUFDO1lBQ3ZDLE1BQU07WUFDTixRQUFRLEVBQUUsSUFBSSxDQUFDLEdBQUc7WUFDbEIsT0FBTyxFQUFFLEdBQUcsQ0FBQyxPQUFPO1lBQ3BCLGVBQWUsRUFBRSxHQUFHLENBQUMsZUFBZTtTQUNyQyxDQUFDLENBQUM7SUFDTCxDQUFDO0lBSUssQUFBTixLQUFLLENBQUMsV0FBVyxDQUNBLElBQXFCLEVBQ25CLE1BQWMsRUFDdEIsS0FBMkI7UUFF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QUZMLElBQUEsY0FBSyxFQUFDLHFCQUFxQixDQUFDO0lBQzVCLElBQUEsc0JBQVksRUFBQyxFQUFFLE9BQU8sRUFBRSxrQkFBa0IsRUFBRSxDQUFDO0lBRTNDLFdBQUEsSUFBQSxvQ0FBVyxHQUFFLENBQUE7SUFDYixXQUFBLElBQUEsY0FBSyxFQUFDLFdBQVcsQ0FBQyxDQUFBO0lBQ2xCLFdBQUEsSUFBQSxhQUFJLEdBQUUsQ0FBQTs7cURBQU0scUNBQWdCOzt1REFHOUI7QUFJSztJQUZMLElBQUEsZUFBTSxFQUFDLHFCQUFxQixDQUFDO0lBQzdCLElBQUEsc0JBQVksRUFBQyxFQUFFLE9BQU8sRUFBRSxrQkFBa0IsRUFBRSxDQUFDO0lBQ3pCLFdBQUEsSUFBQSxvQ0FBVyxHQUFFLENBQUE7SUFBeUIsV0FBQSxJQUFBLGNBQUssRUFBQyxXQUFXLENBQUMsQ0FBQTs7Ozt1REFFNUU7NkJBOUVVLGtCQUFrQjtJQUo5QixJQUFBLG1CQUFVLEdBQUU7SUFDWixJQUFBLGtCQUFTLEVBQUMsNkJBQVksQ0FBQztJQUN2QixJQUFBLGlCQUFPLEVBQUMsVUFBVSxDQUFDO0lBQ25CLElBQUEsdUJBQWEsR0FBRTtxQ0FHMkIsNkNBQW9CO1FBQ3RCLHlDQUFrQjtRQUNuQix1Q0FBaUI7UUFDZCw2Q0FBb0I7UUFDcEIsNkNBQW9CO0dBTmxELGtCQUFrQixDQStFOUIiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXGNvbW1lbnRzXFxwcmVzZW50YXRpb25cXGNvbnRyb2xsZXJzXFxjb21tZW50cy5jb250cm9sbGVyLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEJvZHksIENvbnRyb2xsZXIsIERlbGV0ZSwgR2V0LCBQYXJhbSwgUGF0Y2gsIFBvc3QsIFF1ZXJ5LCBVc2VHdWFyZHMgfSBmcm9tIFwiQG5lc3Rqcy9jb21tb25cIjtcbmltcG9ydCB7IEN1cnJlbnRVc2VyIH0gZnJvbSBcIi4uLy4uLy4uLy4uL2NvbW1vbi9kZWNvcmF0b3JzL2N1cnJlbnQtdXNlci5kZWNvcmF0b3JcIjtcbmltcG9ydCB7IEp3dEF1dGhHdWFyZCB9IGZyb20gXCIuLi8uLi8uLi8uLi9jb21tb24vZ3VhcmRzL2p3dC1hdXRoLmd1YXJkXCI7XG5pbXBvcnQgeyBDcmVhdGVDb21tZW50RHRvIH0gZnJvbSBcIi4uL2R0by9jcmVhdGUtY29tbWVudC5kdG9cIjtcbmltcG9ydCB7IFVwZGF0ZUNvbW1lbnREdG8gfSBmcm9tIFwiLi4vZHRvL3VwZGF0ZS1jb21tZW50LmR0b1wiO1xuaW1wb3J0IHsgTGlzdENvbW1lbnRzUXVlcnlEdG8gfSBmcm9tIFwiLi4vZHRvL2xpc3QtY29tbWVudHMtcXVlcnkuZHRvXCI7XG5pbXBvcnQgeyBDcmVhdGVDb21tZW50U2VydmljZSB9IGZyb20gXCIuLi8uLi9hcHBsaWNhdGlvbi9zZXJ2aWNlcy9jcmVhdGUtY29tbWVudC5zZXJ2aWNlXCI7XG5pbXBvcnQgeyBHZXRDb21tZW50c1NlcnZpY2UgfSBmcm9tIFwiLi4vLi4vYXBwbGljYXRpb24vc2VydmljZXMvZ2V0LWNvbW1lbnRzLnNlcnZpY2VcIjtcbmltcG9ydCB7IEdldFJlcGxpZXNTZXJ2aWNlIH0gZnJvbSBcIi4uLy4uL2FwcGxpY2F0aW9uL3NlcnZpY2VzL2dldC1yZXBsaWVzLnNlcnZpY2VcIjtcbmltcG9ydCB7IFVwZGF0ZUNvbW1lbnRTZXJ2aWNlIH0gZnJvbSBcIi4uLy4uL2FwcGxpY2F0aW9uL3NlcnZpY2VzL3VwZGF0ZS1jb21tZW50LnNlcnZpY2VcIjtcbmltcG9ydCB7IERlbGV0ZUNvbW1lbnRTZXJ2aWNlIH0gZnJvbSBcIi4uLy4uL2FwcGxpY2F0aW9uL3NlcnZpY2VzL2RlbGV0ZS1jb21tZW50LnNlcnZpY2VcIjtcbmltcG9ydCB7IEFwaUJlYXJlckF1dGgsIEFwaU9wZXJhdGlvbiwgQXBpVGFncyB9IGZyb20gXCJAbmVzdGpzL3N3YWdnZXJcIjtcblxuQENvbnRyb2xsZXIoKVxuQFVzZUd1YXJkcyhKd3RBdXRoR3VhcmQpXG5AQXBpVGFncyhcIkNvbW1lbnRzXCIpXG5AQXBpQmVhcmVyQXV0aCgpXG5leHBvcnQgY2xhc3MgQ29tbWVudHNDb250cm9sbGVyIHtcbiAgY29uc3RydWN0b3IoXG4gICAgcHJpdmF0ZSByZWFkb25seSBjcmVhdGVDb21tZW50U2VydmljZTogQ3JlYXRlQ29tbWVudFNlcnZpY2UsXG4gICAgcHJpdmF0ZSByZWFkb25seSBnZXRDb21tZW50c1NlcnZpY2U6IEdldENvbW1lbnRzU2VydmljZSxcbiAgICBwcml2YXRlIHJlYWRvbmx5IGdldFJlcGxpZXNTZXJ2aWNlOiBHZXRSZXBsaWVzU2VydmljZSxcbiAgICBwcml2YXRlIHJlYWRvbmx5IHVwZGF0ZUNvbW1lbnRTZXJ2aWNlOiBVcGRhdGVDb21tZW50U2VydmljZSxcbiAgICBwcml2YXRlIHJlYWRvbmx5IGRlbGV0ZUNvbW1lbnRTZXJ2aWNlOiBEZWxldGVDb21tZW50U2VydmljZSxcbiAgKSB7fVxuXG4gIEBQb3N0KFwicG9zdHMvOnBvc3RJZC9jb21tZW50c1wiKVxuICBAQXBpT3BlcmF0aW9uKHsgc3VtbWFyeTogXCJBZGQgYSBjb21tZW50IHRvIGEgcG9zdFwiIH0pXG4gIGFzeW5jIGNyZWF0ZUNvbW1lbnQoXG4gICAgQEN1cnJlbnRVc2VyKCkgdXNlcjogeyBzdWI6IHN0cmluZyB9LFxuICAgIEBQYXJhbShcInBvc3RJZFwiKSBwb3N0SWQ6IHN0cmluZyxcbiAgICBAQm9keSgpIGR0bzogQ3JlYXRlQ29tbWVudER0byxcbiAgKSB7XG4gICAgcmV0dXJuIHRoaXMuY3JlYXRlQ29tbWVudFNlcnZpY2UuZXhlY3V0ZSh7XG4gICAgICBwb3N0SWQsXG4gICAgICBhdXRob3JJZDogdXNlci5zdWIsXG4gICAgICBjb250ZW50OiBkdG8uY29udGVudCxcbiAgICAgIHBhcmVudENvbW1lbnRJZDogZHRvLnBhcmVudENvbW1lbnRJZCxcbiAgICB9KTtcbiAgfVxuXG4gIEBHZXQoXCJwb3N0cy86cG9zdElkL2NvbW1lbnRzXCIpXG4gIEBBcGlPcGVyYXRpb24oeyBzdW1tYXJ5OiBcIkxpc3QgcG9zdCBjb21tZW50c1wiIH0pXG4gIGFzeW5jIGdldENvbW1lbnRzKFxuICAgIEBDdXJyZW50VXNlcigpIHVzZXI6IHsgc3ViOiBzdHJpbmcgfSxcbiAgICBAUGFyYW0oXCJwb3N0SWRcIikgcG9zdElkOiBzdHJpbmcsXG4gICAgQFF1ZXJ5KCkgcXVlcnk6IExpc3RDb21tZW50c1F1ZXJ5RHRvLFxuICApIHtcbiAgICByZXR1cm4gdGhpcy5nZXRDb21tZW50c1NlcnZpY2UuZXhlY3V0ZSh1c2VyLnN1YiwgcG9zdElkLCB7XG4gICAgICBsaW1pdDogcXVlcnkubGltaXQgPz8gMTAsXG4gICAgICBjdXJzb3I6IHF1ZXJ5LmN1cnNvcixcbiAgICB9KTtcbiAgfVxuXG4gIEBQb3N0KFwiY29tbWVudHMvOmNvbW1lbnRJZC9yZXBsaWVzXCIpXG4gIEBBcGlPcGVyYXRpb24oeyBzdW1tYXJ5OiBcIlJlcGx5IHRvIGEgY29tbWVudFwiIH0pXG4gIGFzeW5jIGNyZWF0ZVJlcGx5KFxuICAgIEBDdXJyZW50VXNlcigpIHVzZXI6IHsgc3ViOiBzdHJpbmcgfSxcbiAgICBAUGFyYW0oXCJjb21tZW50SWRcIikgY29tbWVudElkOiBzdHJpbmcsXG4gICAgQEJvZHkoKSBkdG86IENyZWF0ZUNvbW1lbnREdG8sXG4gICkge1xuICAgIHJldHVybiB0aGlzLmNyZWF0ZUNvbW1lbnRTZXJ2aWNlLmV4ZWN1dGUoe1xuICAgICAgYXV0aG9ySWQ6IHVzZXIuc3ViLFxuICAgICAgY29udGVudDogZHRvLmNvbnRlbnQsXG4gICAgICBwYXJlbnRDb21tZW50SWQ6IGNvbW1lbnRJZCxcbiAgICB9KTtcbiAgfVxuXG4gIEBHZXQoXCJjb21tZW50cy86Y29tbWVudElkL3JlcGxpZXNcIilcbiAgQEFwaU9wZXJhdGlvbih7IHN1bW1hcnk6IFwiTGlzdCBjb21tZW50IHJlcGxpZXNcIiB9KVxuICBhc3luYyBnZXRSZXBsaWVzKFxuICAgIEBDdXJyZW50VXNlcigpIHVzZXI6IHsgc3ViOiBzdHJpbmcgfSxcbiAgICBAUGFyYW0oXCJjb21tZW50SWRcIikgY29tbWVudElkOiBzdHJpbmcsXG4gICAgQFF1ZXJ5KCkgcXVlcnk6IExpc3RDb21tZW50c1F1ZXJ5RHRvLFxuICApIHtcbiAgICByZXR1cm4gdGhpcy5nZXRSZXBsaWVzU2VydmljZS5leGVjdXRlKHVzZXIuc3ViLCBjb21tZW50SWQsIHtcbiAgICAgIGxpbWl0OiBxdWVyeS5saW1pdCA/PyAxMCxcbiAgICAgIGN1cnNvcjogcXVlcnkuY3Vyc29yLFxuICAgIH0pO1xuICB9XG5cbiAgQFBhdGNoKFwiY29tbWVudHMvOmNvbW1lbnRJZFwiKVxuICBAQXBpT3BlcmF0aW9uKHsgc3VtbWFyeTogXCJVcGRhdGUgYSBjb21tZW50XCIgfSlcbiAgYXN5bmMgdXBkYXRlQ29tbWVudChcbiAgICBAQ3VycmVudFVzZXIoKSB1c2VyOiB7IHN1Yjogc3RyaW5nIH0sXG4gICAgQFBhcmFtKFwiY29tbWVudElkXCIpIGNvbW1lbnRJZDogc3RyaW5nLFxuICAgIEBCb2R5KCkgZHRvOiBVcGRhdGVDb21tZW50RHRvLFxuICApIHtcbiAgICByZXR1cm4gdGhpcy51cGRhdGVDb21tZW50U2VydmljZS5leGVjdXRlKHVzZXIuc3ViLCBjb21tZW50SWQsIGR0byk7XG4gIH1cblxuICBARGVsZXRlKFwiY29tbWVudHMvOmNvbW1lbnRJZFwiKVxuICBAQXBpT3BlcmF0aW9uKHsgc3VtbWFyeTogXCJEZWxldGUgYSBjb21tZW50XCIgfSlcbiAgYXN5bmMgZGVsZXRlQ29tbWVudChAQ3VycmVudFVzZXIoKSB1c2VyOiB7IHN1Yjogc3RyaW5nIH0sIEBQYXJhbShcImNvbW1lbnRJZFwiKSBjb21tZW50SWQ6IHN0cmluZykge1xuICAgIHJldHVybiB0aGlzLmRlbGV0ZUNvbW1lbnRTZXJ2aWNlLmV4ZWN1dGUodXNlci5zdWIsIGNvbW1lbnRJZCk7XG4gIH1cbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

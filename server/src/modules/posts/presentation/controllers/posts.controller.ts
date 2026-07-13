@@ -8,7 +8,7 @@ import { GetPostService } from "../../application/services/get-post.service";
 import { UpdatePostService } from "../../application/services/update-post.service";
 import { DeletePostService } from "../../application/services/delete-post.service";
 import { presentPost } from "../presenters/post.presenter";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @Controller("posts")
 @UseGuards(JwtAuthGuard)
@@ -23,6 +23,7 @@ export class PostsController {
   ) {}
 
   @Post()
+  @ApiOperation({ summary: "Create a new post" })
   async create(@CurrentUser() user: { sub: string }, @Body() dto: CreatePostDto) {
     const result = await this.createPostService.execute({
       authorId: user.sub,
@@ -34,18 +35,21 @@ export class PostsController {
   }
 
   @Get(":postId")
+  @ApiOperation({ summary: "Get a post by id" })
   async get(@CurrentUser() user: { sub: string }, @Param("postId") postId: string) {
     const result = await this.getPostService.execute(user.sub, postId);
     return { post: presentPost(result.post) };
   }
 
   @Patch(":postId")
+  @ApiOperation({ summary: "Update a post" })
   async update(@CurrentUser() user: { sub: string }, @Param("postId") postId: string, @Body() dto: UpdatePostDto) {
     const result = await this.updatePostService.execute(user.sub, postId, dto);
     return { post: presentPost(result.post) };
   }
 
   @Delete(":postId")
+  @ApiOperation({ summary: "Delete a post" })
   async delete(@CurrentUser() user: { sub: string }, @Param("postId") postId: string) {
     return this.deletePostService.execute(user.sub, postId);
   }

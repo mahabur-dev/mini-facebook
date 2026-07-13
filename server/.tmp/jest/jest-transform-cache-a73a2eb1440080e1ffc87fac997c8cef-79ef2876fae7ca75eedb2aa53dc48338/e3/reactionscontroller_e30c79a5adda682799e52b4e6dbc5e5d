@@ -1,0 +1,137 @@
+0ad1542a87bf2da46a32145a4b34607a
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ReactionsController = void 0;
+const common_1 = require("@nestjs/common");
+const current_user_decorator_1 = require("../../../../common/decorators/current-user.decorator");
+const jwt_auth_guard_1 = require("../../../../common/guards/jwt-auth.guard");
+const post_like_service_1 = require("../../application/services/post-like.service");
+const post_unlike_service_1 = require("../../application/services/post-unlike.service");
+const get_post_likers_service_1 = require("../../application/services/get-post-likers.service");
+const comment_like_service_1 = require("../../application/services/comment-like.service");
+const comment_unlike_service_1 = require("../../application/services/comment-unlike.service");
+const get_comment_likers_service_1 = require("../../application/services/get-comment-likers.service");
+const list_likers_query_dto_1 = require("../dto/list-likers-query.dto");
+const swagger_1 = require("@nestjs/swagger");
+let ReactionsController = class ReactionsController {
+    postLikeService;
+    postUnlikeService;
+    getPostLikersService;
+    commentLikeService;
+    commentUnlikeService;
+    getCommentLikersService;
+    constructor(postLikeService, postUnlikeService, getPostLikersService, commentLikeService, commentUnlikeService, getCommentLikersService) {
+        this.postLikeService = postLikeService;
+        this.postUnlikeService = postUnlikeService;
+        this.getPostLikersService = getPostLikersService;
+        this.commentLikeService = commentLikeService;
+        this.commentUnlikeService = commentUnlikeService;
+        this.getCommentLikersService = getCommentLikersService;
+    }
+    likePost(user, postId) {
+        return this.postLikeService.execute(user.sub, postId);
+    }
+    unlikePost(user, postId) {
+        return this.postUnlikeService.execute(user.sub, postId);
+    }
+    getPostLikers(user, postId, query) {
+        return this.getPostLikersService.execute(user.sub, postId, {
+            limit: query.limit ?? 20,
+            cursor: query.cursor,
+        });
+    }
+    likeComment(user, commentId) {
+        return this.commentLikeService.execute(user.sub, commentId);
+    }
+    unlikeComment(user, commentId) {
+        return this.commentUnlikeService.execute(user.sub, commentId);
+    }
+    getCommentLikers(user, commentId, query) {
+        return this.getCommentLikersService.execute(user.sub, commentId, {
+            limit: query.limit ?? 20,
+            cursor: query.cursor,
+        });
+    }
+};
+exports.ReactionsController = ReactionsController;
+__decorate([
+    (0, common_1.Put)("posts/:postId/like"),
+    (0, swagger_1.ApiOperation)({ summary: "Like a post" }),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)("postId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], ReactionsController.prototype, "likePost", null);
+__decorate([
+    (0, common_1.Delete)("posts/:postId/like"),
+    (0, swagger_1.ApiOperation)({ summary: "Unlike a post" }),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)("postId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], ReactionsController.prototype, "unlikePost", null);
+__decorate([
+    (0, common_1.Get)("posts/:postId/likes"),
+    (0, swagger_1.ApiOperation)({ summary: "List post likers" }),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)("postId")),
+    __param(2, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, list_likers_query_dto_1.ListLikersQueryDto]),
+    __metadata("design:returntype", void 0)
+], ReactionsController.prototype, "getPostLikers", null);
+__decorate([
+    (0, common_1.Put)("comments/:commentId/like"),
+    (0, swagger_1.ApiOperation)({ summary: "Like a comment" }),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)("commentId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], ReactionsController.prototype, "likeComment", null);
+__decorate([
+    (0, common_1.Delete)("comments/:commentId/like"),
+    (0, swagger_1.ApiOperation)({ summary: "Unlike a comment" }),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)("commentId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], ReactionsController.prototype, "unlikeComment", null);
+__decorate([
+    (0, common_1.Get)("comments/:commentId/likes"),
+    (0, swagger_1.ApiOperation)({ summary: "List comment likers" }),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)("commentId")),
+    __param(2, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, list_likers_query_dto_1.ListLikersQueryDto]),
+    __metadata("design:returntype", void 0)
+], ReactionsController.prototype, "getCommentLikers", null);
+exports.ReactionsController = ReactionsController = __decorate([
+    (0, common_1.Controller)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiTags)("Reactions"),
+    (0, swagger_1.ApiBearerAuth)(),
+    __metadata("design:paramtypes", [post_like_service_1.PostLikeService,
+        post_unlike_service_1.PostUnlikeService,
+        get_post_likers_service_1.GetPostLikersService,
+        comment_like_service_1.CommentLikeService,
+        comment_unlike_service_1.CommentUnlikeService,
+        get_comment_likers_service_1.GetCommentLikersService])
+], ReactionsController);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXHJlYWN0aW9uc1xccHJlc2VudGF0aW9uXFxjb250cm9sbGVyc1xccmVhY3Rpb25zLmNvbnRyb2xsZXIudHMiLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7O0FBQUEsMkNBQXVGO0FBQ3ZGLGlHQUFtRjtBQUNuRiw2RUFBd0U7QUFDeEUsb0ZBQStFO0FBQy9FLHdGQUFtRjtBQUNuRixnR0FBMEY7QUFDMUYsMEZBQXFGO0FBQ3JGLDhGQUF5RjtBQUN6RixzR0FBZ0c7QUFDaEcsd0VBQWtFO0FBQ2xFLDZDQUF1RTtBQU1oRSxJQUFNLG1CQUFtQixHQUF6QixNQUFNLG1CQUFtQjtJQUVYO0lBQ0E7SUFDQTtJQUNBO0lBQ0E7SUFDQTtJQU5uQixZQUNtQixlQUFnQyxFQUNoQyxpQkFBb0MsRUFDcEMsb0JBQTBDLEVBQzFDLGtCQUFzQyxFQUN0QyxvQkFBMEMsRUFDMUMsdUJBQWdEO1FBTGhELG9CQUFlLEdBQWYsZUFBZSxDQUFpQjtRQUNoQyxzQkFBaUIsR0FBakIsaUJBQWlCLENBQW1CO1FBQ3BDLHlCQUFvQixHQUFwQixvQkFBb0IsQ0FBc0I7UUFDMUMsdUJBQWtCLEdBQWxCLGtCQUFrQixDQUFvQjtRQUN0Qyx5QkFBb0IsR0FBcEIsb0JBQW9CLENBQXNCO1FBQzFDLDRCQUF1QixHQUF2Qix1QkFBdUIsQ0FBeUI7SUFDaEUsQ0FBQztJQUlKLFFBQVEsQ0FBZ0IsSUFBcUIsRUFBbUIsTUFBYztRQUM1RSxPQUFPLElBQUksQ0FBQyxlQUFlLENBQUMsT0FBTyxDQUFDLElBQUksQ0FBQyxHQUFHLEVBQUUsTUFBTSxDQUFDLENBQUM7SUFDeEQsQ0FBQztJQUlELFVBQVUsQ0FBZ0IsSUFBcUIsRUFBbUIsTUFBYztRQUM5RSxPQUFPLElBQUksQ0FBQyxpQkFBaUIsQ0FBQyxPQUFPLENBQUMsSUFBSSxDQUFDLEdBQUcsRUFBRSxNQUFNLENBQUMsQ0FBQztJQUMxRCxDQUFDO0lBSUQsYUFBYSxDQUFnQixJ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a0I7OzJEQU1uQzs4QkF0RFUsbUJBQW1CO0lBSi9CLElBQUEsbUJBQVUsR0FBRTtJQUNaLElBQUEsa0JBQVMsRUFBQyw2QkFBWSxDQUFDO0lBQ3ZCLElBQUEsaUJBQU8sRUFBQyxXQUFXLENBQUM7SUFDcEIsSUFBQSx1QkFBYSxHQUFFO3FDQUdzQixtQ0FBZTtRQUNiLHVDQUFpQjtRQUNkLDhDQUFvQjtRQUN0Qix5Q0FBa0I7UUFDaEIsNkNBQW9CO1FBQ2pCLG9EQUF1QjtHQVB4RCxtQkFBbUIsQ0F1RC9CIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkQ6XFxQcm9qZWN0XzFcXG1pbmktZmFjZWJvb2tcXHNlcnZlclxcc3JjXFxtb2R1bGVzXFxyZWFjdGlvbnNcXHByZXNlbnRhdGlvblxcY29udHJvbGxlcnNcXHJlYWN0aW9ucy5jb250cm9sbGVyLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IENvbnRyb2xsZXIsIERlbGV0ZSwgR2V0LCBQYXJhbSwgUHV0LCBRdWVyeSwgVXNlR3VhcmRzIH0gZnJvbSBcIkBuZXN0anMvY29tbW9uXCI7XG5pbXBvcnQgeyBDdXJyZW50VXNlciB9IGZyb20gXCIuLi8uLi8uLi8uLi9jb21tb24vZGVjb3JhdG9ycy9jdXJyZW50LXVzZXIuZGVjb3JhdG9yXCI7XG5pbXBvcnQgeyBKd3RBdXRoR3VhcmQgfSBmcm9tIFwiLi4vLi4vLi4vLi4vY29tbW9uL2d1YXJkcy9qd3QtYXV0aC5ndWFyZFwiO1xuaW1wb3J0IHsgUG9zdExpa2VTZXJ2aWNlIH0gZnJvbSBcIi4uLy4uL2FwcGxpY2F0aW9uL3NlcnZpY2VzL3Bvc3QtbGlrZS5zZXJ2aWNlXCI7XG5pbXBvcnQgeyBQb3N0VW5saWtlU2VydmljZSB9IGZyb20gXCIuLi8uLi9hcHBsaWNhdGlvbi9zZXJ2aWNlcy9wb3N0LXVubGlrZS5zZXJ2aWNlXCI7XG5pbXBvcnQgeyBHZXRQb3N0TGlrZXJzU2VydmljZSB9IGZyb20gXCIuLi8uLi9hcHBsaWNhdGlvbi9zZXJ2aWNlcy9nZXQtcG9zdC1saWtlcnMuc2VydmljZVwiO1xuaW1wb3J0IHsgQ29tbWVudExpa2VTZXJ2aWNlIH0gZnJvbSBcIi4uLy4uL2FwcGxpY2F0aW9uL3NlcnZpY2VzL2NvbW1lbnQtbGlrZS5zZXJ2aWNlXCI7XG5pbXBvcnQgeyBDb21tZW50VW5saWtlU2VydmljZSB9IGZyb20gXCIuLi8uLi9hcHBsaWNhdGlvbi9zZXJ2aWNlcy9jb21tZW50LXVubGlrZS5zZXJ2aWNlXCI7XG5pbXBvcnQgeyBHZXRDb21tZW50TGlrZXJzU2VydmljZSB9IGZyb20gXCIuLi8uLi9hcHBsaWNhdGlvbi9zZXJ2aWNlcy9nZXQtY29tbWVudC1saWtlcnMuc2VydmljZVwiO1xuaW1wb3J0IHsgTGlzdExpa2Vyc1F1ZXJ5RHRvIH0gZnJvbSBcIi4uL2R0by9saXN0LWxpa2Vycy1xdWVyeS5kdG9cIjtcbmltcG9ydCB7IEFwaUJlYXJlckF1dGgsIEFwaU9wZXJhdGlvbiwgQXBpVGFncyB9IGZyb20gXCJAbmVzdGpzL3N3YWdnZXJcIjtcblxuQENvbnRyb2xsZXIoKVxuQFVzZUd1YXJkcyhKd3RBdXRoR3VhcmQpXG5AQXBpVGFncyhcIlJlYWN0aW9uc1wiKVxuQEFwaUJlYXJlckF1dGgoKVxuZXhwb3J0IGNsYXNzIFJlYWN0aW9uc0NvbnRyb2xsZXIge1xuICBjb25zdHJ1Y3RvcihcbiAgICBwcml2YXRlIHJlYWRvbmx5IHBvc3RMaWtlU2VydmljZTogUG9zdExpa2VTZXJ2aWNlLFxuICAgIHByaXZhdGUgcmVhZG9ubHkgcG9zdFVubGlrZVNlcnZpY2U6IFBvc3RVbmxpa2VTZXJ2aWNlLFxuICAgIHByaXZhdGUgcmVhZG9ubHkgZ2V0UG9zdExpa2Vyc1NlcnZpY2U6IEdldFBvc3RMaWtlcnNTZXJ2aWNlLFxuICAgIHByaXZhdGUgcmVhZG9ubHkgY29tbWVudExpa2VTZXJ2aWNlOiBDb21tZW50TGlrZVNlcnZpY2UsXG4gICAgcHJpdmF0ZSByZWFkb25seSBjb21tZW50VW5saWtlU2VydmljZTogQ29tbWVudFVubGlrZVNlcnZpY2UsXG4gICAgcHJpdmF0ZSByZWFkb25seSBnZXRDb21tZW50TGlrZXJzU2VydmljZTogR2V0Q29tbWVudExpa2Vyc1NlcnZpY2UsXG4gICkge31cblxuICBAUHV0KFwicG9zdHMvOnBvc3RJZC9saWtlXCIpXG4gIEBBcGlPcGVyYXRpb24oeyBzdW1tYXJ5OiBcIkxpa2UgYSBwb3N0XCIgfSlcbiAgbGlrZVBvc3QoQEN1cnJlbnRVc2VyKCkgdXNlcjogeyBzdWI6IHN0cmluZyB9LCBAUGFyYW0oXCJwb3N0SWRcIikgcG9zdElkOiBzdHJpbmcpIHtcbiAgICByZXR1cm4gdGhpcy5wb3N0TGlrZVNlcnZpY2UuZXhlY3V0ZSh1c2VyLnN1YiwgcG9zdElkKTtcbiAgfVxuXG4gIEBEZWxldGUoXCJwb3N0cy86cG9zdElkL2xpa2VcIilcbiAgQEFwaU9wZXJhdGlvbih7IHN1bW1hcnk6IFwiVW5saWtlIGEgcG9zdFwiIH0pXG4gIHVubGlrZVBvc3QoQEN1cnJlbnRVc2VyKCkgdXNlcjogeyBzdWI6IHN0cmluZyB9LCBAUGFyYW0oXCJwb3N0SWRcIikgcG9zdElkOiBzdHJpbmcpIHtcbiAgICByZXR1cm4gdGhpcy5wb3N0VW5saWtlU2VydmljZS5leGVjdXRlKHVzZXIuc3ViLCBwb3N0SWQpO1xuICB9XG5cbiAgQEdldChcInBvc3RzLzpwb3N0SWQvbGlrZXNcIilcbiAgQEFwaU9wZXJhdGlvbih7IHN1bW1hcnk6IFwiTGlzdCBwb3N0IGxpa2Vyc1wiIH0pXG4gIGdldFBvc3RMaWtlcnMoQEN1cnJlbnRVc2VyKCkgdXNlcjogeyBzdWI6IHN0cmluZyB9LCBAUGFyYW0oXCJwb3N0SWRcIikgcG9zdElkOiBzdHJpbmcsIEBRdWVyeSgpIHF1ZXJ5OiBMaXN0TGlrZXJzUXVlcnlEdG8pIHtcbiAgICByZXR1cm4gdGhpcy5nZXRQb3N0TGlrZXJzU2VydmljZS5leGVjdXRlKHVzZXIuc3ViLCBwb3N0SWQsIHtcbiAgICAgIGxpbWl0OiBxdWVyeS5saW1pdCA/PyAyMCxcbiAgICAgIGN1cnNvcjogcXVlcnkuY3Vyc29yLFxuICAgIH0pO1xuICB9XG5cbiAgQFB1dChcImNvbW1lbnRzLzpjb21tZW50SWQvbGlrZVwiKVxuICBAQXBpT3BlcmF0aW9uKHsgc3VtbWFyeTogXCJMaWtlIGEgY29tbWVudFwiIH0pXG4gIGxpa2VDb21tZW50KEBDdXJyZW50VXNlcigpIHVzZXI6IHsgc3ViOiBzdHJpbmcgfSwgQFBhcmFtKFwiY29tbWVudElkXCIpIGNvbW1lbnRJZDogc3RyaW5nKSB7XG4gICAgcmV0dXJuIHRoaXMuY29tbWVudExpa2VTZXJ2aWNlLmV4ZWN1dGUodXNlci5zdWIsIGNvbW1lbnRJZCk7XG4gIH1cblxuICBARGVsZXRlKFwiY29tbWVudHMvOmNvbW1lbnRJZC9saWtlXCIpXG4gIEBBcGlPcGVyYXRpb24oeyBzdW1tYXJ5OiBcIlVubGlrZSBhIGNvbW1lbnRcIiB9KVxuICB1bmxpa2VDb21tZW50KEBDdXJyZW50VXNlcigpIHVzZXI6IHsgc3ViOiBzdHJpbmcgfSwgQFBhcmFtKFwiY29tbWVudElkXCIpIGNvbW1lbnRJZDogc3RyaW5nKSB7XG4gICAgcmV0dXJuIHRoaXMuY29tbWVudFVubGlrZVNlcnZpY2UuZXhlY3V0ZSh1c2VyLnN1YiwgY29tbWVudElkKTtcbiAgfVxuXG4gIEBHZXQoXCJjb21tZW50cy86Y29tbWVudElkL2xpa2VzXCIpXG4gIEBBcGlPcGVyYXRpb24oeyBzdW1tYXJ5OiBcIkxpc3QgY29tbWVudCBsaWtlcnNcIiB9KVxuICBnZXRDb21tZW50TGlrZXJzKFxuICAgIEBDdXJyZW50VXNlcigpIHVzZXI6IHsgc3ViOiBzdHJpbmcgfSxcbiAgICBAUGFyYW0oXCJjb21tZW50SWRcIikgY29tbWVudElkOiBzdHJpbmcsXG4gICAgQFF1ZXJ5KCkgcXVlcnk6IExpc3RMaWtlcnNRdWVyeUR0byxcbiAgKSB7XG4gICAgcmV0dXJuIHRoaXMuZ2V0Q29tbWVudExpa2Vyc1NlcnZpY2UuZXhlY3V0ZSh1c2VyLnN1YiwgY29tbWVudElkLCB7XG4gICAgICBsaW1pdDogcXVlcnkubGltaXQgPz8gMjAsXG4gICAgICBjdXJzb3I6IHF1ZXJ5LmN1cnNvcixcbiAgICB9KTtcbiAgfVxufVxuIl0sInZlcnNpb24iOjN9

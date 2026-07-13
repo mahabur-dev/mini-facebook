@@ -1,4 +1,8 @@
+import { apiClient } from "@/lib/api/api-client";
+
 export async function logoutApi() {
-  await new Promise((resolve) => setTimeout(resolve, 60));
-  return { success: true };
+  return apiClient<{ success: boolean }>("/auth/logout", {
+    method: "DELETE",
+    body: JSON.stringify({}),
+  });
 }

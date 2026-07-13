@@ -1,0 +1,36 @@
+bcd3bb9e8591e11af51ea34f6d2e3912
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GetFeedDto = void 0;
+const swagger_1 = require("@nestjs/swagger");
+const class_transformer_1 = require("class-transformer");
+const class_validator_1 = require("class-validator");
+class GetFeedDto {
+    cursor;
+    limit = 10;
+}
+exports.GetFeedDto = GetFeedDto;
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: "eyJjcmVhdGVkQXQiOiIyMDI2LTA3LTEyVDEwOjAwOjAwLjAwMFoiLCJpZCI6InBvc3RfMTAifQ", description: "Opaque cursor token" }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], GetFeedDto.prototype, "cursor", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 10, minimum: 1, maximum: 20, default: 10 }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Transform)(({ value }) => Number(value)),
+    (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Max)(20),
+    __metadata("design:type", Number)
+], GetFeedDto.prototype, "limit", void 0);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXGZlZWRcXHByZXNlbnRhdGlvblxcZHRvXFxnZXQtZmVlZC5kdG8udHMiLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7O0FBQUEsNkNBQXNEO0FBQ3RELHlEQUE4QztBQUM5QyxxREFBaUU7QUFFakUsTUFBYSxVQUFVO0lBSXJCLE1BQU0sQ0FBVTtJQU9oQixLQUFLLEdBQVksRUFBRSxDQUFDO0NBQ3JCO0FBWkQsZ0NBWUM7QUFSQztJQUhDLElBQUEsNkJBQW1CLEVBQUMsRUFBRSxPQUFPLEVBQUUsNEVBQTRFLEVBQUUsV0FBVyxFQUFFLHFCQUFxQixFQUFFLENBQUM7SUFDbEosSUFBQSw0QkFBVSxHQUFFO0lBQ1osSUFBQSwwQkFBUSxHQUFFOzswQ0FDSztBQU9oQjtJQUxDLElBQUEsNkJBQW1CLEVBQUMsRUFBRSxPQUFPLEVBQUUsRUFBRSxFQUFFLE9BQU8sRUFBRSxDQUFDLEVBQUUsT0FBTyxFQUFFLEVBQUUsRUFBRSxPQUFPLEVBQUUsRUFBRSxFQUFFLENBQUM7SUFDMUUsSUFBQSw0QkFBVSxHQUFFO0lBQ1osSUFBQSw2QkFBUyxFQUFDLENBQUMsRUFBRSxLQUFLLEVBQUUsRUFBRSxFQUFFLENBQUMsTUFBTSxDQUFDLEtBQUssQ0FBQyxDQUFDO0lBQ3ZDLElBQUEscUJBQUcsRUFBQyxDQUFDLENBQUM7SUFDTixJQUFBLHFCQUFHLEVBQUMsRUFBRSxDQUFDOzt5Q0FDWSIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJEOlxcUHJvamVjdF8xXFxtaW5pLWZhY2Vib29rXFxzZXJ2ZXJcXHNyY1xcbW9kdWxlc1xcZmVlZFxccHJlc2VudGF0aW9uXFxkdG9cXGdldC1mZWVkLmR0by50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBBcGlQcm9wZXJ0eU9wdGlvbmFsIH0gZnJvbSBcIkBuZXN0anMvc3dhZ2dlclwiO1xuaW1wb3J0IHsgVHJhbnNmb3JtIH0gZnJvbSBcImNsYXNzLXRyYW5zZm9ybWVyXCI7XG5pbXBvcnQgeyBJc09wdGlvbmFsLCBJc1N0cmluZywgTWF4LCBNaW4gfSBmcm9tIFwiY2xhc3MtdmFsaWRhdG9yXCI7XG5cbmV4cG9ydCBjbGFzcyBHZXRGZWVkRHRvIHtcbiAgQEFwaVByb3BlcnR5T3B0aW9uYWwoeyBleGFtcGxlOiBcImV5SmpjbVZoZEdWa1FYUWlPaUl5TURJMkxUQTNMVEV5VkRFd09qQXdPakF3TGpBd01Gb2lMQ0pwWkNJNkluQnZjM1JmTVRBaWZRXCIsIGRlc2NyaXB0aW9uOiBcIk9wYXF1ZSBjdXJzb3IgdG9rZW5cIiB9KVxuICBASXNPcHRpb25hbCgpXG4gIEBJc1N0cmluZygpXG4gIGN1cnNvcj86IHN0cmluZztcblxuICBAQXBpUHJvcGVydHlPcHRpb25hbCh7IGV4YW1wbGU6IDEwLCBtaW5pbXVtOiAxLCBtYXhpbXVtOiAyMCwgZGVmYXVsdDogMTAgfSlcbiAgQElzT3B0aW9uYWwoKVxuICBAVHJhbnNmb3JtKCh7IHZhbHVlIH0pID0+IE51bWJlcih2YWx1ZSkpXG4gIEBNaW4oMSlcbiAgQE1heCgyMClcbiAgbGltaXQ/OiBudW1iZXIgPSAxMDtcbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

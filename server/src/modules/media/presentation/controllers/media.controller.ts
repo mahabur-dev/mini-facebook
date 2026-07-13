@@ -6,7 +6,7 @@ import { UploadMediaService } from "../../application/services/upload-media.serv
 import { presentMedia } from "../presenters/media.presenter";
 import { ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from "@nestjs/common";
 import { UploadableImageFile } from "../../../../infrastructure/storage/storage.service";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @Controller("media")
 @ApiTags("Media")
@@ -15,6 +15,20 @@ export class MediaController {
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    schema: {
+      type: "object",
+      properties: {
+        file: {
+          type: "string",
+          format: "binary",
+        },
+      },
+      required: ["file"],
+    },
+  })
+  @ApiOperation({ summary: "Upload an image for later attachment" })
   @Post("images")
   @UseInterceptors(FileInterceptor("file"))
   async uploadImage(

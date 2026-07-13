@@ -1,0 +1,36 @@
+36e8ee6aa42307339cf35dca6cb7dc81
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ListCommentsQueryDto = void 0;
+const swagger_1 = require("@nestjs/swagger");
+const class_transformer_1 = require("class-transformer");
+const class_validator_1 = require("class-validator");
+class ListCommentsQueryDto {
+    cursor;
+    limit = 10;
+}
+exports.ListCommentsQueryDto = ListCommentsQueryDto;
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: "eyJjcmVhdGVkQXQiOiIyMDI2LTA3LTEyVDA5OjAwOjAwLjAwMFoiLCJpZCI6ImNvbW1lbnRfMTAifQ", description: "Opaque cursor token" }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ListCommentsQueryDto.prototype, "cursor", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 10, minimum: 1, maximum: 30, default: 10 }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Transform)(({ value }) => Number(value)),
+    (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Max)(30),
+    __metadata("design:type", Number)
+], ListCommentsQueryDto.prototype, "limit", void 0);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXGNvbW1lbnRzXFxwcmVzZW50YXRpb25cXGR0b1xcbGlzdC1jb21tZW50cy1xdWVyeS5kdG8udHMiLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7O0FBQUEsNkNBQXNEO0FBQ3RELHlEQUE4QztBQUM5QyxxREFBaUU7QUFFakUsTUFBYSxvQkFBb0I7SUFJL0IsTUFBTSxDQUFVO0lBT2hCLEtBQUssR0FBWSxFQUFFLENBQUM7Q0FDckI7QUFaRCxvREFZQztBQVJDO0lBSEMsSUFBQSw2QkFBbUIsRUFBQyxFQUFFLE9BQU8sRUFBRSxnRkFBZ0YsRUFBRSxXQUFXLEVBQUUscUJBQXFCLEVBQUUsQ0FBQztJQUN0SixJQUFBLDRCQUFVLEdBQUU7SUFDWixJQUFBLDBCQUFRLEdBQUU7O29EQUNLO0FBT2hCO0lBTEMsSUFBQSw2QkFBbUIsRUFBQyxFQUFFLE9BQU8sRUFBRSxFQUFFLEVBQUUsT0FBTyxFQUFFLENBQUMsRUFBRSxPQUFPLEVBQUUsRUFBRSxFQUFFLE9BQU8sRUFBRSxFQUFFLEVBQUUsQ0FBQztJQUMxRSxJQUFBLDRCQUFVLEdBQUU7SUFDWixJQUFBLDZCQUFTLEVBQUMsQ0FBQyxFQUFFLEtBQUssRUFBRSxFQUFFLEVBQUUsQ0FBQyxNQUFNLENBQUMsS0FBSyxDQUFDLENBQUM7SUFDdkMsSUFBQSxxQkFBRyxFQUFDLENBQUMsQ0FBQztJQUNOLElBQUEscUJBQUcsRUFBQyxFQUFFLENBQUM7O21EQUNZIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkQ6XFxQcm9qZWN0XzFcXG1pbmktZmFjZWJvb2tcXHNlcnZlclxcc3JjXFxtb2R1bGVzXFxjb21tZW50c1xccHJlc2VudGF0aW9uXFxkdG9cXGxpc3QtY29tbWVudHMtcXVlcnkuZHRvLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEFwaVByb3BlcnR5T3B0aW9uYWwgfSBmcm9tIFwiQG5lc3Rqcy9zd2FnZ2VyXCI7XG5pbXBvcnQgeyBUcmFuc2Zvcm0gfSBmcm9tIFwiY2xhc3MtdHJhbnNmb3JtZXJcIjtcbmltcG9ydCB7IElzT3B0aW9uYWwsIElzU3RyaW5nLCBNYXgsIE1pbiB9IGZyb20gXCJjbGFzcy12YWxpZGF0b3JcIjtcblxuZXhwb3J0IGNsYXNzIExpc3RDb21tZW50c1F1ZXJ5RHRvIHtcbiAgQEFwaVByb3BlcnR5T3B0aW9uYWwoeyBleGFtcGxlOiBcImV5SmpjbVZoZEdWa1FYUWlPaUl5TURJMkxUQTNMVEV5VkRBNU9qQXdPakF3TGpBd01Gb2lMQ0pwWkNJNkltTnZiVzFsYm5SZk1UQWlmUVwiLCBkZXNjcmlwdGlvbjogXCJPcGFxdWUgY3Vyc29yIHRva2VuXCIgfSlcbiAgQElzT3B0aW9uYWwoKVxuICBASXNTdHJpbmcoKVxuICBjdXJzb3I/OiBzdHJpbmc7XG5cbiAgQEFwaVByb3BlcnR5T3B0aW9uYWwoeyBleGFtcGxlOiAxMCwgbWluaW11bTogMSwgbWF4aW11bTogMzAsIGRlZmF1bHQ6IDEwIH0pXG4gIEBJc09wdGlvbmFsKClcbiAgQFRyYW5zZm9ybSgoeyB2YWx1ZSB9KSA9PiBOdW1iZXIodmFsdWUpKVxuICBATWluKDEpXG4gIEBNYXgoMzApXG4gIGxpbWl0PzogbnVtYmVyID0gMTA7XG59XG4iXSwidmVyc2lvbiI6M30=
