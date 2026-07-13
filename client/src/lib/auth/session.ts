@@ -5,6 +5,8 @@ type StoredUser = {
   firstName: string;
   lastName: string;
   email: string;
+  profileImageUrl?: string | null;
+  profileImageStorageKey?: string | null;
   status?: string;
   lastLoginAt?: string | null;
   createdAt?: string;
@@ -29,6 +31,15 @@ export function setClientSession(accessToken: string, user: StoredUser) {
   }
 
   window.localStorage.setItem(storageKeys.accessToken, accessToken);
+  window.localStorage.setItem(storageKeys.currentUser, JSON.stringify(user));
+  setCookie(SESSION_COOKIE, user.id, SESSION_MAX_AGE);
+}
+
+export function updateStoredUser(user: StoredUser) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
   window.localStorage.setItem(storageKeys.currentUser, JSON.stringify(user));
   setCookie(SESSION_COOKIE, user.id, SESSION_MAX_AGE);
 }

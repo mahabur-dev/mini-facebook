@@ -6,6 +6,8 @@ export type UserEntity = {
   lastName: string;
   email: string;
   passwordHash: string;
+  profileImageUrl: string | null;
+  profileImageStorageKey: string | null;
   status: UserStatus;
   lastLoginAt: Date | null;
   createdAt: Date;

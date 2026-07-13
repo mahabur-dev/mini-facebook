@@ -16,6 +16,8 @@ function mapPost(post: any): PostEntity | null {
           firstName: post.author.firstName,
           lastName: post.author.lastName,
           email: post.author.email,
+          profileImageUrl: post.author.profileImageUrl,
+          profileImageStorageKey: post.author.profileImageStorageKey,
           status: post.author.status,
           lastLoginAt: post.author.lastLoginAt,
           createdAt: post.author.createdAt,

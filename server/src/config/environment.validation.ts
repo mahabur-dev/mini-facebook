@@ -5,6 +5,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(4000),
   APP_NAME: z.string().min(1).default("Mini Facebook API"),
   APP_URL: z.string().url().default("http://localhost:4000"),
+  CLIENT_ORIGINS: z.string().optional(),
   DATABASE_URL: z.string().min(1),
   REDIS_URL: z.string().min(1).optional(),
   JWT_ACCESS_SECRET: z.string().min(16),

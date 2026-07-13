@@ -2,12 +2,25 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import { routes } from "@/constants/routes";
+import { useAuthSession } from "@/features/auth/hooks/use-auth-session";
+import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
 import { useModalStore } from "@/store/modal.store";
 import { sidebarSuggestions } from "../data/feed-fixtures";
 
 export function FeedHeader() {
-  const { notificationsOpen, toggleNotifications } = useModalStore();
+  const { notificationsOpen, profileMenuOpen, toggleNotifications, toggleProfileMenu, closeAll } = useModalStore();
+  const { logout } = useAuthSession();
+  const currentUser = useCurrentUser();
   const [notificationActionsOpen, setNotificationActionsOpen] = useState(false);
+  const user = currentUser.data?.user;
+  const userName = user ? `${user.firstName} ${user.lastName}`.trim() : "Profile";
+  const profileImage = user?.profileImageUrl ?? "/assets/images/profile.png";
+
+  const handleLogout = async () => {
+    closeAll();
+    await logout();
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light _header_nav _padd_t10">
@@ -119,15 +132,42 @@ export function FeedHeader() {
           </ul>
           <div className="_header_nav_profile">
             <div className="_header_nav_profile_image">
-              <img src="/assets/images/profile.png" alt="Image" className="_nav_profile_img" />
+              <img src={profileImage} alt="Image" className="_nav_profile_img" />
             </div>
             <div className="_header_nav_dropdown">
-              <p className="_header_nav_para">Dylan Field</p>
-              <button id="_profile_drop_show_btn" className="_header_nav_dropdown_btn _dropdown_toggle" type="button">
+              <a href={routes.profile} className="_header_nav_para">
+                {userName}
+              </a>
+              <button
+                id="_profile_drop_show_btn"
+                className="_header_nav_dropdown_btn _dropdown_toggle"
+                type="button"
+                aria-expanded={profileMenuOpen}
+                aria-label="Open profile menu"
+                onClick={toggleProfileMenu}
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" fill="none" viewBox="0 0 10 6">
                   <path fill="#112032" d="M5 5l.354.354L5 5.707l-.354-.353L5 5zm4.354-3.646l-4 4-.708-.708 4-4 .708.708zm-4.708 4l-4-4 .708-.708 4 4-.708.708z" />
                 </svg>
               </button>
+            </div>
+            <div className={cn("_nav_profile_dropdown", profileMenuOpen && "show")}>
+              <a href={routes.profile} className="_nav_profile_dropdown_info _feed_header_profile_link" onClick={closeAll}>
+                <div className="_nav_profile_dropdown_image">
+                  <img src={profileImage} alt="Image" className="_nav_drop_img" />
+                </div>
+                <div className="_nav_drop_info">
+                  <h4 className="_nav_dropdown_title">{userName}</h4>
+                  <p className="_nav_drop_profile">{user?.email ?? "Signed in"}</p>
+                </div>
+              </a>
+              <ul className="_nav_dropdown_list _feed_header_profile_list">
+                <li className="_nav_dropdown_list_item">
+                  <button type="button" className="_nav_dropdown_link _feed_header_profile_action" onClick={handleLogout}>
+                    Logout
+                  </button>
+                </li>
+              </ul>
             </div>
           </div>
         </div>

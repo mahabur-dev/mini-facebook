@@ -29,6 +29,10 @@ export function LoginForm() {
   return (
     <form
       className="_social_login_form"
+      noValidate
+      onSubmitCapture={(event) => {
+        event.preventDefault();
+      }}
       onSubmit={handleSubmit(async (values) => {
         setSubmitError(null);
         try {
@@ -69,10 +73,9 @@ export function LoginForm() {
           <div className="form-check _social_login_form_check">
             <input
               className="form-check-input _social_login_form_check_input"
-              type="radio"
+              type="checkbox"
               id="remember-me"
-              checked
-              readOnly
+              {...register("rememberMe")}
             />
             <label className="form-check-label _social_login_form_check_label" htmlFor="remember-me">
               Remember me

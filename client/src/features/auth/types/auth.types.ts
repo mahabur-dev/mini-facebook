@@ -11,6 +11,8 @@ export type AuthUser = {
   firstName: string;
   lastName: string;
   email: string;
+  profileImageUrl: string | null;
+  profileImageStorageKey: string | null;
   status: string;
   lastLoginAt: string | null;
   createdAt: string;

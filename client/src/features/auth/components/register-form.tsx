@@ -31,6 +31,10 @@ export function RegisterForm() {
   return (
     <form
       className="_social_registration_form"
+      noValidate
+      onSubmitCapture={(event) => {
+        event.preventDefault();
+      }}
       onSubmit={handleSubmit(async (values) => {
         setSubmitError(null);
         try {
@@ -94,7 +98,7 @@ export function RegisterForm() {
           <div className="form-check _social_registration_form_check">
             <input
               className="form-check-input _social_registration_form_check_input"
-              type="radio"
+              type="checkbox"
               id="agree-terms"
               defaultChecked
               {...register("agreeToTerms")}

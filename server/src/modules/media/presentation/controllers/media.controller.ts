@@ -37,7 +37,7 @@ export class MediaController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: Number(process.env.MAX_IMAGE_SIZE_BYTES ?? 5 * 1024 * 1024) }),
-          new FileTypeValidator({ fileType: /(jpg|jpeg|png|webp)$/i }),
+          new FileTypeValidator({ fileType: /(jpg|jpeg|png|webp|mp4|webm|mov|quicktime)$/i }),
         ],
       }),
     )
