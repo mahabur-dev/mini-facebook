@@ -8,9 +8,12 @@ import { GetPostService } from "../../application/services/get-post.service";
 import { UpdatePostService } from "../../application/services/update-post.service";
 import { DeletePostService } from "../../application/services/delete-post.service";
 import { presentPost } from "../presenters/post.presenter";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
 @Controller("posts")
 @UseGuards(JwtAuthGuard)
+@ApiTags("Posts")
+@ApiBearerAuth()
 export class PostsController {
   constructor(
     private readonly createPostService: CreatePostService,

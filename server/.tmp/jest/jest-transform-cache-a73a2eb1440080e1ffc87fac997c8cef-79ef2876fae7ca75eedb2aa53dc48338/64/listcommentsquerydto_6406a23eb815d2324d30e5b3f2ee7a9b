@@ -1,0 +1,33 @@
+b61097c510ac37fd1ed50a48439a21ec
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ListCommentsQueryDto = void 0;
+const class_transformer_1 = require("class-transformer");
+const class_validator_1 = require("class-validator");
+class ListCommentsQueryDto {
+    cursor;
+    limit = 10;
+}
+exports.ListCommentsQueryDto = ListCommentsQueryDto;
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ListCommentsQueryDto.prototype, "cursor", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Transform)(({ value }) => Number(value)),
+    (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Max)(30),
+    __metadata("design:type", Number)
+], ListCommentsQueryDto.prototype, "limit", void 0);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXGNvbW1lbnRzXFxwcmVzZW50YXRpb25cXGR0b1xcbGlzdC1jb21tZW50cy1xdWVyeS5kdG8udHMiLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7O0FBQUEseURBQThDO0FBQzlDLHFEQUFpRTtBQUVqRSxNQUFhLG9CQUFvQjtJQUcvQixNQUFNLENBQVU7SUFNaEIsS0FBSyxHQUFZLEVBQUUsQ0FBQztDQUNyQjtBQVZELG9EQVVDO0FBUEM7SUFGQyxJQUFBLDRCQUFVLEdBQUU7SUFDWixJQUFBLDBCQUFRLEdBQUU7O29EQUNLO0FBTWhCO0lBSkMsSUFBQSw0QkFBVSxHQUFFO0lBQ1osSUFBQSw2QkFBUyxFQUFDLENBQUMsRUFBRSxLQUFLLEVBQUUsRUFBRSxFQUFFLENBQUMsTUFBTSxDQUFDLEtBQUssQ0FBQyxDQUFDO0lBQ3ZDLElBQUEscUJBQUcsRUFBQyxDQUFDLENBQUM7SUFDTixJQUFBLHFCQUFHLEVBQUMsRUFBRSxDQUFDOzttREFDWSIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJEOlxcUHJvamVjdF8xXFxtaW5pLWZhY2Vib29rXFxzZXJ2ZXJcXHNyY1xcbW9kdWxlc1xcY29tbWVudHNcXHByZXNlbnRhdGlvblxcZHRvXFxsaXN0LWNvbW1lbnRzLXF1ZXJ5LmR0by50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBUcmFuc2Zvcm0gfSBmcm9tIFwiY2xhc3MtdHJhbnNmb3JtZXJcIjtcbmltcG9ydCB7IElzT3B0aW9uYWwsIElzU3RyaW5nLCBNYXgsIE1pbiB9IGZyb20gXCJjbGFzcy12YWxpZGF0b3JcIjtcblxuZXhwb3J0IGNsYXNzIExpc3RDb21tZW50c1F1ZXJ5RHRvIHtcbiAgQElzT3B0aW9uYWwoKVxuICBASXNTdHJpbmcoKVxuICBjdXJzb3I/OiBzdHJpbmc7XG5cbiAgQElzT3B0aW9uYWwoKVxuICBAVHJhbnNmb3JtKCh7IHZhbHVlIH0pID0+IE51bWJlcih2YWx1ZSkpXG4gIEBNaW4oMSlcbiAgQE1heCgzMClcbiAgbGltaXQ/OiBudW1iZXIgPSAxMDtcbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

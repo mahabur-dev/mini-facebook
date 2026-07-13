@@ -1,0 +1,51 @@
+1e993d5295f05fd9c9ac6de5ab978ace
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GetCommentsService = void 0;
+const common_1 = require("@nestjs/common");
+const comments_repository_1 = require("../../domain/repository-contracts/comments.repository");
+const comment_visibility_policy_1 = require("../../domain/policies/comment-visibility.policy");
+const cursor_pagination_1 = require("../../../../common/pagination/cursor.pagination");
+const comment_presenter_1 = require("../../presentation/presenters/comment.presenter");
+let GetCommentsService = class GetCommentsService {
+    commentsRepository;
+    commentVisibilityPolicy;
+    constructor(commentsRepository, commentVisibilityPolicy) {
+        this.commentsRepository = commentsRepository;
+        this.commentVisibilityPolicy = commentVisibilityPolicy;
+    }
+    async execute(viewerId, postId, input) {
+        const result = await this.commentsRepository.findByPostPaginated(postId, {
+            limit: input.limit,
+            cursor: (0, cursor_pagination_1.decodeCursor)(input.cursor),
+        });
+        const comments = [];
+        for (const comment of result.items) {
+            await this.commentVisibilityPolicy.canView(viewerId, comment);
+            comments.push((0, comment_presenter_1.presentComment)(comment));
+        }
+        return {
+            comments,
+            nextCursor: result.nextCursor ? (0, cursor_pagination_1.encodeCursor)(result.nextCursor) : null,
+        };
+    }
+};
+exports.GetCommentsService = GetCommentsService;
+exports.GetCommentsService = GetCommentsService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, common_1.Inject)(comments_repository_1.COMMENTS_REPOSITORY)),
+    __metadata("design:paramtypes", [Object, comment_visibility_policy_1.CommentVisibilityPolicy])
+], GetCommentsService);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXGNvbW1lbnRzXFxhcHBsaWNhdGlvblxcc2VydmljZXNcXGdldC1jb21tZW50cy5zZXJ2aWNlLnRzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7OztBQUFBLDJDQUFvRDtBQUNwRCwrRkFBZ0g7QUFDaEgsK0ZBQTBGO0FBQzFGLHVGQUE2RjtBQUM3Rix1RkFBaUY7QUFHMUUsSUFBTSxrQkFBa0IsR0FBeEIsTUFBTSxrQkFBa0I7SUFFbUI7SUFDN0I7SUFGbkIsWUFDZ0Qsa0JBQXNDLEVBQ25FLHVCQUFnRDtRQURuQix1QkFBa0IsR0FBbEIsa0JBQWtCLENBQW9CO1FBQ25FLDRCQUF1QixHQUF2Qix1QkFBdUIsQ0FBeUI7SUFDaEUsQ0FBQztJQUVKLEtBQUssQ0FBQyxPQUFPLENBQUMsUUFBZ0IsRUFBRSxNQUFjLEVBQUUsS0FBZ0Q7UUFDOUYsTUFBTSxNQUFNLEdBQUcsTUFBTSxJQUFJLENBQUMsa0JBQWtCLENBQUMsbUJBQW1CLENBQUMsTUFBTSxFQUFFO1lBQ3ZFLEtBQUssRUFBRSxLQUFLLENBQUMsS0FBSztZQUNsQixNQUFNLEVBQUUsSUFBQSxnQ0FBWSxFQUFDLEtBQUssQ0FBQyxNQUFNLENBQUM7U0FDbkMsQ0FBQyxDQUFDO1FBRUgsTUFBTSxRQUFRLEdBQUcsRUFBRSxDQUFDO1FBQ3BCLEtBQUssTUFBTSxPQUFPLElBQUksTUFBTSxDQUFDLEtBQUssRUFBRSxDQUFDO1lBQ25DLE1BQU0sSUFBSSxDQUFDLHVCQUF1QixDQUFDLE9BQU8sQ0FBQyxRQUFRLEVBQUUsT0FBTyxDQUFDLENBQUM7WUFDOUQsUUFBUSxDQUFDLElBQUksQ0FBQyxJQUFBLGtDQUFjLEVBQUMsT0FBTyxDQUFDLENBQUMsQ0FBQztRQUN6QyxDQUFDO1FBRUQsT0FBTztZQUNMLFFBQVE7WUFDUixVQUFVLEVBQUUsTUFBTSxDQUFDLFVBQVUsQ0FBQyxDQUFDLENBQUMsSUFBQSxnQ0FBWSxFQUFDLE1BQU0sQ0FBQyxVQUFVLENBQUMsQ0FBQyxDQUFDLENBQUMsSUFBSTtTQUN2RSxDQUFDO0lBQ0osQ0FBQztDQUNGLENBQUE7QUF2QlksZ0RBQWtCOzZCQUFsQixrQkFBa0I7SUFEOUIsSUFBQSxtQkFBVSxHQUFFO0lBR1IsV0FBQSxJQUFBLGVBQU0sRUFBQyx5Q0FBbUIsQ0FBQyxDQUFBOzZDQUNjLG1EQUF1QjtHQUh4RCxrQkFBa0IsQ0F1QjlCIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkQ6XFxQcm9qZWN0XzFcXG1pbmktZmFjZWJvb2tcXHNlcnZlclxcc3JjXFxtb2R1bGVzXFxjb21tZW50c1xcYXBwbGljYXRpb25cXHNlcnZpY2VzXFxnZXQtY29tbWVudHMuc2VydmljZS50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBJbmplY3QsIEluamVjdGFibGUgfSBmcm9tIFwiQG5lc3Rqcy9jb21tb25cIjtcbmltcG9ydCB7IENPTU1FTlRTX1JFUE9TSVRPUlksIENvbW1lbnRzUmVwb3NpdG9yeSB9IGZyb20gXCIuLi8uLi9kb21haW4vcmVwb3NpdG9yeS1jb250cmFjdHMvY29tbWVudHMucmVwb3NpdG9yeVwiO1xuaW1wb3J0IHsgQ29tbWVudFZpc2liaWxpdHlQb2xpY3kgfSBmcm9tIFwiLi4vLi4vZG9tYWluL3BvbGljaWVzL2NvbW1lbnQtdmlzaWJpbGl0eS5wb2xpY3lcIjtcbmltcG9ydCB7IGRlY29kZUN1cnNvciwgZW5jb2RlQ3Vyc29yIH0gZnJvbSBcIi4uLy4uLy4uLy4uL2NvbW1vbi9wYWdpbmF0aW9uL2N1cnNvci5wYWdpbmF0aW9uXCI7XG5pbXBvcnQgeyBwcmVzZW50Q29tbWVudCB9IGZyb20gXCIuLi8uLi9wcmVzZW50YXRpb24vcHJlc2VudGVycy9jb21tZW50LnByZXNlbnRlclwiO1xuXG5ASW5qZWN0YWJsZSgpXG5leHBvcnQgY2xhc3MgR2V0Q29tbWVudHNTZXJ2aWNlIHtcbiAgY29uc3RydWN0b3IoXG4gICAgQEluamVjdChDT01NRU5UU19SRVBPU0lUT1JZKSBwcml2YXRlIHJlYWRvbmx5IGNvbW1lbnRzUmVwb3NpdG9yeTogQ29tbWVudHNSZXBvc2l0b3J5LFxuICAgIHByaXZhdGUgcmVhZG9ubHkgY29tbWVudFZpc2liaWxpdHlQb2xpY3k6IENvbW1lbnRWaXNpYmlsaXR5UG9saWN5LFxuICApIHt9XG5cbiAgYXN5bmMgZXhlY3V0ZSh2aWV3ZXJJZDogc3RyaW5nLCBwb3N0SWQ6IHN0cmluZywgaW5wdXQ6IHsgbGltaXQ6IG51bWJlcjsgY3Vyc29yPzogc3RyaW5nIHwgbnVsbCB9KSB7XG4gICAgY29uc3QgcmVzdWx0ID0gYXdhaXQgdGhpcy5jb21tZW50c1JlcG9zaXRvcnkuZmluZEJ5UG9zdFBhZ2luYXRlZChwb3N0SWQsIHtcbiAgICAgIGxpbWl0OiBpbnB1dC5saW1pdCxcbiAgICAgIGN1cnNvcjogZGVjb2RlQ3Vyc29yKGlucHV0LmN1cnNvciksXG4gICAgfSk7XG5cbiAgICBjb25zdCBjb21tZW50cyA9IFtdO1xuICAgIGZvciAoY29uc3QgY29tbWVudCBvZiByZXN1bHQuaXRlbXMpIHtcbiAgICAgIGF3YWl0IHRoaXMuY29tbWVudFZpc2liaWxpdHlQb2xpY3kuY2FuVmlldyh2aWV3ZXJJZCwgY29tbWVudCk7XG4gICAgICBjb21tZW50cy5wdXNoKHByZXNlbnRDb21tZW50KGNvbW1lbnQpKTtcbiAgICB9XG5cbiAgICByZXR1cm4ge1xuICAgICAgY29tbWVudHMsXG4gICAgICBuZXh0Q3Vyc29yOiByZXN1bHQubmV4dEN1cnNvciA/IGVuY29kZUN1cnNvcihyZXN1bHQubmV4dEN1cnNvcikgOiBudWxsLFxuICAgIH07XG4gIH1cbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

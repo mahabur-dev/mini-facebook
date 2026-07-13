@@ -75,6 +75,71 @@ export class PrismaCommentsRepository implements CommentsRepository {
     return comments.map((comment) => mapComment(comment)!).filter(Boolean);
   }
 
+  async findByPostPaginated(
+    postId: string,
+    input: { limit: number; cursor?: { createdAt: Date; id: string } | null },
+    tx?: unknown,
+  ): Promise<{ items: CommentEntity[]; nextCursor: { createdAt: Date; id: string } | null }> {
+    const cursorFilter = input.cursor
+      ? {
+          OR: [
+            { createdAt: { lt: input.cursor.createdAt } },
+            { createdAt: input.cursor.createdAt, id: { lt: input.cursor.id } },
+          ],
+        }
+      : undefined;
+
+    const comments = await this.client(tx).comment.findMany({
+      where: {
+        postId,
+        parentCommentId: null,
+        ...(cursorFilter ? { AND: [cursorFilter] } : {}),
+      },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: input.limit + 1,
+      include: { author: true, statistics: true },
+    });
+
+    const hasNextPage = comments.length > input.limit;
+    const trimmed = hasNextPage ? comments.slice(0, input.limit) : comments;
+    const items = trimmed.map((comment) => mapComment(comment)!).filter(Boolean);
+    const last = trimmed[trimmed.length - 1];
+
+    return { items, nextCursor: hasNextPage && last ? { createdAt: last.createdAt, id: last.id } : null };
+  }
+
+  async findRepliesPaginated(
+    parentCommentId: string,
+    input: { limit: number; cursor?: { createdAt: Date; id: string } | null },
+    tx?: unknown,
+  ): Promise<{ items: CommentEntity[]; nextCursor: { createdAt: Date; id: string } | null }> {
+    const cursorFilter = input.cursor
+      ? {
+          OR: [
+            { createdAt: { lt: input.cursor.createdAt } },
+            { createdAt: input.cursor.createdAt, id: { lt: input.cursor.id } },
+          ],
+        }
+      : undefined;
+
+    const comments = await this.client(tx).comment.findMany({
+      where: {
+        parentCommentId,
+        ...(cursorFilter ? { AND: [cursorFilter] } : {}),
+      },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: input.limit + 1,
+      include: { author: true, statistics: true },
+    });
+
+    const hasNextPage = comments.length > input.limit;
+    const trimmed = hasNextPage ? comments.slice(0, input.limit) : comments;
+    const items = trimmed.map((comment) => mapComment(comment)!).filter(Boolean);
+    const last = trimmed[trimmed.length - 1];
+
+    return { items, nextCursor: hasNextPage && last ? { createdAt: last.createdAt, id: last.id } : null };
+  }
+
   async update(id: string, input: UpdateCommentInput, tx?: unknown): Promise<CommentEntity> {
     const comment = await this.client(tx).comment.update({
       where: { id },

@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Put, UseGuards } from "@nestjs/common";
+import { Controller, Delete, Get, Param, Put, Query, UseGuards } from "@nestjs/common";
 import { CurrentUser } from "../../../../common/decorators/current-user.decorator";
 import { JwtAuthGuard } from "../../../../common/guards/jwt-auth.guard";
 import { PostLikeService } from "../../application/services/post-like.service";
@@ -7,9 +7,13 @@ import { GetPostLikersService } from "../../application/services/get-post-likers
 import { CommentLikeService } from "../../application/services/comment-like.service";
 import { CommentUnlikeService } from "../../application/services/comment-unlike.service";
 import { GetCommentLikersService } from "../../application/services/get-comment-likers.service";
+import { ListLikersQueryDto } from "../dto/list-likers-query.dto";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
 @Controller()
 @UseGuards(JwtAuthGuard)
+@ApiTags("Reactions")
+@ApiBearerAuth()
 export class ReactionsController {
   constructor(
     private readonly postLikeService: PostLikeService,
@@ -31,8 +35,11 @@ export class ReactionsController {
   }
 
   @Get("posts/:postId/likes")
-  getPostLikers(@CurrentUser() user: { sub: string }, @Param("postId") postId: string) {
-    return this.getPostLikersService.execute(user.sub, postId);
+  getPostLikers(@CurrentUser() user: { sub: string }, @Param("postId") postId: string, @Query() query: ListLikersQueryDto) {
+    return this.getPostLikersService.execute(user.sub, postId, {
+      limit: query.limit ?? 20,
+      cursor: query.cursor,
+    });
   }
 
   @Put("comments/:commentId/like")
@@ -46,7 +53,14 @@ export class ReactionsController {
   }
 
   @Get("comments/:commentId/likes")
-  getCommentLikers(@CurrentUser() user: { sub: string }, @Param("commentId") commentId: string) {
-    return this.getCommentLikersService.execute(user.sub, commentId);
+  getCommentLikers(
+    @CurrentUser() user: { sub: string },
+    @Param("commentId") commentId: string,
+    @Query() query: ListLikersQueryDto,
+  ) {
+    return this.getCommentLikersService.execute(user.sub, commentId, {
+      limit: query.limit ?? 20,
+      cursor: query.cursor,
+    });
   }
 }

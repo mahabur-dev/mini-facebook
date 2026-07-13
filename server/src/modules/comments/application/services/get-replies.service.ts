@@ -1,6 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { COMMENTS_REPOSITORY, CommentsRepository } from "../../domain/repository-contracts/comments.repository";
 import { CommentVisibilityPolicy } from "../../domain/policies/comment-visibility.policy";
+import { decodeCursor, encodeCursor } from "../../../../common/pagination/cursor.pagination";
+import { presentComment } from "../../presentation/presenters/comment.presenter";
 
 @Injectable()
 export class GetRepliesService {
@@ -9,13 +11,21 @@ export class GetRepliesService {
     private readonly commentVisibilityPolicy: CommentVisibilityPolicy,
   ) {}
 
-  async execute(viewerId: string, commentId: string) {
-    const replies = await this.commentsRepository.findReplies(commentId);
-    const visible = [];
-    for (const reply of replies) {
+  async execute(viewerId: string, commentId: string, input: { limit: number; cursor?: string | null }) {
+    const result = await this.commentsRepository.findRepliesPaginated(commentId, {
+      limit: input.limit,
+      cursor: decodeCursor(input.cursor),
+    });
+
+    const replies = [];
+    for (const reply of result.items) {
       await this.commentVisibilityPolicy.canView(viewerId, reply);
-      visible.push(reply);
+      replies.push(presentComment(reply));
     }
-    return { replies: visible };
+
+    return {
+      replies,
+      nextCursor: result.nextCursor ? encodeCursor(result.nextCursor) : null,
+    };
   }
 }

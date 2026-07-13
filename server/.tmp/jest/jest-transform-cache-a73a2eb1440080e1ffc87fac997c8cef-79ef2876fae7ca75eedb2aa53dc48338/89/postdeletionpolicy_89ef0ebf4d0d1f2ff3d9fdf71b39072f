@@ -1,0 +1,24 @@
+d9226140fafde59d9eee7e3aab98822c
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PostDeletionPolicy = void 0;
+const common_1 = require("@nestjs/common");
+const post_not_owned_exception_1 = require("../exceptions/post-not-owned.exception");
+let PostDeletionPolicy = class PostDeletionPolicy {
+    canDelete(userId, post) {
+        if (!post || post.deletedAt || post.authorId !== userId) {
+            throw new post_not_owned_exception_1.PostNotOwnedException();
+        }
+    }
+};
+exports.PostDeletionPolicy = PostDeletionPolicy;
+exports.PostDeletionPolicy = PostDeletionPolicy = __decorate([
+    (0, common_1.Injectable)()
+], PostDeletionPolicy);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXHBvc3RzXFxkb21haW5cXHBvbGljaWVzXFxwb3N0LWRlbGV0aW9uLnBvbGljeS50cyIsIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7QUFBQSwyQ0FBNEM7QUFFNUMscUZBQStFO0FBR3hFLElBQU0sa0JBQWtCLEdBQXhCLE1BQU0sa0JBQWtCO0lBQzdCLFNBQVMsQ0FBQyxNQUFjLEVBQUUsSUFBdUI7UUFDL0MsSUFBSSxDQUFDLElBQUksSUFBSSxJQUFJLENBQUMsU0FBUyxJQUFJLElBQUksQ0FBQyxRQUFRLEtBQUssTUFBTSxFQUFFLENBQUM7WUFDeEQsTUFBTSxJQUFJLGdEQUFxQixFQUFFLENBQUM7UUFDcEMsQ0FBQztJQUNILENBQUM7Q0FDRixDQUFBO0FBTlksZ0RBQWtCOzZCQUFsQixrQkFBa0I7SUFEOUIsSUFBQSxtQkFBVSxHQUFFO0dBQ0Esa0JBQWtCLENBTTlCIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkQ6XFxQcm9qZWN0XzFcXG1pbmktZmFjZWJvb2tcXHNlcnZlclxcc3JjXFxtb2R1bGVzXFxwb3N0c1xcZG9tYWluXFxwb2xpY2llc1xccG9zdC1kZWxldGlvbi5wb2xpY3kudHMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gXCJAbmVzdGpzL2NvbW1vblwiO1xuaW1wb3J0IHsgUG9zdEVudGl0eSB9IGZyb20gXCIuLi9lbnRpdGllcy9wb3N0LmVudGl0eVwiO1xuaW1wb3J0IHsgUG9zdE5vdE93bmVkRXhjZXB0aW9uIH0gZnJvbSBcIi4uL2V4Y2VwdGlvbnMvcG9zdC1ub3Qtb3duZWQuZXhjZXB0aW9uXCI7XG5cbkBJbmplY3RhYmxlKClcbmV4cG9ydCBjbGFzcyBQb3N0RGVsZXRpb25Qb2xpY3kge1xuICBjYW5EZWxldGUodXNlcklkOiBzdHJpbmcsIHBvc3Q6IFBvc3RFbnRpdHkgfCBudWxsKSB7XG4gICAgaWYgKCFwb3N0IHx8IHBvc3QuZGVsZXRlZEF0IHx8IHBvc3QuYXV0aG9ySWQgIT09IHVzZXJJZCkge1xuICAgICAgdGhyb3cgbmV3IFBvc3ROb3RPd25lZEV4Y2VwdGlvbigpO1xuICAgIH1cbiAgfVxufVxuIl0sInZlcnNpb24iOjN9

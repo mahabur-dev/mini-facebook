@@ -1,0 +1,53 @@
+5beabe736c86f5efff8256b1b2e1be12
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UpdateCommentService = void 0;
+const common_1 = require("@nestjs/common");
+const prisma_service_1 = require("../../../../infrastructure/database/prisma.service");
+const comments_repository_1 = require("../../domain/repository-contracts/comments.repository");
+const comment_ownership_policy_1 = require("../../domain/policies/comment-ownership.policy");
+const comment_not_found_exception_1 = require("../../domain/exceptions/comment-not-found.exception");
+let UpdateCommentService = class UpdateCommentService {
+    prisma;
+    commentsRepository;
+    commentOwnershipPolicy;
+    constructor(prisma, commentsRepository, commentOwnershipPolicy) {
+        this.prisma = prisma;
+        this.commentsRepository = commentsRepository;
+        this.commentOwnershipPolicy = commentOwnershipPolicy;
+    }
+    async execute(userId, commentId, input) {
+        return this.prisma.$transaction(async (tx) => {
+            const current = await this.commentsRepository.findById(commentId, tx);
+            if (!current) {
+                throw new comment_not_found_exception_1.CommentNotFoundException();
+            }
+            this.commentOwnershipPolicy.canManage(userId, current);
+            await this.commentsRepository.update(commentId, { content: input.content.trim() }, tx);
+            const updated = await this.commentsRepository.findById(commentId, tx);
+            if (!updated) {
+                throw new comment_not_found_exception_1.CommentNotFoundException();
+            }
+            return { comment: updated };
+        });
+    }
+};
+exports.UpdateCommentService = UpdateCommentService;
+exports.UpdateCommentService = UpdateCommentService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(1, (0, common_1.Inject)(comments_repository_1.COMMENTS_REPOSITORY)),
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService, Object, comment_ownership_policy_1.CommentOwnershipPolicy])
+], UpdateCommentService);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXGNvbW1lbnRzXFxhcHBsaWNhdGlvblxcc2VydmljZXNcXHVwZGF0ZS1jb21tZW50LnNlcnZpY2UudHMiLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7O0FBQUEsMkNBQW9EO0FBQ3BELHVGQUFtRjtBQUNuRiwrRkFBZ0g7QUFDaEgsNkZBQXdGO0FBQ3hGLHFHQUErRjtBQUd4RixJQUFNLG9CQUFvQixHQUExQixNQUFNLG9CQUFvQjtJQUVaO0lBQzZCO0lBQzdCO0lBSG5CLFlBQ21CLE1BQXFCLEVBQ1Esa0JBQXNDLEVBQ25FLHNCQUE4QztRQUY5QyxXQUFNLEdBQU4sTUFBTSxDQUFlO1FBQ1EsdUJBQWtCLEdBQWxCLGtCQUFrQixDQUFvQjtRQUNuRSwyQkFBc0IsR0FBdEIsc0JBQXNCLENBQXdCO0lBQzlELENBQUM7SUFFSixLQUFLLENBQUMsT0FBTyxDQUFDLE1BQWMsRUFBRSxTQUFpQixFQUFFLEtBQTBCO1FBQ3pFLE9BQU8sSUFBSSxDQUFDLE1BQU0sQ0FBQyxZQUFZLENBQUMsS0FBSyxFQUFFLEVBQUUsRUFBRSxFQUFFO1lBQzNDLE1BQU0sT0FBTyxHQUFHLE1BQU0sSUFBSSxDQUFDLGtCQUFrQixDQUFDLFFBQVEsQ0FBQyxTQUFTLEVBQUUsRUFBRSxDQUFDLENBQUM7WUFDdEUsSUFBSSxDQUFDLE9BQU8sRUFBRSxDQUFDO2dCQUNiLE1BQU0sSUFBSSxzREFBd0IsRUFBRSxDQUFDO1lBQ3ZDLENBQUM7WUFDRCxJQUFJLENBQUMsc0JBQXNCLENBQUMsU0FBUyxDQUFDLE1BQU0sRUFBRSxPQUFPLENBQUMsQ0FBQztZQUV2RCxNQUFNLElBQUksQ0FBQyxrQkFBa0IsQ0FBQyxNQUFNLENBQUMsU0FBUyxFQUFFLEVBQUUsT0FBTyxFQUFFLEtBQUssQ0FBQyxPQUFPLENBQUMsSUFBSSxFQUFFLEVBQUUsRUFBRSxFQUFFLENBQUMsQ0FBQztZQUN2RixNQUFNLE9BQU8sR0FBRyxNQUFNLElBQUksQ0FBQyxrQkFBa0IsQ0FBQyxRQUFRLENBQUMsU0FBUyxFQUFFLEVBQUUsQ0FBQyxDQUFDO1lBQ3RFLElBQUksQ0FBQyxPQUFPLEVBQUUsQ0FBQztnQkFDYixNQUFNLElBQUksc0RBQXdCLEVBQUUsQ0FBQztZQUN2QyxDQUFDO1lBQ0QsT0FBTyxFQUFFLE9BQU8sRUFBRSxPQUFPLEVBQUUsQ0FBQztRQUM5QixDQUFDLENBQUMsQ0FBQztJQUNMLENBQUM7Q0FDRixDQUFBO0FBdkJZLG9EQUFvQjsrQkFBcEIsb0JBQW9CO0lBRGhDLElBQUEsbUJBQVUsR0FBRTtJQUlSLFdBQUEsSUFBQSxlQUFNLEVBQUMseUNBQW1CLENBQUMsQ0FBQTtxQ0FESCw4QkFBYSxVQUVHLGlEQUFzQjtHQUp0RCxvQkFBb0IsQ0F1QmhDIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkQ6XFxQcm9qZWN0XzFcXG1pbmktZmFjZWJvb2tcXHNlcnZlclxcc3JjXFxtb2R1bGVzXFxjb21tZW50c1xcYXBwbGljYXRpb25cXHNlcnZpY2VzXFx1cGRhdGUtY29tbWVudC5zZXJ2aWNlLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEluamVjdCwgSW5qZWN0YWJsZSB9IGZyb20gXCJAbmVzdGpzL2NvbW1vblwiO1xuaW1wb3J0IHsgUHJpc21hU2VydmljZSB9IGZyb20gXCIuLi8uLi8uLi8uLi9pbmZyYXN0cnVjdHVyZS9kYXRhYmFzZS9wcmlzbWEuc2VydmljZVwiO1xuaW1wb3J0IHsgQ09NTUVOVFNfUkVQT1NJVE9SWSwgQ29tbWVudHNSZXBvc2l0b3J5IH0gZnJvbSBcIi4uLy4uL2RvbWFpbi9yZXBvc2l0b3J5LWNvbnRyYWN0cy9jb21tZW50cy5yZXBvc2l0b3J5XCI7XG5pbXBvcnQgeyBDb21tZW50T3duZXJzaGlwUG9saWN5IH0gZnJvbSBcIi4uLy4uL2RvbWFpbi9wb2xpY2llcy9jb21tZW50LW93bmVyc2hpcC5wb2xpY3lcIjtcbmltcG9ydCB7IENvbW1lbnROb3RGb3VuZEV4Y2VwdGlvbiB9IGZyb20gXCIuLi8uLi9kb21haW4vZXhjZXB0aW9ucy9jb21tZW50LW5vdC1mb3VuZC5leGNlcHRpb25cIjtcblxuQEluamVjdGFibGUoKVxuZXhwb3J0IGNsYXNzIFVwZGF0ZUNvbW1lbnRTZXJ2aWNlIHtcbiAgY29uc3RydWN0b3IoXG4gICAgcHJpdmF0ZSByZWFkb25seSBwcmlzbWE6IFByaXNtYVNlcnZpY2UsXG4gICAgQEluamVjdChDT01NRU5UU19SRVBPU0lUT1JZKSBwcml2YXRlIHJlYWRvbmx5IGNvbW1lbnRzUmVwb3NpdG9yeTogQ29tbWVudHNSZXBvc2l0b3J5LFxuICAgIHByaXZhdGUgcmVhZG9ubHkgY29tbWVudE93bmVyc2hpcFBvbGljeTogQ29tbWVudE93bmVyc2hpcFBvbGljeSxcbiAgKSB7fVxuXG4gIGFzeW5jIGV4ZWN1dGUodXNlcklkOiBzdHJpbmcsIGNvbW1lbnRJZDogc3RyaW5nLCBpbnB1dDogeyBjb250ZW50OiBzdHJpbmcgfSkge1xuICAgIHJldHVybiB0aGlzLnByaXNtYS4kdHJhbnNhY3Rpb24oYXN5bmMgKHR4KSA9PiB7XG4gICAgICBjb25zdCBjdXJyZW50ID0gYXdhaXQgdGhpcy5jb21tZW50c1JlcG9zaXRvcnkuZmluZEJ5SWQoY29tbWVudElkLCB0eCk7XG4gICAgICBpZiAoIWN1cnJlbnQpIHtcbiAgICAgICAgdGhyb3cgbmV3IENvbW1lbnROb3RGb3VuZEV4Y2VwdGlvbigpO1xuICAgICAgfVxuICAgICAgdGhpcy5jb21tZW50T3duZXJzaGlwUG9saWN5LmNhbk1hbmFnZSh1c2VySWQsIGN1cnJlbnQpO1xuXG4gICAgICBhd2FpdCB0aGlzLmNvbW1lbnRzUmVwb3NpdG9yeS51cGRhdGUoY29tbWVudElkLCB7IGNvbnRlbnQ6IGlucHV0LmNvbnRlbnQudHJpbSgpIH0sIHR4KTtcbiAgICAgIGNvbnN0IHVwZGF0ZWQgPSBhd2FpdCB0aGlzLmNvbW1lbnRzUmVwb3NpdG9yeS5maW5kQnlJZChjb21tZW50SWQsIHR4KTtcbiAgICAgIGlmICghdXBkYXRlZCkge1xuICAgICAgICB0aHJvdyBuZXcgQ29tbWVudE5vdEZvdW5kRXhjZXB0aW9uKCk7XG4gICAgICB9XG4gICAgICByZXR1cm4geyBjb21tZW50OiB1cGRhdGVkIH07XG4gICAgfSk7XG4gIH1cbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

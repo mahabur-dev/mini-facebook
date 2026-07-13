@@ -1,0 +1,12 @@
+71fc836f3ccd3ad46897eb65e136207e
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PostEmptyException = void 0;
+const common_1 = require("@nestjs/common");
+class PostEmptyException extends common_1.BadRequestException {
+    constructor() {
+        super("Post content or image is required");
+    }
+}
+exports.PostEmptyException = PostEmptyException;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXHBvc3RzXFxkb21haW5cXGV4Y2VwdGlvbnNcXHBvc3QtZW1wdHkuZXhjZXB0aW9uLnRzIiwibWFwcGluZ3MiOiI7OztBQUFBLDJDQUFxRDtBQUVyRCxNQUFhLGtCQUFtQixTQUFRLDRCQUFtQjtJQUN6RDtRQUNFLEtBQUssQ0FBQyxtQ0FBbUMsQ0FBQyxDQUFDO0lBQzdDLENBQUM7Q0FDRjtBQUpELGdEQUlDIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkQ6XFxQcm9qZWN0XzFcXG1pbmktZmFjZWJvb2tcXHNlcnZlclxcc3JjXFxtb2R1bGVzXFxwb3N0c1xcZG9tYWluXFxleGNlcHRpb25zXFxwb3N0LWVtcHR5LmV4Y2VwdGlvbi50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBCYWRSZXF1ZXN0RXhjZXB0aW9uIH0gZnJvbSBcIkBuZXN0anMvY29tbW9uXCI7XG5cbmV4cG9ydCBjbGFzcyBQb3N0RW1wdHlFeGNlcHRpb24gZXh0ZW5kcyBCYWRSZXF1ZXN0RXhjZXB0aW9uIHtcbiAgY29uc3RydWN0b3IoKSB7XG4gICAgc3VwZXIoXCJQb3N0IGNvbnRlbnQgb3IgaW1hZ2UgaXMgcmVxdWlyZWRcIik7XG4gIH1cbn1cbiJdLCJ2ZXJzaW9uIjozfQ==

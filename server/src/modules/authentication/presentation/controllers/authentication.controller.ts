@@ -20,8 +20,10 @@ import { LoginUserService } from "../../application/services/login-user.service"
 import { RefreshSessionService } from "../../application/services/refresh-session.service";
 import { LogoutSessionService } from "../../application/services/logout-session.service";
 import { GetCurrentUserService } from "../../application/services/get-current-user.service";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
 @Controller("auth")
+@ApiTags("Auth")
 export class AuthenticationController {
   constructor(
     private readonly registerUserService: RegisterUserService,
@@ -68,6 +70,7 @@ export class AuthenticationController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get("me")
   async me(@CurrentUser() user: { sub: string }) {
     return this.getCurrentUserService.execute(user.sub);

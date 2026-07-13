@@ -1,0 +1,33 @@
+9dd7b912e645d3842d4229f380475e88
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ListLikersQueryDto = void 0;
+const class_transformer_1 = require("class-transformer");
+const class_validator_1 = require("class-validator");
+class ListLikersQueryDto {
+    cursor;
+    limit = 20;
+}
+exports.ListLikersQueryDto = ListLikersQueryDto;
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ListLikersQueryDto.prototype, "cursor", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Transform)(({ value }) => Number(value)),
+    (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Max)(50),
+    __metadata("design:type", Number)
+], ListLikersQueryDto.prototype, "limit", void 0);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiRDpcXFByb2plY3RfMVxcbWluaS1mYWNlYm9va1xcc2VydmVyXFxzcmNcXG1vZHVsZXNcXHJlYWN0aW9uc1xccHJlc2VudGF0aW9uXFxkdG9cXGxpc3QtbGlrZXJzLXF1ZXJ5LmR0by50cyIsIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7QUFBQSx5REFBOEM7QUFDOUMscURBQWlFO0FBRWpFLE1BQWEsa0JBQWtCO0lBRzdCLE1BQU0sQ0FBVTtJQU1oQixLQUFLLEdBQVksRUFBRSxDQUFDO0NBQ3JCO0FBVkQsZ0RBVUM7QUFQQztJQUZDLElBQUEsNEJBQVUsR0FBRTtJQUNaLElBQUEsMEJBQVEsR0FBRTs7a0RBQ0s7QUFNaEI7SUFKQyxJQUFBLDRCQUFVLEdBQUU7SUFDWixJQUFBLDZCQUFTLEVBQUMsQ0FBQyxFQUFFLEtBQUssRUFBRSxFQUFFLEVBQUUsQ0FBQyxNQUFNLENBQUMsS0FBSyxDQUFDLENBQUM7SUFDdkMsSUFBQSxxQkFBRyxFQUFDLENBQUMsQ0FBQztJQUNOLElBQUEscUJBQUcsRUFBQyxFQUFFLENBQUM7O2lEQUNZIiwibmFtZXMiOltdLCJzb3VyY2VzIjpbIkQ6XFxQcm9qZWN0XzFcXG1pbmktZmFjZWJvb2tcXHNlcnZlclxcc3JjXFxtb2R1bGVzXFxyZWFjdGlvbnNcXHByZXNlbnRhdGlvblxcZHRvXFxsaXN0LWxpa2Vycy1xdWVyeS5kdG8udHMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgVHJhbnNmb3JtIH0gZnJvbSBcImNsYXNzLXRyYW5zZm9ybWVyXCI7XG5pbXBvcnQgeyBJc09wdGlvbmFsLCBJc1N0cmluZywgTWF4LCBNaW4gfSBmcm9tIFwiY2xhc3MtdmFsaWRhdG9yXCI7XG5cbmV4cG9ydCBjbGFzcyBMaXN0TGlrZXJzUXVlcnlEdG8ge1xuICBASXNPcHRpb25hbCgpXG4gIEBJc1N0cmluZygpXG4gIGN1cnNvcj86IHN0cmluZztcblxuICBASXNPcHRpb25hbCgpXG4gIEBUcmFuc2Zvcm0oKHsgdmFsdWUgfSkgPT4gTnVtYmVyKHZhbHVlKSlcbiAgQE1pbigxKVxuICBATWF4KDUwKVxuICBsaW1pdD86IG51bWJlciA9IDIwO1xufVxuIl0sInZlcnNpb24iOjN9

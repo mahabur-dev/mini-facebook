@@ -1,16 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { CurrentUser } from "../../../../common/decorators/current-user.decorator";
 import { JwtAuthGuard } from "../../../../common/guards/jwt-auth.guard";
 import { CreateCommentDto } from "../dto/create-comment.dto";
 import { UpdateCommentDto } from "../dto/update-comment.dto";
+import { ListCommentsQueryDto } from "../dto/list-comments-query.dto";
 import { CreateCommentService } from "../../application/services/create-comment.service";
 import { GetCommentsService } from "../../application/services/get-comments.service";
 import { GetRepliesService } from "../../application/services/get-replies.service";
 import { UpdateCommentService } from "../../application/services/update-comment.service";
 import { DeleteCommentService } from "../../application/services/delete-comment.service";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
 @Controller()
 @UseGuards(JwtAuthGuard)
+@ApiTags("Comments")
+@ApiBearerAuth()
 export class CommentsController {
   constructor(
     private readonly createCommentService: CreateCommentService,
@@ -35,8 +39,15 @@ export class CommentsController {
   }
 
   @Get("posts/:postId/comments")
-  async getComments(@CurrentUser() user: { sub: string }, @Param("postId") postId: string) {
-    return this.getCommentsService.execute(user.sub, postId);
+  async getComments(
+    @CurrentUser() user: { sub: string },
+    @Param("postId") postId: string,
+    @Query() query: ListCommentsQueryDto,
+  ) {
+    return this.getCommentsService.execute(user.sub, postId, {
+      limit: query.limit ?? 10,
+      cursor: query.cursor,
+    });
   }
 
   @Post("comments/:commentId/replies")
@@ -53,8 +64,15 @@ export class CommentsController {
   }
 
   @Get("comments/:commentId/replies")
-  async getReplies(@CurrentUser() user: { sub: string }, @Param("commentId") commentId: string) {
-    return this.getRepliesService.execute(user.sub, commentId);
+  async getReplies(
+    @CurrentUser() user: { sub: string },
+    @Param("commentId") commentId: string,
+    @Query() query: ListCommentsQueryDto,
+  ) {
+    return this.getRepliesService.execute(user.sub, commentId, {
+      limit: query.limit ?? 10,
+      cursor: query.cursor,
+    });
   }
 
   @Patch("comments/:commentId")

@@ -26,7 +26,7 @@ export class UpdatePostService {
       await this.postsRepository.update(
         postId,
         {
-          content: input.content?.trim() ?? undefined,
+          content: input.content?.trim() || undefined,
           visibility: input.visibility,
         },
         tx,
