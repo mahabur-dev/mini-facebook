@@ -6,6 +6,8 @@ type BackendFeedUser = {
   firstName: string;
   lastName: string;
   email: string;
+  profileImageUrl: string | null;
+  profileImageStorageKey: string | null;
   status: string;
   lastLoginAt: string | null;
   createdAt: string;
@@ -89,15 +91,17 @@ function mapFeedPost(post: BackendFeedPost): FeedPostMock {
   return {
     id: post.id,
     author: authorName,
-    avatar: getAvatarForAuthor(post.authorId),
+    avatar: post.author.profileImageUrl ?? getAvatarForAuthor(post.authorId),
     timeLabel: formatRelativeTime(post.createdAt),
     visibility: post.visibility === "PRIVATE" ? "Private" : "Public",
     text: post.content ?? "",
-    media: post.media?.imageUrl ?? "/assets/images/feed_event1.png",
+    media: post.media?.imageUrl ?? null,
+    mediaType: post.media?.mimeType ?? null,
     likes: post.statistics?.likeCount ?? 0,
     comments: (post.statistics?.commentCount ?? 0) + (post.statistics?.replyCount ?? 0),
     shares: 0,
     liked: post.isLikedByCurrentUser,
+    isOwner: post.isOwner,
   };
 }
 

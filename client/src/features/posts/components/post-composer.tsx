@@ -1,12 +1,13 @@
 type PostComposerProps = {
   value: string;
-  onChange: (value: string) => void;
-  onSubmit: () => void;
+  onOpen: () => void;
   submitting?: boolean;
+  error?: string | null;
   authorAvatar?: string;
+  authorName?: string;
 };
 
-function ComposerActionIcons({ label }: { label: string }) {
+export function ComposerActionIcons({ label }: { label: string }) {
   if (label === "Photo") {
     return (
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20">
@@ -38,30 +39,42 @@ function ComposerActionIcons({ label }: { label: string }) {
   );
 }
 
-export function PostComposer({ value, onChange, onSubmit, submitting, authorAvatar = "/assets/images/txt_img.png" }: PostComposerProps) {
+export function PostComposer({
+  value,
+  onOpen,
+  submitting,
+  error,
+  authorAvatar = "/assets/images/txt_img.png",
+  authorName = "Current user",
+}: PostComposerProps) {
   const actionLabels = ["Photo", "Video", "Event", "Article"] as const;
 
   return (
-    <div id="composer" className="_feed_inner_text_area  _b_radious6 _padd_b24 _padd_t24 _padd_r24 _padd_l24 _mar_b16">
+    <div
+      id="composer"
+      className="_feed_inner_text_area _b_radious6 _padd_b24 _padd_t24 _padd_r24 _padd_l24 _mar_b16"
+    >
       <div className="_feed_inner_text_area_box">
         <div className="_feed_inner_text_area_box_image">
-          <img src={authorAvatar} alt="Image" className="_txt_img" />
+          <img src={authorAvatar} alt={authorName} className="_txt_img" />
         </div>
-        <div className="form-floating _feed_inner_text_area_box_form ">
-          <textarea className="form-control _textarea" placeholder="Leave a comment here" id="floatingTextarea" value={value} onChange={(event) => onChange(event.target.value)} />
-          <label className="_feed_textarea_label" htmlFor="floatingTextarea">
-            Write something ...
+        <div className="_feed_inner_text_area_box_form _feed_trigger_form">
+          <button type="button" className="_feed_textarea_label _feed_textarea_trigger" onClick={onOpen}>
+            {value ? value : "Write something ..."}
             <svg xmlns="http://www.w3.org/2000/svg" width="23" height="24" fill="none" viewBox="0 0 23 24">
               <path fill="#666" d="M19.504 19.209c.332 0 .601.289.601.646 0 .326-.226.596-.52.64l-.081.005h-6.276c-.332 0-.602-.289-.602-.645 0-.327.227-.597.52-.64l.082-.006h6.276zM13.4 4.417c1.139-1.223 2.986-1.223 4.125 0l1.182 1.268c1.14 1.223 1.14 3.205 0 4.427L9.82 19.649a2.619 2.619 0 01-1.916.85h-3.64c-.337 0-.61-.298-.6-.66l.09-3.941a3.019 3.019 0 01.794-1.982l8.852-9.5zm-.688 2.562l-7.313 7.85a1.68 1.68 0 00-.441 1.101l-.077 3.278h3.023c.356 0 .698-.133.968-.376l.098-.096 7.35-7.887-3.608-3.87zm3.962-1.65a1.633 1.633 0 00-2.423 0l-.688.737 3.606 3.87.688-.737c.631-.678.666-1.755.105-2.477l-.105-.124-1.183-1.268z" />
             </svg>
-          </label>
+          </button>
         </div>
+      </div>
+      <div className="_feed_composer_meta _feed_composer_meta_trigger">
+        {error ? <p className="_feed_composer_error">{error}</p> : null}
       </div>
       <div className="_feed_inner_text_area_bottom">
         <div className="_feed_inner_text_area_item">
           {actionLabels.map((label) => (
             <div key={label} className={`_feed_inner_text_area_bottom_${label.toLowerCase()} _feed_common`}>
-              <button type="button" className="_feed_inner_text_area_bottom_photo_link">
+              <button type="button" className="_feed_inner_text_area_bottom_photo_link" onClick={onOpen}>
                 <span className="_feed_inner_text_area_bottom_photo_iamge _mar_img">
                   <ComposerActionIcons label={label} />
                 </span>
@@ -71,7 +84,7 @@ export function PostComposer({ value, onChange, onSubmit, submitting, authorAvat
           ))}
         </div>
         <div className="_feed_inner_text_area_btn">
-          <button type="button" className="_feed_inner_text_area_btn_link" onClick={onSubmit} disabled={submitting || !value.trim()}>
+          <button type="button" className="_feed_inner_text_area_btn_link" disabled={submitting} onClick={onOpen}>
             <svg className="_mar_img" xmlns="http://www.w3.org/2000/svg" width="14" height="13" fill="none" viewBox="0 0 14 13">
               <path fill="#fff" fillRule="evenodd" d="M6.37 7.879l2.438 3.955a.335.335 0 00.34.162c.068-.01.23-.05.289-.247l3.049-10.297a.348.348 0 00-.09-.35.341.341 0 00-.34-.088L1.75 4.03a.34.34 0 00-.247.289.343.343 0 00.16.347L5.666 7.17 9.2 3.597a.5.5 0 01.712.703L6.37 7.88zM9.097 13c-.464 0-.89-.236-1.14-.641L5.372 8.165l-4.237-2.65a1.336 1.336 0 01-.622-1.331c.074-.536.441-.96.957-1.112L11.774.054a1.347 1.347 0 011.67 1.682l-3.05 10.296A1.332 1.332 0 019.098 13z" clipRule="evenodd" />
             </svg>
@@ -84,7 +97,7 @@ export function PostComposer({ value, onChange, onSubmit, submitting, authorAvat
           <div className="_feed_inner_text_area_item">
             {actionLabels.map((label) => (
               <div key={label} className={`_feed_inner_text_area_bottom_${label.toLowerCase()} _feed_common`}>
-                <button type="button" className="_feed_inner_text_area_bottom_photo_link">
+                <button type="button" className="_feed_inner_text_area_bottom_photo_link" onClick={onOpen}>
                   <span className="_feed_inner_text_area_bottom_photo_iamge _mar_img">
                     <ComposerActionIcons label={label} />
                   </span>
@@ -94,7 +107,7 @@ export function PostComposer({ value, onChange, onSubmit, submitting, authorAvat
             ))}
           </div>
           <div className="_feed_inner_text_area_btn">
-            <button type="button" className="_feed_inner_text_area_btn_link" onClick={onSubmit} disabled={submitting || !value.trim()}>
+            <button type="button" className="_feed_inner_text_area_btn_link" disabled={submitting} onClick={onOpen}>
               <svg className="_mar_img" xmlns="http://www.w3.org/2000/svg" width="14" height="13" fill="none" viewBox="0 0 14 13">
                 <path fill="#fff" fillRule="evenodd" d="M6.37 7.879l2.438 3.955a.335.335 0 00.34.162c.068-.01.23-.05.289-.247l3.049-10.297a.348.348 0 00-.09-.35.341.341 0 00-.34-.088L1.75 4.03a.34.34 0 00-.247.289.343.343 0 00.16.347L5.666 7.17 9.2 3.597a.5.5 0 01.712.703L6.37 7.88zM9.097 13c-.464 0-.89-.236-1.14-.641L5.372 8.165l-4.237-2.65a1.336 1.336 0 01-.622-1.331c.074-.536.441-.96.957-1.112L11.774.054a1.347 1.347 0 011.67 1.682l-3.05 10.296A1.332 1.332 0 019.098 13z" clipRule="evenodd" />
               </svg>

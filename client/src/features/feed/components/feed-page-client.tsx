@@ -6,7 +6,6 @@ import { cn } from "@/lib/cn";
 import { useInfiniteFeed } from "../hooks/use-infinite-feed";
 import { FeedContent } from "./feed-content";
 import { FeedHeader } from "./feed-header";
-import { FeedEmptyState } from "./feed-empty-state";
 import { FeedErrorState } from "./feed-error-state";
 import { FeedEndMessage } from "./feed-end-message";
 import { FeedLoadingSkeleton } from "./feed-loading-skeleton";
@@ -54,8 +53,7 @@ export function FeedPageClient() {
               <div className="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                 {feedQuery.isLoading ? <FeedLoadingSkeleton /> : null}
                 {feedQuery.isError ? <FeedErrorState /> : null}
-                {!feedQuery.isLoading && !feedQuery.isError && posts.length === 0 ? <FeedEmptyState /> : null}
-                {!feedQuery.isLoading && !feedQuery.isError && posts.length > 0 ? <FeedContent posts={posts} /> : null}
+                {!feedQuery.isLoading && !feedQuery.isError ? <FeedContent posts={posts} /> : null}
                 {!feedQuery.isLoading && !feedQuery.isError && posts.length > 0 && !feedQuery.hasNextPage ? <FeedEndMessage /> : null}
               </div>
               <div className="col-xl-3 col-lg-3 col-md-12 col-sm-12">

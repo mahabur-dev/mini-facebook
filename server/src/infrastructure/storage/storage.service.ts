@@ -31,12 +31,13 @@ export class StorageService {
 
   async uploadImage(file: UploadableImageFile): Promise<UploadedImage> {
     const folder = this.configService.get<string>("CLOUDINARY_FOLDER") ?? "mini-facebook";
+    const resourceType = file.mimetype.startsWith("video/") ? "video" : "image";
 
     return new Promise<UploadedImage>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder,
-          resource_type: "image",
+          resource_type: resourceType,
         },
         (error, result) => {
           if (error || !result) {
@@ -61,5 +62,6 @@ export class StorageService {
 
   async deleteImage(storageKey: string): Promise<void> {
     await cloudinary.uploader.destroy(storageKey, { resource_type: "image" });
+    await cloudinary.uploader.destroy(storageKey, { resource_type: "video" });
   }
 }

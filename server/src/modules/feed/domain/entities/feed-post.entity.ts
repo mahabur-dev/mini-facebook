@@ -14,6 +14,8 @@ export type FeedPostEntity = {
     firstName: string;
     lastName: string;
     email: string;
+    profileImageUrl: string | null;
+    profileImageStorageKey: string | null;
     status: string;
     lastLoginAt: Date | null;
     createdAt: Date;

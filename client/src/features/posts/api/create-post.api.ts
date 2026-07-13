@@ -1,7 +1,7 @@
 import { apiClient } from "@/lib/api/api-client";
 import type { FeedPostMock } from "@/features/feed/data/feed-mocks";
 
-export async function createPost(input: Pick<FeedPostMock, "text" | "visibility">) {
+export async function createPost(input: Pick<FeedPostMock, "text" | "visibility"> & { mediaId?: string | null }) {
   const result = await apiClient<{
     post: {
       id: string;
@@ -38,6 +38,7 @@ export async function createPost(input: Pick<FeedPostMock, "text" | "visibility"
     body: JSON.stringify({
       content: input.text,
       visibility: input.visibility.toUpperCase(),
+      mediaId: input.mediaId ?? undefined,
     }),
   });
 

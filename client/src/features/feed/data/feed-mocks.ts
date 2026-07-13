@@ -5,11 +5,13 @@ export type FeedPostMock = {
   timeLabel: string;
   visibility: "Public" | "Private";
   text: string;
-  media: string;
+  media?: string | null;
+  mediaType?: string | null;
   likes: number;
   comments: number;
   shares: number;
   liked?: boolean;
+  isOwner?: boolean;
 };
 
 export type FeedPageMock = {

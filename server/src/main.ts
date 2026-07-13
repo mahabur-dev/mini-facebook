@@ -9,7 +9,6 @@ import { ConfigService } from "@nestjs/config";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    cors: true,
     bodyParser: true,
   });
 
@@ -22,8 +21,10 @@ async function bootstrap() {
   app.use(helmet());
   app.use(cookieParser());
   app.enableCors({
-    origin: [appUrl, "http://localhost:3000"],
+    origin: createCorsOriginValidator(configService, port),
     credentials: true,
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   });
   app.useGlobalPipes(
     new ValidationPipe({
@@ -47,6 +48,33 @@ async function bootstrap() {
     // eslint-disable-next-line no-console
     console.log(`API listening on ${appUrl}`);
   }
+}
+
+function createCorsOriginValidator(configService: ConfigService, port: number) {
+  const configuredOrigins =
+    configService
+      .get<string>("CLIENT_ORIGINS")
+      ?.split(",")
+      .map((origin) => origin.trim())
+      .filter(Boolean) ?? [];
+
+  const allowedOrigins = new Set([
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3001",
+    `http://localhost:${port}`,
+    ...configuredOrigins,
+  ]);
+
+  return (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) => {
+    if (!origin || allowedOrigins.has(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`CORS blocked origin: ${origin}`), false);
+  };
 }
 
 void bootstrap();
