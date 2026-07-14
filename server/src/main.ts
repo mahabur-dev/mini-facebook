@@ -332,7 +332,7 @@ function createCorsOriginValidator(configService: ConfigService, port: number) {
     "http://127.0.0.1:3001",
     "https://mini-facebook-ochre.vercel.app",
     "https://mini-facebook-git-main-mahabur1814031-8144s-projects.vercel.app",
-    "https://mini-facebook-production.up.railway.app"
+    "https://mini-facebook-production.up.railway.app",
     `http://localhost:${port}`,
     ...configuredOrigins,
   ]);
