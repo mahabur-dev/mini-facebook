@@ -5,32 +5,48 @@ import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
 import { queryKeys } from "@/constants/query-keys";
 import { useToggleReaction } from "@/features/reactions/hooks/use-toggle-reaction";
 import { ReactionUsersModal } from "@/features/reactions/components/reaction-users-modal";
+import { CommentActions } from "./comment-actions";
+import { ReplyForm } from "./reply-form";
+import { canManageComment } from "../utils/comment-permissions";
 
 type ReplyItemProps = {
   reply: Comment;
-  onUpdateComment: (comment: Comment, content: string) => void;
-  onDeleteComment: (comment: Comment) => void;
+  onReplySubmit: (commentId: string, content: string) => void | Promise<void>;
+  onUpdateComment: (comment: Comment, content: string) => void | Promise<void>;
+  onDeleteComment: (comment: Comment) => void | Promise<void>;
+  replying?: boolean;
 };
 
-export function ReplyItem({ reply, onUpdateComment, onDeleteComment }: ReplyItemProps) {
+export function ReplyItem({ reply, onReplySubmit, onUpdateComment, onDeleteComment, replying }: ReplyItemProps) {
   const currentUser = useCurrentUser();
   const queryClient = useQueryClient();
   const toggleReaction = useToggleReaction();
-  const canManage = currentUser.data?.user.id === reply.authorId;
+  const canManage = canManageComment(reply, currentUser.data?.user.id);
+  const replyThreadId = reply.parentCommentId ?? reply.id;
+  const replyAvatar = currentUser.data?.user.profileImageUrl ?? "/assets/images/comment_img.png";
+  const [replyOpen, setReplyOpen] = useState(false);
+  const [replyText, setReplyText] = useState("");
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(reply.content);
   const [liked, setLiked] = useState(reply.liked);
   const [likeCount, setLikeCount] = useState(reply.likeCount);
   const [reactionUsersOpen, setReactionUsersOpen] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [replyError, setReplyError] = useState<string | null>(null);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const nextContent = editText.trim();
     if (!nextContent) {
       return;
     }
 
-    onUpdateComment(reply, nextContent);
-    setEditing(false);
+    setActionError(null);
+    try {
+      await onUpdateComment(reply, nextContent);
+      setEditing(false);
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Failed to update reply");
+    }
   };
 
   const handleToggleLike = async () => {
@@ -49,42 +65,110 @@ export function ReplyItem({ reply, onUpdateComment, onDeleteComment }: ReplyItem
     }
   };
 
+  const handleDeleteReply = async () => {
+    setActionError(null);
+    try {
+      await onDeleteComment(reply);
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Failed to delete reply");
+    }
+  };
+
+  const handleReplySubmit = async () => {
+    const nextReply = replyText.trim();
+    if (!nextReply) {
+      return;
+    }
+
+    setReplyError(null);
+    try {
+      await onReplySubmit(replyThreadId, nextReply);
+      setReplyText("");
+      setReplyOpen(false);
+    } catch (error) {
+      setReplyError(error instanceof Error ? error.message : "Failed to reply");
+    }
+  };
+
   return (
-    <div className="ms-4 mt-2 p-2 rounded-3 bg-light">
-      <strong className="d-block">{reply.authorName}</strong>
-      {editing ? (
-        <div>
-          <textarea className="form-control _comment_textarea" value={editText} onChange={(event) => setEditText(event.target.value)} />
-          <div className="d-flex gap-2 mt-1">
-            <button type="button" className="btn btn-primary btn-sm" onClick={handleSave}>
-              Save
-            </button>
-            <button type="button" className="btn btn-light btn-sm" onClick={() => setEditing(false)}>
-              Cancel
+    <div className="_reply_item">
+      <div className="_comment_image _reply_item_image">
+        <a href="/profile.html" className="_comment_image_link">
+          <img src={reply.authorAvatar ?? "/assets/images/txt_img.png"} alt={reply.authorName} className="_comment_img1" />
+        </a>
+      </div>
+      <div className="_comment_area">
+        <div className="_comment_details _reply_details">
+          <div className="_comment_details_top">
+            <div className="_comment_name">
+              <a href="/profile.html">
+                <h4 className="_comment_name_title">{reply.authorName}</h4>
+              </a>
+            </div>
+          </div>
+          {editing ? (
+            <div className="_comment_edit_box">
+              <textarea className="form-control _comment_textarea" value={editText} onChange={(event) => setEditText(event.target.value)} />
+              <div className="_comment_edit_actions">
+                <button type="button" className="_comment_edit_btn _comment_edit_btn_primary" onClick={handleSave}>
+                  Save
+                </button>
+                <button type="button" className="_comment_edit_btn" onClick={() => setEditing(false)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p className="_comment_status_text">
+              <span>{reply.content}</span>
+            </p>
+          )}
+          <div className="_total_reactions">
+            <div className="_total_react">
+              <span className="_reaction_like">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+                </svg>
+              </span>
+              <span className="_reaction_heart">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              </span>
+            </div>
+            <button type="button" className="_total _reaction_count_btn" onClick={() => setReactionUsersOpen(true)}>
+              {likeCount}
             </button>
           </div>
+          <CommentActions
+            liked={liked}
+            canManage={canManage}
+            showReply
+            className="_reply_comment_actions"
+            onToggleLike={handleToggleLike}
+            onReply={() => setReplyOpen((value) => !value)}
+            onEdit={() => {
+              setEditText(reply.content);
+              setEditing(true);
+            }}
+            onDelete={handleDeleteReply}
+          />
         </div>
-      ) : (
-        <p className="mb-0">{reply.content}</p>
-      )}
-      <div className="d-flex gap-2 mt-1">
-        <button type="button" className="btn btn-link btn-sm p-0" onClick={handleToggleLike}>
-          {liked ? "Unlike" : "Like"}
-        </button>
-        <button type="button" className="btn btn-link btn-sm p-0 text-muted" onClick={() => setReactionUsersOpen(true)}>
-          {likeCount}
-        </button>
+        {replyOpen ? (
+          <ReplyForm
+            value={replyText}
+            onChange={(value) => {
+              setReplyError(null);
+              setReplyText(value);
+            }}
+            onSubmit={handleReplySubmit}
+            submitting={replying}
+            avatarSrc={replyAvatar}
+          />
+        ) : null}
+        {replyError ? <p className="_comment_fetch_state _comment_fetch_state_error _reply_action_error">{replyError}</p> : null}
+        {actionError ? <p className="_comment_fetch_state _comment_fetch_state_error _reply_action_error">{actionError}</p> : null}
       </div>
-      {canManage ? (
-        <div className="d-flex gap-2 mt-1">
-          <button type="button" className="btn btn-link btn-sm p-0" onClick={() => setEditing(true)}>
-            Edit
-          </button>
-          <button type="button" className="btn btn-link btn-sm p-0 text-danger" onClick={() => onDeleteComment(reply)}>
-            Delete
-          </button>
-        </div>
-      ) : null}
       <ReactionUsersModal open={reactionUsersOpen} onClose={() => setReactionUsersOpen(false)} targetId={reply.id} targetType="reply" />
     </div>
   );

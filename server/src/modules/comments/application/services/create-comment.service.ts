@@ -31,11 +31,16 @@ export class CreateCommentService {
       let parentComment: CommentEntity | null = null;
 
       if (parentCommentId) {
-        parentComment = await this.commentsRepository.findById(parentCommentId, tx);
+        const replyTarget = await this.commentsRepository.findById(parentCommentId, tx);
+        if (!replyTarget) {
+          throw new CommentNotFoundException();
+        }
+        this.replyCreationPolicy.canReply(replyTarget);
+        parentCommentId = replyTarget.parentCommentId ?? replyTarget.id;
+        parentComment = replyTarget.parentCommentId ? await this.commentsRepository.findById(parentCommentId, tx) : replyTarget;
         if (!parentComment) {
           throw new CommentNotFoundException();
         }
-        this.replyCreationPolicy.canReply(parentComment);
         postId = parentComment.postId;
       }
 

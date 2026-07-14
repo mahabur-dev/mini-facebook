@@ -637,6 +637,144 @@ a {
   color: var(--bg2);
 }
 
+._reply_list {
+  display: grid;
+  gap: 38px;
+  margin: 10px 0 0 36px;
+}
+
+._reply_item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+._reply_item_image {
+  flex: 0 0 36px;
+}
+
+._reply_item ._comment_img1 {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+._reply_details {
+  display: inline-block;
+  min-width: 180px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: rgba(24, 144, 255, 0.06);
+}
+
+._reply_comment_actions ._comment_reply_num {
+  bottom: -32px;
+}
+
+._total_react {
+  column-gap: 3px;
+}
+
+._total_react span {
+  margin-left: 0;
+}
+
+._reply_details ._comment_status_text {
+  margin: 4px 0 0;
+}
+
+._reply_form {
+  margin: 12px 0 0 36px;
+}
+
+._reply_form ._feed_inner_comment_box_form {
+  max-width: 320px;
+}
+
+._comment_replies_toggle {
+  border: 0;
+  background: transparent;
+  color: var(--color5);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+._comment_edit_box {
+  min-width: 260px;
+}
+
+._comment_edit_actions {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0 0;
+}
+
+._comment_edit_btn {
+  border: 1px solid rgba(102, 102, 102, 0.18);
+  border-radius: 6px;
+  background: var(--bg2);
+  color: var(--color7);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 8px 12px;
+}
+
+._comment_edit_btn_primary {
+  border-color: var(--color5);
+  background: var(--color5);
+  color: var(--bg2);
+}
+
+._comment_img,
+._comment_img1 {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+._comment_fetch_state {
+  color: var(--color7);
+  font-size: 13px;
+  line-height: 1.3;
+  margin: 12px 0 0 58px;
+}
+
+._comment_fetch_state_error {
+  color: #dc3545;
+}
+
+._reply_fetch_state {
+  margin-left: 36px;
+}
+
+._reply_action_error {
+  margin-left: 0;
+  margin-top: 8px;
+}
+
+._dark_wrapper ._reply_details {
+  background: #11263c;
+}
+
+._dark_wrapper ._comment_replies_toggle {
+  color: var(--color5);
+}
+
+._dark_wrapper ._comment_edit_btn {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: var(--bg5);
+  color: var(--bg2);
+}
+
+._dark_wrapper ._comment_edit_btn_primary {
+  border-color: var(--color5);
+  background: var(--color5);
+}
+
 @media (max-width: 575px) {
   ._post_modal_feed_actions._feed_inner_text_area_bottom {
     align-items: stretch;

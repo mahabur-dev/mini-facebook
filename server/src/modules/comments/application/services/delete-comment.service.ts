@@ -20,8 +20,9 @@ export class DeleteCommentService {
       }
       this.commentDeletionPolicy.canDelete(userId, current);
 
-      await this.commentsRepository.delete(commentId, new Date(), tx);
+      const deletedAt = new Date();
       if (current.parentCommentId) {
+        await this.commentsRepository.delete(commentId, deletedAt, tx);
         await tx.commentStatistics.update({
           where: { commentId: current.parentCommentId },
           data: { replyCount: { decrement: 1 } },
@@ -30,13 +31,18 @@ export class DeleteCommentService {
           where: { postId: current.postId },
           data: { replyCount: { decrement: 1 } },
         });
+        return { success: true, deletedCommentCount: 0, deletedReplyCount: 1 };
       } else {
+        const { replyCount } = await this.commentsRepository.deleteThread(commentId, deletedAt, tx);
         await tx.postStatistics.update({
           where: { postId: current.postId },
-          data: { commentCount: { decrement: 1 } },
+          data: {
+            commentCount: { decrement: 1 },
+            ...(replyCount > 0 ? { replyCount: { decrement: replyCount } } : {}),
+          },
         });
+        return { success: true, deletedCommentCount: 1, deletedReplyCount: replyCount };
       }
-      return { success: true };
     });
   }
 }

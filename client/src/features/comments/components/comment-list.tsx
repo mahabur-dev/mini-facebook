@@ -3,9 +3,9 @@ import { CommentItem } from "./comment-item";
 
 type CommentListProps = {
   comments: Comment[];
-  onReplySubmit: (commentId: string, content: string) => void;
-  onUpdateComment: (comment: Comment, content: string) => void;
-  onDeleteComment: (comment: Comment) => void;
+  onReplySubmit: (commentId: string, content: string) => void | Promise<void>;
+  onUpdateComment: (comment: Comment, content: string) => void | Promise<void>;
+  onDeleteComment: (comment: Comment) => void | Promise<void>;
   replyingCommentId?: string | null;
 };
 
@@ -18,11 +18,11 @@ export function CommentList({ comments, onReplySubmit, onUpdateComment, onDelete
 
   return (
     <div className="_timline_comment_main">
-      <div className="_previous_comment">
+      {topLevelComments.length > 4 ? <div className="_previous_comment">
         <button type="button" className="_previous_comment_txt">
-          View 4 previous comments
+          View previous comments
         </button>
-      </div>
+      </div> : null}
       {topLevelComments.map((comment) => (
         <CommentItem
           key={comment.id}

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/constants/query-keys";
+import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
 import type { Comment } from "../types/comment.types";
 import { useComments } from "../hooks/use-comments";
 import { useCreateComment } from "../hooks/use-create-comment";
@@ -19,6 +20,7 @@ type CommentSectionProps = {
 
 export function CommentSection({ postId, onCommentCreated }: CommentSectionProps) {
   const queryClient = useQueryClient();
+  const currentUser = useCurrentUser();
   const commentsQuery = useComments(postId);
   const createComment = useCreateComment();
   const createReply = useCreateReply();
@@ -28,18 +30,27 @@ export function CommentSection({ postId, onCommentCreated }: CommentSectionProps
   const [replyingCommentId, setReplyingCommentId] = useState<string | null>(null);
 
   const comments = useMemo(() => commentsQuery.data ?? [], [commentsQuery.data]);
+  const user = currentUser.data?.user;
+  const currentUserAvatar = user?.profileImageUrl ?? "/assets/images/comment_img.png";
 
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) {
       return;
     }
 
-    await createComment.mutateAsync({
+    const createdComment = await createComment.mutateAsync({
       postId,
       content: commentText.trim(),
     });
 
     setCommentText("");
+    queryClient.setQueryData<Comment[]>(queryKeys.feed.comments(postId), (existing = []) => {
+      if (existing.some((comment) => comment.id === createdComment.id)) {
+        return existing;
+      }
+
+      return [createdComment, ...existing];
+    });
     incrementFeedCommentCount(1);
     await queryClient.invalidateQueries({ queryKey: queryKeys.feed.comments(postId) });
     await queryClient.invalidateQueries({ queryKey: queryKeys.feed.list });
@@ -51,15 +62,32 @@ export function CommentSection({ postId, onCommentCreated }: CommentSectionProps
       return;
     }
 
-    await createReply.mutateAsync({
-      commentId,
-      content: content.trim(),
-    });
+    setReplyingCommentId(commentId);
 
-    setReplyingCommentId(null);
-    await queryClient.invalidateQueries({ queryKey: queryKeys.feed.comments(postId) });
-    await queryClient.invalidateQueries({ queryKey: queryKeys.feed.replies(commentId) });
-    await queryClient.invalidateQueries({ queryKey: queryKeys.feed.list });
+    try {
+      const createdReply = await createReply.mutateAsync({
+        commentId,
+        content: content.trim(),
+      });
+
+      queryClient.setQueryData<Comment[]>(queryKeys.feed.replies(commentId), (existing = []) => {
+        if (existing.some((reply) => reply.id === createdReply.id)) {
+          return existing;
+        }
+
+        return [createdReply, ...existing];
+      });
+      queryClient.setQueryData<Comment[]>(queryKeys.feed.comments(postId), (existing = []) =>
+        existing.map((comment) => (comment.id === commentId ? { ...comment, replyCount: comment.replyCount + 1 } : comment)),
+      );
+      incrementFeedCommentCount(1);
+      await queryClient.invalidateQueries({ queryKey: queryKeys.feed.comments(postId) });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.feed.replies(commentId) });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.feed.list });
+      onCommentCreated?.();
+    } finally {
+      setReplyingCommentId(null);
+    }
   };
 
   const handleUpdateComment = async (comment: Comment, content: string) => {
@@ -71,9 +99,21 @@ export function CommentSection({ postId, onCommentCreated }: CommentSectionProps
   };
 
   const handleDeleteComment = async (comment: Comment) => {
-    await deleteComment.mutateAsync(comment.id);
-    if (!comment.parentCommentId) {
-      incrementFeedCommentCount(-1);
+    const result = await deleteComment.mutateAsync(comment.id);
+    const deletedTotal = (result.deletedCommentCount ?? 0) + (result.deletedReplyCount ?? 0);
+    incrementFeedCommentCount(deletedTotal > 0 ? -deletedTotal : -1);
+    if (comment.parentCommentId) {
+      queryClient.setQueryData<Comment[]>(queryKeys.feed.replies(comment.parentCommentId), (existing = []) =>
+        existing.filter((reply) => reply.id !== comment.id),
+      );
+      queryClient.setQueryData<Comment[]>(queryKeys.feed.comments(postId), (existing = []) =>
+        existing.map((item) => (item.id === comment.parentCommentId ? { ...item, replyCount: Math.max(0, item.replyCount - 1) } : item)),
+      );
+    } else {
+      queryClient.setQueryData<Comment[]>(queryKeys.feed.comments(postId), (existing = []) =>
+        existing.filter((item) => item.id !== comment.id),
+      );
+      queryClient.removeQueries({ queryKey: queryKeys.feed.replies(comment.id) });
     }
     await queryClient.invalidateQueries({ queryKey: queryKeys.feed.comments(postId) });
     if (comment.parentCommentId) {
@@ -100,7 +140,15 @@ export function CommentSection({ postId, onCommentCreated }: CommentSectionProps
 
   return (
     <div className="_feed_inner_timeline_cooment_area">
-      <CommentForm value={commentText} onChange={setCommentText} onSubmit={handleCommentSubmit} submitting={createComment.isPending} />
+      <CommentForm
+        value={commentText}
+        onChange={setCommentText}
+        onSubmit={handleCommentSubmit}
+        submitting={createComment.isPending}
+        avatarSrc={currentUserAvatar}
+      />
+      {commentsQuery.isLoading ? <p className="_comment_fetch_state">Loading comments...</p> : null}
+      {commentsQuery.isError ? <p className="_comment_fetch_state _comment_fetch_state_error">Could not load comments. Please refresh and try again.</p> : null}
       <CommentList
         comments={comments}
         onReplySubmit={handleReplySubmit}

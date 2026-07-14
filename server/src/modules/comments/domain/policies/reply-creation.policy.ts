@@ -5,7 +5,7 @@ import { CommentEntity } from "../entities/comment.entity";
 @Injectable()
 export class ReplyCreationPolicy {
   canReply(parentComment: CommentEntity | null) {
-    if (!parentComment || parentComment.parentCommentId) {
+    if (!parentComment || parentComment.deletedAt) {
       throw new ReplyDepthExceededException();
     }
   }
