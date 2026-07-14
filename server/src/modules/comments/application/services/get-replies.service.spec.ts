@@ -4,11 +4,16 @@ describe("GetRepliesService", () => {
   const commentsRepository = {
     findRepliesPaginated: jest.fn(),
   };
+  const prisma = {
+    commentLike: {
+      findMany: jest.fn().mockResolvedValue([]),
+    },
+  };
   const commentVisibilityPolicy = {
     canView: jest.fn(),
   };
 
-  const service = new GetRepliesService(commentsRepository as any, commentVisibilityPolicy as any);
+  const service = new GetRepliesService(prisma as any, commentsRepository as any, commentVisibilityPolicy as any);
 
   beforeEach(() => {
     jest.clearAllMocks();

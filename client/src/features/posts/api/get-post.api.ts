@@ -1,6 +1,7 @@
-import { mockDb } from "@/lib/mock/mock-db";
+import { apiClient } from "@/lib/api/api-client";
+import { mapFeedPost, type BackendFeedPost } from "@/features/feed/api/get-feed.api";
 
 export async function getPost(id: string) {
-  await new Promise((resolve) => setTimeout(resolve, 80));
-  return mockDb.feedPosts.find((post) => post.id === id) ?? null;
+  const response = await apiClient<{ post: BackendFeedPost }>(`/posts/${id}`);
+  return mapFeedPost(response.post);
 }

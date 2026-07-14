@@ -7,6 +7,8 @@ export type FeedPostMock = {
   text: string;
   media?: string | null;
   mediaType?: string | null;
+  mediaKind?: "image" | "video" | "document" | "file" | null;
+  mediaName?: string | null;
   likes: number;
   comments: number;
   shares: number;

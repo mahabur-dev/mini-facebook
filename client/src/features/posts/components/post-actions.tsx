@@ -6,9 +6,10 @@ type PostActionsProps = {
   comments: number;
   shares: number;
   onToggleLike?: () => void;
+  onOpenReactions?: () => void;
 };
 
-export function PostActions({ liked, likes, comments, shares, onToggleLike }: PostActionsProps) {
+export function PostActions({ liked, likes, comments, shares, onToggleLike, onOpenReactions }: PostActionsProps) {
   const reactionCount = likes > 9 ? "9+" : String(likes);
 
   return (
@@ -20,7 +21,9 @@ export function PostActions({ liked, likes, comments, shares, onToggleLike }: Po
           <img src="/assets/images/react_img3.png" alt="Image" className="_react_img _rect_img_mbl_none" />
           <img src="/assets/images/react_img4.png" alt="Image" className="_react_img _rect_img_mbl_none" />
           <img src="/assets/images/react_img5.png" alt="Image" className="_react_img _rect_img_mbl_none" />
-          <p className="_feed_inner_timeline_total_reacts_para">{reactionCount}</p>
+          <button type="button" className="_feed_inner_timeline_total_reacts_para _reaction_count_btn" onClick={onOpenReactions}>
+            {reactionCount}
+          </button>
         </div>
         <div className="_feed_inner_timeline_total_reacts_txt">
           <p className="_feed_inner_timeline_total_reacts_para1">

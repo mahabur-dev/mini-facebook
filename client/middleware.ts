@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
   const session = request.cookies.get("buddy-session")?.value;
-  const isFeedRoute = request.nextUrl.pathname.startsWith("/feed");
+  const isProtectedRoute = request.nextUrl.pathname.startsWith("/feed") || request.nextUrl.pathname.startsWith("/profile");
 
-  if (isFeedRoute && !session) {
+  if (isProtectedRoute && !session) {
     const loginUrl = new URL("/login", request.url);
     return NextResponse.redirect(loginUrl);
   }
@@ -13,5 +13,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/feed/:path*"],
+  matcher: ["/feed/:path*", "/profile/:path*"],
 };

@@ -4,10 +4,12 @@ import { CommentItem } from "./comment-item";
 type CommentListProps = {
   comments: Comment[];
   onReplySubmit: (commentId: string, content: string) => void;
+  onUpdateComment: (comment: Comment, content: string) => void;
+  onDeleteComment: (comment: Comment) => void;
   replyingCommentId?: string | null;
 };
 
-export function CommentList({ comments, onReplySubmit, replyingCommentId }: CommentListProps) {
+export function CommentList({ comments, onReplySubmit, onUpdateComment, onDeleteComment, replyingCommentId }: CommentListProps) {
   const topLevelComments = comments.filter((comment) => !comment.parentCommentId);
 
   if (!topLevelComments.length) {
@@ -22,7 +24,14 @@ export function CommentList({ comments, onReplySubmit, replyingCommentId }: Comm
         </button>
       </div>
       {topLevelComments.map((comment) => (
-        <CommentItem key={comment.id} comment={comment} onReplySubmit={onReplySubmit} replying={replyingCommentId === comment.id} />
+        <CommentItem
+          key={comment.id}
+          comment={comment}
+          onReplySubmit={onReplySubmit}
+          onUpdateComment={onUpdateComment}
+          onDeleteComment={onDeleteComment}
+          replying={replyingCommentId === comment.id}
+        />
       ))}
     </div>
   );

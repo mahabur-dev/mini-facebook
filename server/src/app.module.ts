@@ -6,7 +6,6 @@ import { StorageModule } from "./infrastructure/storage/storage.module";
 import { AuthenticationModule } from "./modules/authentication/authentication.module";
 import { HealthModule } from "./modules/health/health.module";
 import { UsersModule } from "./modules/users/users.module";
-import { SessionsModule } from "./modules/sessions/sessions.module";
 import { PostsModule } from "./modules/posts/posts.module";
 import { FeedModule } from "./modules/feed/feed.module";
 import { MediaModule } from "./modules/media/media.module";
@@ -27,7 +26,6 @@ import { validateEnvironment } from "./config/environment.validation";
     HealthModule,
     AuthenticationModule,
     UsersModule,
-    SessionsModule,
     PostsModule,
     FeedModule,
     MediaModule,

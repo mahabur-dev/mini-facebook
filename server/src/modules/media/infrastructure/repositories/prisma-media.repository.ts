@@ -7,6 +7,7 @@ function mapMedia(media: any): MediaEntity | null {
   return media
     ? ({
         ...media,
+        fileUrl: media.imageUrl,
         fileSize: media.fileSize,
       } as MediaEntity)
     : null;
@@ -24,7 +25,7 @@ export class PrismaMediaRepository implements MediaRepository {
     const media = await this.client(tx).postMedia.create({
       data: {
         ownerId: input.ownerId,
-        imageUrl: input.imageUrl,
+        imageUrl: input.fileUrl,
         storageKey: input.storageKey,
         mimeType: input.mimeType,
         fileSize: input.fileSize,

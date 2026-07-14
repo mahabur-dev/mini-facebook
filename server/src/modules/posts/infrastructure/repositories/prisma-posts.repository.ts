@@ -33,6 +33,7 @@ function mapPost(post: any): PostEntity | null {
     media: post.media
       ? {
           ...post.media,
+          fileUrl: post.media.imageUrl,
           fileSize: post.media.fileSize,
         }
       : null,
@@ -64,8 +65,8 @@ export class PrismaPostsRepository implements PostsRepository {
   }
 
   async findById(id: string, tx?: unknown): Promise<PostEntity | null> {
-    const post = await this.client(tx).post.findUnique({
-      where: { id },
+    const post = await this.client(tx).post.findFirst({
+      where: { id, deletedAt: null },
       include: {
         author: true,
         media: true,

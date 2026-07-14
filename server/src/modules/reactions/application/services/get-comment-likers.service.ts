@@ -39,7 +39,7 @@ export class GetCommentLikersService {
     const last = trimmed[trimmed.length - 1];
 
     return {
-      users: trimmed.map((item) => presentUser(item.user)),
+      users: trimmed.map((item: any) => presentUser(item.user)),
       nextCursor: hasNextPage && last ? encodeCursor({ createdAt: last.createdAt, id: last.id }) : null,
     };
   }

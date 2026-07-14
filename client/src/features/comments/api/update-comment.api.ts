@@ -1,4 +1,11 @@
+import { apiClient } from "@/lib/api/api-client";
+import type { BackendComment } from "../types/comment.types";
+import { mapComment } from "./comment.mapper";
+
 export async function updateComment(id: string, content: string) {
-  await new Promise((resolve) => setTimeout(resolve, 80));
-  return { id, content };
+  const response = await apiClient<{ comment: BackendComment }>(`/comments/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({ content }),
+  });
+  return mapComment(response.comment);
 }

@@ -2,7 +2,7 @@ import { MediaEntity } from "../entities/media.entity";
 
 export interface CreateMediaInput {
   ownerId: string;
-  imageUrl: string;
+  fileUrl: string;
   storageKey: string;
   mimeType: string;
   fileSize: bigint;

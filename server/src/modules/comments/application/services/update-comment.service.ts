@@ -13,7 +13,7 @@ export class UpdateCommentService {
   ) {}
 
   async execute(userId: string, commentId: string, input: { content: string }) {
-    return this.prisma.$transaction(async (tx) => {
+    return this.prisma.$transaction(async (tx: any) => {
       const current = await this.commentsRepository.findById(commentId, tx);
       if (!current) {
         throw new CommentNotFoundException();

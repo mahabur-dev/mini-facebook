@@ -13,7 +13,7 @@ export class DeleteCommentService {
   ) {}
 
   async execute(userId: string, commentId: string) {
-    return this.prisma.$transaction(async (tx) => {
+    return this.prisma.$transaction(async (tx: any) => {
       const current = await this.commentsRepository.findById(commentId, tx);
       if (!current) {
         throw new CommentNotFoundException();
@@ -21,6 +21,21 @@ export class DeleteCommentService {
       this.commentDeletionPolicy.canDelete(userId, current);
 
       await this.commentsRepository.delete(commentId, new Date(), tx);
+      if (current.parentCommentId) {
+        await tx.commentStatistics.update({
+          where: { commentId: current.parentCommentId },
+          data: { replyCount: { decrement: 1 } },
+        });
+        await tx.postStatistics.update({
+          where: { postId: current.postId },
+          data: { replyCount: { decrement: 1 } },
+        });
+      } else {
+        await tx.postStatistics.update({
+          where: { postId: current.postId },
+          data: { commentCount: { decrement: 1 } },
+        });
+      }
       return { success: true };
     });
   }

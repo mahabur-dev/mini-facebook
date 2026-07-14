@@ -12,7 +12,7 @@ export class CommentLikeService {
   ) {}
 
   async execute(userId: string, commentId: string) {
-    return this.prisma.$transaction(async (tx) => {
+    return this.prisma.$transaction(async (tx: any) => {
       const comment = await this.commentsRepository.findById(commentId, tx);
       await this.commentLikePolicy.canLike(userId, comment);
 

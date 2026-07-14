@@ -1,6 +1,8 @@
-import { mockDb } from "@/lib/mock/mock-db";
+import { apiClient } from "@/lib/api/api-client";
+import type { BackendComment } from "../types/comment.types";
+import { mapComment } from "./comment.mapper";
 
 export async function getComments(postId: string) {
-  await new Promise((resolve) => setTimeout(resolve, 80));
-  return mockDb.comments.filter((comment) => comment.postId === postId);
+  const response = await apiClient<{ comments: BackendComment[]; nextCursor: string | null }>(`/posts/${postId}/comments?limit=50`);
+  return response.comments.map(mapComment);
 }

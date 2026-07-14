@@ -1,0 +1,38 @@
+enum PostVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+model Post {
+  id         String         @id @default(uuid()) @db.Uuid
+  authorId   String         @map("author_id") @db.Uuid
+  content    String?
+  visibility PostVisibility
+  createdAt  DateTime       @default(now()) @map("created_at")
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+  deletedAt  DateTime?      @map("deleted_at")
+
+  author     User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  media      PostMedia?
+  statistics PostStatistics?
+  comments   Comment[]
+  likes      PostLike[]
+
+  @@index([authorId])
+  @@index([createdAt(sort: Desc), id(sort: Desc)])
+  @@index([visibility, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([authorId, createdAt(sort: Desc), id(sort: Desc)])
+  @@map("posts")
+}
+
+model PostStatistics {
+  postId       String   @id @map("post_id") @db.Uuid
+  likeCount    Int      @default(0) @map("like_count")
+  commentCount Int      @default(0) @map("comment_count")
+  replyCount   Int      @default(0) @map("reply_count")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("post_statistics")
+}

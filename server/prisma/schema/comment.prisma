@@ -1,0 +1,33 @@
+model Comment {
+  id              String    @id @default(uuid()) @db.Uuid
+  postId          String    @map("post_id") @db.Uuid
+  authorId        String    @map("author_id") @db.Uuid
+  parentCommentId String?   @map("parent_comment_id") @db.Uuid
+  content         String
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  deletedAt       DateTime? @map("deleted_at")
+
+  post          Post               @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author        User               @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parentComment Comment?           @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
+  replies       Comment[]          @relation("CommentReplies")
+  statistics    CommentStatistics?
+  likes         CommentLike[]
+
+  @@index([postId, createdAt, id])
+  @@index([parentCommentId, createdAt, id])
+  @@index([authorId])
+  @@map("comments")
+}
+
+model CommentStatistics {
+  commentId  String   @id @map("comment_id") @db.Uuid
+  likeCount  Int      @default(0) @map("like_count")
+  replyCount Int      @default(0) @map("reply_count")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@map("comment_statistics")
+}

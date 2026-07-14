@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { CommentSection } from "@/features/comments/components/comment-section";
 import { useToggleReaction } from "@/features/reactions/hooks/use-toggle-reaction";
 import { queryKeys } from "@/constants/query-keys";
@@ -11,20 +12,25 @@ import { PostMedia } from "@/features/posts/components/post-media";
 import { PostMenu } from "@/features/posts/components/post-menu";
 import { PostComposerModal } from "@/features/posts/components/post-composer-modal";
 import { useUpdatePost } from "@/features/posts/hooks/use-update-post";
+import { useDeletePost } from "@/features/posts/hooks/use-delete-post";
+import { ReactionUsersModal } from "@/features/reactions/components/reaction-users-modal";
 
 type FeedPostCardProps = {
   post: FeedPostMock;
 };
 
 export function FeedPostCard({ post }: FeedPostCardProps) {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const toggleReaction = useToggleReaction();
   const updatePost = useUpdatePost();
+  const deletePost = useDeletePost();
   const [liked, setLiked] = useState(Boolean(post.liked));
   const [likes, setLikes] = useState(post.likes);
   const [commentCount, setCommentCount] = useState(post.comments);
   const [menuOpen, setMenuOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [reactionUsersOpen, setReactionUsersOpen] = useState(false);
   const [editText, setEditText] = useState(post.text);
   const [editVisibility, setEditVisibility] = useState(post.visibility);
   const [editError, setEditError] = useState<string | null>(null);
@@ -84,6 +90,29 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
     }
   };
 
+  const handleDeletePost = async () => {
+    if (!window.confirm("Delete this post?")) {
+      return;
+    }
+
+    await deletePost.mutateAsync(post.id);
+    queryClient.setQueryData(queryKeys.feed.list, (existing: unknown) => {
+      if (!existing || typeof existing !== "object" || !("pages" in existing)) {
+        return existing;
+      }
+
+      return {
+        ...(existing as { pages: Array<{ items: Array<{ id: string }> }> }),
+        pages: (existing as { pages: Array<{ items: Array<{ id: string }> }> }).pages.map((page) => ({
+          ...page,
+          items: page.items.filter((item) => item.id !== post.id),
+        })),
+      };
+    });
+    await queryClient.invalidateQueries({ queryKey: queryKeys.feed.list });
+    router.refresh();
+  };
+
   return (
     <>
       <div className="_feed_inner_timeline_post_area _b_radious6 _padd_b24 _padd_t24 _mar_b16">
@@ -95,11 +124,32 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
             visibility={post.visibility}
             onMenuToggle={() => setMenuOpen((value) => !value)}
             menuOpen={menuOpen}
-            menu={<PostMenu open={menuOpen} canEdit={post.isOwner} onEdit={handleOpenEdit} />}
+            menu={
+              <PostMenu
+                open={menuOpen}
+                canEdit={post.isOwner}
+                onEdit={handleOpenEdit}
+                onDelete={handleDeletePost}
+                deleting={deletePost.isPending}
+              />
+            }
           />
           <PostContent text={post.text} />
-          <PostMedia src={post.media} alt={`${post.author} post media`} mimeType={post.mediaType} />
-          <PostActions liked={liked} likes={likes} comments={commentCount} shares={post.shares} onToggleLike={handleToggleLike} />
+          <PostMedia
+            src={post.media}
+            alt={`${post.author} post media`}
+            mimeType={post.mediaType}
+            mediaKind={post.mediaKind}
+            name={post.mediaName}
+          />
+          <PostActions
+            liked={liked}
+            likes={likes}
+            comments={commentCount}
+            shares={post.shares}
+            onToggleLike={handleToggleLike}
+            onOpenReactions={() => setReactionUsersOpen(true)}
+          />
           <CommentSection postId={post.id} onCommentCreated={() => setCommentCount((value) => value + 1)} />
         </div>
       </div>
@@ -117,7 +167,7 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
         authorAvatar={post.avatar}
         value={editText}
         visibility={editVisibility}
-        media={post.media ? { previewUrl: post.media, mimeType: post.mediaType ?? "image/jpeg", name: `${post.author} post media` } : null}
+        media={post.media ? { previewUrl: post.media, mimeType: post.mediaType ?? "image/jpeg", name: post.mediaName ?? `${post.author} post media` } : null}
         onChange={(value) => {
           setEditError(null);
           setEditText(value);
@@ -130,6 +180,7 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
         submitting={updatePost.isPending}
         error={editError}
       />
+      <ReactionUsersModal open={reactionUsersOpen} onClose={() => setReactionUsersOpen(false)} targetId={post.id} targetType="post" />
     </>
   );
 }

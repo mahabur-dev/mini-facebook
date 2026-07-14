@@ -4,9 +4,11 @@ type PostMenuProps = {
   open: boolean;
   canEdit?: boolean;
   onEdit?: () => void;
+  onDelete?: () => void;
+  deleting?: boolean;
 };
 
-export function PostMenu({ open, canEdit, onEdit }: PostMenuProps) {
+export function PostMenu({ open, canEdit, onEdit, onDelete, deleting }: PostMenuProps) {
   return (
     <div id="_timeline_drop" className={cn("_feed_timeline_dropdown _timeline_dropdown", open && "show")}>
       <ul className="_feed_timeline_dropdown_list">
@@ -53,16 +55,18 @@ export function PostMenu({ open, canEdit, onEdit }: PostMenuProps) {
             </button>
           </li>
         ) : null}
+        {canEdit ? (
         <li className="_feed_timeline_dropdown_item">
-          <a href="#0" className="_feed_timeline_dropdown_link">
+          <button type="button" className="_feed_timeline_dropdown_link _feed_timeline_dropdown_btn" onClick={onDelete} disabled={deleting}>
             <span>
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 18 18">
                 <path stroke="#1890FF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" d="M2.25 4.5h13.5M6 4.5V3a1.5 1.5 0 011.5-1.5h3A1.5 1.5 0 0112 3v1.5m2.25 0V15a1.5 1.5 0 01-1.5 1.5h-7.5a1.5 1.5 0 01-1.5-1.5V4.5h10.5zM7.5 8.25v4.5M10.5 8.25v4.5" />
               </svg>
             </span>
-            Delete Post
-          </a>
+            {deleting ? "Deleting..." : "Delete Post"}
+          </button>
         </li>
+        ) : null}
       </ul>
     </div>
   );

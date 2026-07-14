@@ -25,7 +25,7 @@ export class CreateCommentService {
   async execute(input: { postId?: string; authorId: string; content: string; parentCommentId?: string | null }): Promise<CommentResponse> {
     this.commentCreationPolicy.canCreate(input.content);
 
-    return this.prisma.$transaction(async (tx) => {
+    return this.prisma.$transaction(async (tx: any) => {
       let postId = input.postId?.trim() || null;
       let parentCommentId: string | null = input.parentCommentId?.trim() || null;
       let parentComment: CommentEntity | null = null;

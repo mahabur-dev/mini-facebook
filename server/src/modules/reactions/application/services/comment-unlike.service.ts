@@ -6,7 +6,7 @@ export class CommentUnlikeService {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(userId: string, commentId: string) {
-    return this.prisma.$transaction(async (tx) => {
+    return this.prisma.$transaction(async (tx: any) => {
       const existing = await tx.commentLike.findUnique({
         where: { commentId_userId: { commentId, userId } },
       });

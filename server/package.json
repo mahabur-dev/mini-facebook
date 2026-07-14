@@ -2,8 +2,12 @@
   "name": "mini-facebook-backend",
   "version": "0.1.0",
   "private": true,
+  "prisma": {
+    "schema": "prisma/schema"
+  },
   "scripts": {
     "build": "nest build",
+    "postinstall": "prisma generate --schema prisma/schema",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -11,7 +15,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"prisma/**/*.prisma\"",
     "test": "jest",
     "test:watch": "jest --watch",
-    "prisma:generate": "prisma generate"
+    "prisma:generate": "prisma generate --schema prisma/schema"
   },
   "dependencies": {
     "@nestjs/cli": "^10.4.8",

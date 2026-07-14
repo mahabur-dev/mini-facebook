@@ -1,24 +1,66 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
+import { queryKeys } from "@/constants/query-keys";
+import { useToggleReaction } from "@/features/reactions/hooks/use-toggle-reaction";
+import { ReactionUsersModal } from "@/features/reactions/components/reaction-users-modal";
 import type { Comment } from "../types/comment.types";
 import { CommentActions } from "./comment-actions";
 import { CommentContent } from "./comment-content";
 import { ReplyForm } from "./reply-form";
+import { ReplyList } from "./reply-list";
+import { useReplies } from "../hooks/use-replies";
 
 type CommentItemProps = {
   comment: Comment;
   onReplySubmit: (commentId: string, content: string) => void;
+  onUpdateComment: (comment: Comment, content: string) => void;
+  onDeleteComment: (comment: Comment) => void;
   replying?: boolean;
 };
 
-export function CommentItem({ comment, onReplySubmit, replying }: CommentItemProps) {
+export function CommentItem({ comment, onReplySubmit, onUpdateComment, onDeleteComment, replying }: CommentItemProps) {
+  const currentUser = useCurrentUser();
+  const queryClient = useQueryClient();
+  const toggleReaction = useToggleReaction();
   const [replyOpen, setReplyOpen] = useState(false);
+  const [repliesOpen, setRepliesOpen] = useState(comment.replyCount > 0);
   const [replyText, setReplyText] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [editText, setEditText] = useState(comment.content);
+  const [liked, setLiked] = useState(comment.liked);
+  const [likeCount, setLikeCount] = useState(comment.likeCount);
+  const [reactionUsersOpen, setReactionUsersOpen] = useState(false);
+  const repliesQuery = useReplies(comment.id, repliesOpen);
+  const canManage = currentUser.data?.user.id === comment.authorId;
+
+  const handleSaveEdit = () => {
+    const nextContent = editText.trim();
+    if (!nextContent) {
+      return;
+    }
+    onUpdateComment(comment, nextContent);
+    setEditing(false);
+  };
+
+  const handleToggleLike = async () => {
+    const nextLiked = !liked;
+    setLiked(nextLiked);
+    setLikeCount((value) => Math.max(0, value + (nextLiked ? 1 : -1)));
+
+    await toggleReaction.mutateAsync({
+      targetId: comment.id,
+      targetType: "comment",
+      liked,
+    });
+    await queryClient.invalidateQueries({ queryKey: queryKeys.feed.comments(comment.postId) });
+  };
 
   return (
     <div className="_comment_main">
       <div className="_comment_image">
         <a href="/profile.html" className="_comment_image_link">
-          <img src="/assets/images/txt_img.png" alt="" className="_comment_img1" />
+          <img src={comment.authorAvatar ?? "/assets/images/txt_img.png"} alt="" className="_comment_img1" />
         </a>
       </div>
       <div className="_comment_area">
@@ -26,11 +68,25 @@ export function CommentItem({ comment, onReplySubmit, replying }: CommentItemPro
           <div className="_comment_details_top">
             <div className="_comment_name">
               <a href="/profile.html">
-                <h4 className="_comment_name_title">{comment.author}</h4>
+                <h4 className="_comment_name_title">{comment.authorName}</h4>
               </a>
             </div>
           </div>
-          <CommentContent content={comment.content} />
+          {editing ? (
+            <div className="_comment_edit_box">
+              <textarea className="form-control _comment_textarea" value={editText} onChange={(event) => setEditText(event.target.value)} />
+              <div className="d-flex gap-2 mt-2">
+                <button type="button" className="btn btn-primary btn-sm" onClick={handleSaveEdit}>
+                  Save
+                </button>
+                <button type="button" className="btn btn-light btn-sm" onClick={() => setEditing(false)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <CommentContent content={comment.content} />
+          )}
           <div className="_total_reactions">
             <div className="_total_react">
               <span className="_reaction_like">
@@ -44,10 +100,27 @@ export function CommentItem({ comment, onReplySubmit, replying }: CommentItemPro
                 </svg>
               </span>
             </div>
-            <span className="_total">198</span>
+            <button type="button" className="_total _reaction_count_btn" onClick={() => setReactionUsersOpen(true)}>
+              {likeCount}
+            </button>
           </div>
-          <CommentActions onReply={() => setReplyOpen((value) => !value)} />
+          <CommentActions
+            liked={liked}
+            canManage={canManage}
+            onToggleLike={handleToggleLike}
+            onReply={() => setReplyOpen((value) => !value)}
+            onEdit={() => {
+              setEditText(comment.content);
+              setEditing(true);
+            }}
+            onDelete={() => onDeleteComment(comment)}
+          />
         </div>
+        {comment.replyCount > 0 ? (
+          <button type="button" className="btn btn-link btn-sm p-0 mt-2" onClick={() => setRepliesOpen((value) => !value)}>
+            {repliesOpen ? "Hide replies" : `View ${comment.replyCount} replies`}
+          </button>
+        ) : null}
         {replyOpen ? (
           <ReplyForm
             value={replyText}
@@ -56,11 +129,20 @@ export function CommentItem({ comment, onReplySubmit, replying }: CommentItemPro
               onReplySubmit(comment.id, replyText);
               setReplyText("");
               setReplyOpen(false);
+              setRepliesOpen(true);
             }}
             submitting={replying}
           />
         ) : null}
+        {repliesOpen ? (
+          <ReplyList
+            replies={repliesQuery.data ?? []}
+            onUpdateComment={onUpdateComment}
+            onDeleteComment={onDeleteComment}
+          />
+        ) : null}
       </div>
+      <ReactionUsersModal open={reactionUsersOpen} onClose={() => setReactionUsersOpen(false)} targetId={comment.id} targetType="comment" />
     </div>
   );
 }

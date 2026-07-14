@@ -21,7 +21,7 @@ export class CreatePostService {
   async execute(input: { authorId: string; content?: string | null; visibility: PostVisibility; mediaId?: string | null }): Promise<PostResponse> {
     this.postCreationPolicy.canCreate(input);
 
-    return this.prisma.$transaction(async (tx) => {
+    return this.prisma.$transaction(async (tx: any) => {
       const mediaId = input.mediaId?.trim() || null;
 
       if (mediaId) {
