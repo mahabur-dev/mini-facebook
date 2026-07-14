@@ -5,5 +5,7 @@ import { COMMENT_PAGE_SIZE } from "../constants/comment.constants";
 
 export async function getReplies(commentId: string) {
   const response = await apiClient<{ replies: BackendComment[]; nextCursor: string | null }>(`/comments/${commentId}/replies?limit=${COMMENT_PAGE_SIZE}`);
-  return response.replies.map(mapComment);
+  return response.replies
+    .map(mapComment)
+    .sort((firstReply, secondReply) => new Date(firstReply.createdAt).getTime() - new Date(secondReply.createdAt).getTime());
 }

@@ -1,15 +1,20 @@
+import { formatRelativeTime } from "@/lib/date/relative-time";
+
 type CommentActionsProps = {
   liked?: boolean;
   canManage?: boolean;
   showReply?: boolean;
   className?: string;
+  createdAt?: string;
   onToggleLike?: () => void;
   onReply?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
 };
 
-export function CommentActions({ liked, canManage, showReply = true, className, onToggleLike, onReply, onEdit, onDelete }: CommentActionsProps) {
+export function CommentActions({ liked, canManage, showReply = true, className, createdAt, onToggleLike, onReply, onEdit, onDelete }: CommentActionsProps) {
+  const timeLabel = createdAt ? formatRelativeTime(createdAt) : "";
+
   return (
     <div className={className ? `_comment_reply ${className}` : "_comment_reply"}>
       <div className="_comment_reply_num">
@@ -40,9 +45,11 @@ export function CommentActions({ liked, canManage, showReply = true, className, 
               </li>
             </>
           ) : null}
-          <li>
-            <span className="_time_link">.21m</span>
-          </li>
+          {timeLabel ? (
+            <li>
+              <span className="_time_link">.{timeLabel}</span>
+            </li>
+          ) : null}
         </ul>
       </div>
     </div>

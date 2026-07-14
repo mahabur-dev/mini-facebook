@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import type { Comment } from "../types/comment.types";
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
-import { queryKeys } from "@/constants/query-keys";
-import { useToggleReaction } from "@/features/reactions/hooks/use-toggle-reaction";
 import { ReactionUsersModal } from "@/features/reactions/components/reaction-users-modal";
 import { CommentActions } from "./comment-actions";
+import { CommentReactionSummary } from "./comment-reaction-summary";
 import { ReplyForm } from "./reply-form";
+import { useCommentReaction } from "../hooks/use-comment-reaction";
 import { canManageComment } from "../utils/comment-permissions";
 
 type ReplyItemProps = {
@@ -19,8 +18,6 @@ type ReplyItemProps = {
 
 export function ReplyItem({ reply, onReplySubmit, onUpdateComment, onDeleteComment, replying }: ReplyItemProps) {
   const currentUser = useCurrentUser();
-  const queryClient = useQueryClient();
-  const toggleReaction = useToggleReaction();
   const canManage = canManageComment(reply, currentUser.data?.user.id);
   const replyThreadId = reply.parentCommentId ?? reply.id;
   const replyAvatar = currentUser.data?.user.profileImageUrl ?? "/assets/images/comment_img.png";
@@ -28,11 +25,10 @@ export function ReplyItem({ reply, onReplySubmit, onUpdateComment, onDeleteComme
   const [replyText, setReplyText] = useState("");
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(reply.content);
-  const [liked, setLiked] = useState(reply.liked);
-  const [likeCount, setLikeCount] = useState(reply.likeCount);
   const [reactionUsersOpen, setReactionUsersOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [replyError, setReplyError] = useState<string | null>(null);
+  const replyReaction = useCommentReaction({ comment: reply, targetType: "reply" });
 
   const handleSave = async () => {
     const nextContent = editText.trim();
@@ -46,22 +42,6 @@ export function ReplyItem({ reply, onReplySubmit, onUpdateComment, onDeleteComme
       setEditing(false);
     } catch (error) {
       setActionError(error instanceof Error ? error.message : "Failed to update reply");
-    }
-  };
-
-  const handleToggleLike = async () => {
-    const nextLiked = !liked;
-    setLiked(nextLiked);
-    setLikeCount((value) => Math.max(0, value + (nextLiked ? 1 : -1)));
-
-    await toggleReaction.mutateAsync({
-      targetId: reply.id,
-      targetType: "reply",
-      liked,
-    });
-
-    if (reply.parentCommentId) {
-      await queryClient.invalidateQueries({ queryKey: queryKeys.feed.replies(reply.parentCommentId) });
     }
   };
 
@@ -123,29 +103,14 @@ export function ReplyItem({ reply, onReplySubmit, onUpdateComment, onDeleteComme
               <span>{reply.content}</span>
             </p>
           )}
-          <div className="_total_reactions">
-            <div className="_total_react">
-              <span className="_reaction_like">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
-                </svg>
-              </span>
-              <span className="_reaction_heart">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                </svg>
-              </span>
-            </div>
-            <button type="button" className="_total _reaction_count_btn" onClick={() => setReactionUsersOpen(true)}>
-              {likeCount}
-            </button>
-          </div>
+          <CommentReactionSummary count={replyReaction.likeCount} onOpen={() => setReactionUsersOpen(true)} />
           <CommentActions
-            liked={liked}
+            liked={replyReaction.liked}
             canManage={canManage}
             showReply
             className="_reply_comment_actions"
-            onToggleLike={handleToggleLike}
+            createdAt={reply.createdAt}
+            onToggleLike={replyReaction.toggle}
             onReply={() => setReplyOpen((value) => !value)}
             onEdit={() => {
               setEditText(reply.content);
@@ -166,6 +131,7 @@ export function ReplyItem({ reply, onReplySubmit, onUpdateComment, onDeleteComme
             avatarSrc={replyAvatar}
           />
         ) : null}
+        {replyReaction.error ? <p className="_comment_fetch_state _comment_fetch_state_error _reply_action_error">{replyReaction.error}</p> : null}
         {replyError ? <p className="_comment_fetch_state _comment_fetch_state_error _reply_action_error">{replyError}</p> : null}
         {actionError ? <p className="_comment_fetch_state _comment_fetch_state_error _reply_action_error">{actionError}</p> : null}
       </div>
