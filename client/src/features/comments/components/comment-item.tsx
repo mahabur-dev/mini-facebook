@@ -1,15 +1,14 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
-import { queryKeys } from "@/constants/query-keys";
-import { useToggleReaction } from "@/features/reactions/hooks/use-toggle-reaction";
 import { ReactionUsersModal } from "@/features/reactions/components/reaction-users-modal";
 import type { Comment } from "../types/comment.types";
 import { CommentActions } from "./comment-actions";
 import { CommentContent } from "./comment-content";
+import { CommentReactionSummary } from "./comment-reaction-summary";
 import { ReplyForm } from "./reply-form";
 import { ReplyList } from "./reply-list";
 import { useReplies } from "../hooks/use-replies";
+import { useCommentReaction } from "../hooks/use-comment-reaction";
 import { canManageComment } from "../utils/comment-permissions";
 
 type CommentItemProps = {
@@ -22,17 +21,14 @@ type CommentItemProps = {
 
 export function CommentItem({ comment, onReplySubmit, onUpdateComment, onDeleteComment, replying }: CommentItemProps) {
   const currentUser = useCurrentUser();
-  const queryClient = useQueryClient();
-  const toggleReaction = useToggleReaction();
   const [replyOpen, setReplyOpen] = useState(false);
   const [repliesOpen, setRepliesOpen] = useState(comment.replyCount > 0);
   const [replyText, setReplyText] = useState("");
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(comment.content);
-  const [liked, setLiked] = useState(comment.liked);
-  const [likeCount, setLikeCount] = useState(comment.likeCount);
   const [reactionUsersOpen, setReactionUsersOpen] = useState(false);
   const [replyError, setReplyError] = useState<string | null>(null);
+  const commentReaction = useCommentReaction({ comment, targetType: "comment" });
   const repliesQuery = useReplies(comment.id, repliesOpen);
   const canManage = canManageComment(comment, currentUser.data?.user.id);
   const replyAvatar = currentUser.data?.user.profileImageUrl ?? "/assets/images/comment_img.png";
@@ -44,19 +40,6 @@ export function CommentItem({ comment, onReplySubmit, onUpdateComment, onDeleteC
     }
     onUpdateComment(comment, nextContent);
     setEditing(false);
-  };
-
-  const handleToggleLike = async () => {
-    const nextLiked = !liked;
-    setLiked(nextLiked);
-    setLikeCount((value) => Math.max(0, value + (nextLiked ? 1 : -1)));
-
-    await toggleReaction.mutateAsync({
-      targetId: comment.id,
-      targetType: "comment",
-      liked,
-    });
-    await queryClient.invalidateQueries({ queryKey: queryKeys.feed.comments(comment.postId) });
   };
 
   return (
@@ -90,27 +73,12 @@ export function CommentItem({ comment, onReplySubmit, onUpdateComment, onDeleteC
           ) : (
             <CommentContent content={comment.content} />
           )}
-          <div className="_total_reactions">
-            <div className="_total_react">
-              <span className="_reaction_like">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-thumbs-up">
-                  <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
-                </svg>
-              </span>
-              <span className="_reaction_heart">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-heart">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                </svg>
-              </span>
-            </div>
-            <button type="button" className="_total _reaction_count_btn" onClick={() => setReactionUsersOpen(true)}>
-              {likeCount}
-            </button>
-          </div>
+          <CommentReactionSummary count={commentReaction.likeCount} onOpen={() => setReactionUsersOpen(true)} />
           <CommentActions
-            liked={liked}
+            liked={commentReaction.liked}
             canManage={canManage}
-            onToggleLike={handleToggleLike}
+            createdAt={comment.createdAt}
+            onToggleLike={commentReaction.toggle}
             onReply={() => setReplyOpen((value) => !value)}
             onEdit={() => {
               setEditText(comment.content);
@@ -119,6 +87,7 @@ export function CommentItem({ comment, onReplySubmit, onUpdateComment, onDeleteC
             onDelete={() => onDeleteComment(comment)}
           />
         </div>
+        {commentReaction.error ? <p className="_comment_fetch_state _comment_fetch_state_error _reply_action_error">{commentReaction.error}</p> : null}
         {comment.replyCount > 0 ? (
           <button type="button" className="_comment_replies_toggle" onClick={() => setRepliesOpen((value) => !value)}>
             {repliesOpen ? "Hide replies" : `View ${comment.replyCount} replies`}

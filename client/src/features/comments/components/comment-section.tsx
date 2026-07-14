@@ -75,7 +75,7 @@ export function CommentSection({ postId, onCommentCreated }: CommentSectionProps
           return existing;
         }
 
-        return [createdReply, ...existing];
+        return [...existing, createdReply];
       });
       queryClient.setQueryData<Comment[]>(queryKeys.feed.comments(postId), (existing = []) =>
         existing.map((comment) => (comment.id === commentId ? { ...comment, replyCount: comment.replyCount + 1 } : comment)),

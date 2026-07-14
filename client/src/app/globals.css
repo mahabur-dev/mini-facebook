@@ -12,6 +12,51 @@ a {
   color: inherit;
 }
 
+._feed_reaction_active ._feed_inner_timeline_reaction_link {
+  color: #377dff !important;
+}
+
+._feed_reaction_active ._reaction_svg path {
+  stroke: #377dff !important;
+}
+
+._social_registration_form_btn {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+._social_registration_form_btn_link._btn1 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 300px);
+  min-height: 50px;
+  padding: 0 24px !important;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+}
+
+._social_registration_form_btn_link._btn1:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+._social_login_form_btn_link._btn1 {
+  min-width: 260px;
+  transition: 0.2s all ease;
+}
+
+._social_login_form_btn_link._btn1:disabled {
+  cursor: wait;
+  opacity: 0.76;
+  box-shadow: none;
+}
+
 ._feed_composer_meta {
   display: flex;
   align-items: center;
@@ -639,7 +684,7 @@ a {
 
 ._reply_list {
   display: grid;
-  gap: 38px;
+  gap: 12px;
   margin: 10px 0 0 36px;
 }
 
@@ -666,10 +711,24 @@ a {
   padding: 10px 14px;
   border-radius: 18px;
   background: rgba(24, 144, 255, 0.06);
+  margin: 0 0 54px;
+}
+
+._reply_details ._comment_reaction_summary {
+  right: 10px;
+  bottom: -14px;
 }
 
 ._reply_comment_actions ._comment_reply_num {
-  bottom: -32px;
+  left: 0;
+  bottom: -48px;
+  max-width: calc(100vw - 140px);
+}
+
+._reply_comment_actions ._comment_reply_list {
+  column-gap: 12px;
+  row-gap: 6px;
+  flex-wrap: wrap;
 }
 
 ._total_react {
@@ -685,11 +744,16 @@ a {
 }
 
 ._reply_form {
-  margin: 12px 0 0 36px;
+  margin: 24px 0 12px 36px;
 }
 
 ._reply_form ._feed_inner_comment_box_form {
   max-width: 320px;
+}
+
+._reply_item ._reply_form {
+  margin-top: 30px;
+  margin-bottom: 16px;
 }
 
 ._comment_replies_toggle {
@@ -776,6 +840,13 @@ a {
 }
 
 @media (max-width: 575px) {
+  ._social_registration_form_btn_link._btn1 {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 18px !important;
+    font-size: 15px;
+  }
+
   ._post_modal_feed_actions._feed_inner_text_area_bottom {
     align-items: stretch;
     flex-direction: column;

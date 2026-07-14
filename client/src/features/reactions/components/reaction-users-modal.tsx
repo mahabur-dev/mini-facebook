@@ -14,7 +14,7 @@ type ReactionUsersModalProps = {
 };
 
 export function ReactionUsersModal({ open, onClose, targetId, targetType }: ReactionUsersModalProps) {
-  const reactionUsersQuery = useReactionUsers(targetId, targetType);
+  const reactionUsersQuery = useReactionUsers(targetId, targetType, { enabled: open });
   const darkMode = useNavigationStore((state) => state.darkMode);
 
   if (!open) {
