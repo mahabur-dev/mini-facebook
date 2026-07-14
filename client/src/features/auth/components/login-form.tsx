@@ -92,7 +92,7 @@ export function LoginForm() {
         <div className="col-lg-12 col-md-12 col-xl-12 col-sm-12">
           <div className="_social_login_form_btn _mar_t40 _mar_b60">
             <Button type="submit" className="_social_login_form_btn_link _btn1" disabled={isSubmitting} aria-busy={isSubmitting}>
-              {isSubmitting ? "Logging in..." : "Login now"}
+              {isSubmitting ? "Logging..." : "Login now"}
             </Button>
           </div>
         </div>

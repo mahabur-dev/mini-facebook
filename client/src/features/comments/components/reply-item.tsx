@@ -104,21 +104,21 @@ export function ReplyItem({ reply, onReplySubmit, onUpdateComment, onDeleteComme
             </p>
           )}
           <CommentReactionSummary count={replyReaction.likeCount} onOpen={() => setReactionUsersOpen(true)} />
-          <CommentActions
-            liked={replyReaction.liked}
-            canManage={canManage}
-            showReply
-            className="_reply_comment_actions"
-            createdAt={reply.createdAt}
-            onToggleLike={replyReaction.toggle}
-            onReply={() => setReplyOpen((value) => !value)}
-            onEdit={() => {
-              setEditText(reply.content);
-              setEditing(true);
-            }}
-            onDelete={handleDeleteReply}
-          />
         </div>
+        <CommentActions
+          liked={replyReaction.liked}
+          canManage={canManage}
+          showReply
+          className="_reply_comment_actions"
+          createdAt={reply.createdAt}
+          onToggleLike={replyReaction.toggle}
+          onReply={() => setReplyOpen((value) => !value)}
+          onEdit={() => {
+            setEditText(reply.content);
+            setEditing(true);
+          }}
+          onDelete={handleDeleteReply}
+        />
         {replyOpen ? (
           <ReplyForm
             value={replyText}
