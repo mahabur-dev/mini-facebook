@@ -684,7 +684,7 @@ a {
 
 ._reply_list {
   display: grid;
-  gap: 12px;
+  gap: 18px;
   margin: 10px 0 0 36px;
 }
 
@@ -711,7 +711,7 @@ a {
   padding: 10px 14px;
   border-radius: 18px;
   background: rgba(24, 144, 255, 0.06);
-  margin: 0 0 54px;
+  margin: 0;
 }
 
 ._reply_details ._comment_reaction_summary {
@@ -720,15 +720,20 @@ a {
 }
 
 ._reply_comment_actions ._comment_reply_num {
-  left: 0;
-  bottom: -48px;
-  max-width: calc(100vw - 140px);
+  position: static;
+  max-width: 100%;
+}
+
+._reply_comment_actions {
+  margin: -2px 0 0;
 }
 
 ._reply_comment_actions ._comment_reply_list {
   column-gap: 12px;
-  row-gap: 6px;
+  row-gap: 2px;
   flex-wrap: wrap;
+  max-width: 100%;
+  line-height: 1.2;
 }
 
 ._total_react {
