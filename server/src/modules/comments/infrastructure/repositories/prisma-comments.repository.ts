@@ -13,6 +13,8 @@ function mapComment(comment: any): CommentEntity | null {
           firstName: comment.author.firstName,
           lastName: comment.author.lastName,
           email: comment.author.email,
+          profileImageUrl: comment.author.profileImageUrl,
+          profileImageStorageKey: comment.author.profileImageStorageKey,
           status: comment.author.status,
           lastLoginAt: comment.author.lastLoginAt,
           createdAt: comment.author.createdAt,
@@ -158,5 +160,25 @@ export class PrismaCommentsRepository implements CommentsRepository {
       where: { id },
       data: { deletedAt },
     });
+  }
+
+  async deleteThread(rootCommentId: string, deletedAt: Date, tx?: unknown): Promise<{ replyCount: number }> {
+    const client = this.client(tx);
+    const replyCount = await client.comment.count({
+      where: {
+        parentCommentId: rootCommentId,
+        deletedAt: null,
+      },
+    });
+
+    await client.comment.updateMany({
+      where: {
+        OR: [{ id: rootCommentId }, { parentCommentId: rootCommentId }],
+        deletedAt: null,
+      },
+      data: { deletedAt },
+    });
+
+    return { replyCount };
   }
 }

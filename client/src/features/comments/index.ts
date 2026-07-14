@@ -13,6 +13,7 @@ export * from "./components/comment-skeleton";
 export * from "./components/reply-form";
 export * from "./components/reply-item";
 export * from "./components/reply-list";
+export * from "./constants/comment.constants";
 export * from "./hooks/use-comments";
 export * from "./hooks/use-create-comment";
 export * from "./hooks/use-create-reply";

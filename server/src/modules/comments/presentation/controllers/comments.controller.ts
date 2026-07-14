@@ -9,6 +9,7 @@ import { GetCommentsService } from "../../application/services/get-comments.serv
 import { GetRepliesService } from "../../application/services/get-replies.service";
 import { UpdateCommentService } from "../../application/services/update-comment.service";
 import { DeleteCommentService } from "../../application/services/delete-comment.service";
+import { presentComment } from "../presenters/comment.presenter";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @Controller()
@@ -31,12 +32,13 @@ export class CommentsController {
     @Param("postId") postId: string,
     @Body() dto: CreateCommentDto,
   ) {
-    return this.createCommentService.execute({
+    const result = await this.createCommentService.execute({
       postId,
       authorId: user.sub,
       content: dto.content,
       parentCommentId: dto.parentCommentId,
     });
+    return { comment: presentComment(result.comment) };
   }
 
   @Get("posts/:postId/comments")
@@ -59,11 +61,12 @@ export class CommentsController {
     @Param("commentId") commentId: string,
     @Body() dto: CreateCommentDto,
   ) {
-    return this.createCommentService.execute({
+    const result = await this.createCommentService.execute({
       authorId: user.sub,
       content: dto.content,
       parentCommentId: commentId,
     });
+    return { comment: presentComment(result.comment) };
   }
 
   @Get("comments/:commentId/replies")
@@ -86,7 +89,8 @@ export class CommentsController {
     @Param("commentId") commentId: string,
     @Body() dto: UpdateCommentDto,
   ) {
-    return this.updateCommentService.execute(user.sub, commentId, dto);
+    const result = await this.updateCommentService.execute(user.sub, commentId, dto);
+    return { comment: presentComment(result.comment) };
   }
 
   @Delete("comments/:commentId")

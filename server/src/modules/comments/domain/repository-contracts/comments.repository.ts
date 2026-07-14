@@ -28,6 +28,7 @@ export interface CommentsRepository {
   ): Promise<{ items: CommentEntity[]; nextCursor: { createdAt: Date; id: string } | null }>;
   update(id: string, input: UpdateCommentInput, tx?: unknown): Promise<CommentEntity>;
   delete(id: string, deletedAt: Date, tx?: unknown): Promise<void>;
+  deleteThread(rootCommentId: string, deletedAt: Date, tx?: unknown): Promise<{ replyCount: number }>;
 }
 
 export const COMMENTS_REPOSITORY = Symbol("COMMENTS_REPOSITORY");

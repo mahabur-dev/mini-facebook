@@ -10,12 +10,13 @@ import { CommentContent } from "./comment-content";
 import { ReplyForm } from "./reply-form";
 import { ReplyList } from "./reply-list";
 import { useReplies } from "../hooks/use-replies";
+import { canManageComment } from "../utils/comment-permissions";
 
 type CommentItemProps = {
   comment: Comment;
-  onReplySubmit: (commentId: string, content: string) => void;
-  onUpdateComment: (comment: Comment, content: string) => void;
-  onDeleteComment: (comment: Comment) => void;
+  onReplySubmit: (commentId: string, content: string) => void | Promise<void>;
+  onUpdateComment: (comment: Comment, content: string) => void | Promise<void>;
+  onDeleteComment: (comment: Comment) => void | Promise<void>;
   replying?: boolean;
 };
 
@@ -31,8 +32,10 @@ export function CommentItem({ comment, onReplySubmit, onUpdateComment, onDeleteC
   const [liked, setLiked] = useState(comment.liked);
   const [likeCount, setLikeCount] = useState(comment.likeCount);
   const [reactionUsersOpen, setReactionUsersOpen] = useState(false);
+  const [replyError, setReplyError] = useState<string | null>(null);
   const repliesQuery = useReplies(comment.id, repliesOpen);
-  const canManage = currentUser.data?.user.id === comment.authorId;
+  const canManage = canManageComment(comment, currentUser.data?.user.id);
+  const replyAvatar = currentUser.data?.user.profileImageUrl ?? "/assets/images/comment_img.png";
 
   const handleSaveEdit = () => {
     const nextContent = editText.trim();
@@ -75,11 +78,11 @@ export function CommentItem({ comment, onReplySubmit, onUpdateComment, onDeleteC
           {editing ? (
             <div className="_comment_edit_box">
               <textarea className="form-control _comment_textarea" value={editText} onChange={(event) => setEditText(event.target.value)} />
-              <div className="d-flex gap-2 mt-2">
-                <button type="button" className="btn btn-primary btn-sm" onClick={handleSaveEdit}>
+              <div className="_comment_edit_actions">
+                <button type="button" className="_comment_edit_btn _comment_edit_btn_primary" onClick={handleSaveEdit}>
                   Save
                 </button>
-                <button type="button" className="btn btn-light btn-sm" onClick={() => setEditing(false)}>
+                <button type="button" className="_comment_edit_btn" onClick={() => setEditing(false)}>
                   Cancel
                 </button>
               </div>
@@ -117,29 +120,51 @@ export function CommentItem({ comment, onReplySubmit, onUpdateComment, onDeleteC
           />
         </div>
         {comment.replyCount > 0 ? (
-          <button type="button" className="btn btn-link btn-sm p-0 mt-2" onClick={() => setRepliesOpen((value) => !value)}>
+          <button type="button" className="_comment_replies_toggle" onClick={() => setRepliesOpen((value) => !value)}>
             {repliesOpen ? "Hide replies" : `View ${comment.replyCount} replies`}
           </button>
         ) : null}
         {replyOpen ? (
           <ReplyForm
             value={replyText}
-            onChange={setReplyText}
-            onSubmit={() => {
-              onReplySubmit(comment.id, replyText);
-              setReplyText("");
-              setReplyOpen(false);
+            onChange={(value) => {
+              setReplyError(null);
+              setReplyText(value);
+            }}
+            onSubmit={async () => {
+              const nextReply = replyText.trim();
+              if (!nextReply) {
+                return;
+              }
+
+              setReplyError(null);
               setRepliesOpen(true);
+
+              try {
+                await onReplySubmit(comment.id, nextReply);
+                setReplyText("");
+                setReplyOpen(false);
+              } catch (error) {
+                setReplyError(error instanceof Error ? error.message : "Failed to reply");
+              }
             }}
             submitting={replying}
+            avatarSrc={replyAvatar}
           />
         ) : null}
+        {replyError ? <p className="_comment_fetch_state _comment_fetch_state_error _reply_fetch_state">{replyError}</p> : null}
         {repliesOpen ? (
-          <ReplyList
-            replies={repliesQuery.data ?? []}
-            onUpdateComment={onUpdateComment}
-            onDeleteComment={onDeleteComment}
-          />
+          <>
+            {repliesQuery.isLoading ? <p className="_comment_fetch_state _reply_fetch_state">Loading replies...</p> : null}
+            {repliesQuery.isError ? <p className="_comment_fetch_state _comment_fetch_state_error _reply_fetch_state">Could not load replies.</p> : null}
+            <ReplyList
+              replies={repliesQuery.data ?? []}
+              onReplySubmit={onReplySubmit}
+              onUpdateComment={onUpdateComment}
+              onDeleteComment={onDeleteComment}
+              replyingCommentId={replying ? comment.id : null}
+            />
+          </>
         ) : null}
       </div>
       <ReactionUsersModal open={reactionUsersOpen} onClose={() => setReactionUsersOpen(false)} targetId={comment.id} targetType="comment" />

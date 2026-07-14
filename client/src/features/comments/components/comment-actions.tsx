@@ -1,15 +1,17 @@
 type CommentActionsProps = {
   liked?: boolean;
   canManage?: boolean;
+  showReply?: boolean;
+  className?: string;
   onToggleLike?: () => void;
   onReply?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
 };
 
-export function CommentActions({ liked, canManage, onToggleLike, onReply, onEdit, onDelete }: CommentActionsProps) {
+export function CommentActions({ liked, canManage, showReply = true, className, onToggleLike, onReply, onEdit, onDelete }: CommentActionsProps) {
   return (
-    <div className="_comment_reply">
+    <div className={className ? `_comment_reply ${className}` : "_comment_reply"}>
       <div className="_comment_reply_num">
         <ul className="_comment_reply_list">
           <li>
@@ -17,14 +19,13 @@ export function CommentActions({ liked, canManage, onToggleLike, onReply, onEdit
               {liked ? "Unlike." : "Like."}
             </span>
           </li>
-          <li>
-            <span role="button" tabIndex={0} onClick={onReply} onKeyDown={(event) => event.key === "Enter" && onReply?.()}>
-              Reply.
-            </span>
-          </li>
-          <li>
-            <span>Share</span>
-          </li>
+          {showReply ? (
+            <li>
+              <span role="button" tabIndex={0} onClick={onReply} onKeyDown={(event) => event.key === "Enter" && onReply?.()}>
+                Reply.
+              </span>
+            </li>
+          ) : null}
           {canManage ? (
             <>
               <li>

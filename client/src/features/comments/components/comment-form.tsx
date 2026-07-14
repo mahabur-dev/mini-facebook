@@ -1,11 +1,14 @@
+import type { KeyboardEvent } from "react";
+
 type CommentFormProps = {
   value: string;
   onChange: (value: string) => void;
-  onSubmit: () => void;
+  onSubmit: () => void | Promise<void>;
   submitting?: boolean;
   placeholder?: string;
   textareaId?: string;
   avatarSrc?: string;
+  containerClassName?: string;
 };
 
 export function CommentForm({
@@ -16,14 +19,32 @@ export function CommentForm({
   placeholder = "Write a comment",
   textareaId = "floatingTextarea2",
   avatarSrc = "/assets/images/comment_img.png",
+  containerClassName = "",
 }: CommentFormProps) {
+  const handleSubmit = () => {
+    if (!value.trim() || submitting) {
+      return;
+    }
+
+    void onSubmit();
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key !== "Enter" || event.shiftKey) {
+      return;
+    }
+
+    event.preventDefault();
+    handleSubmit();
+  };
+
   return (
-    <div className="_feed_inner_comment_box">
+    <div className={`_feed_inner_comment_box ${containerClassName}`.trim()}>
       <form
         className="_feed_inner_comment_box_form"
         onSubmit={(event) => {
           event.preventDefault();
-          onSubmit();
+          handleSubmit();
         }}
       >
         <div className="_feed_inner_comment_box_content">
@@ -37,6 +58,7 @@ export function CommentForm({
               id={textareaId}
               value={value}
               onChange={(event) => onChange(event.target.value)}
+              onKeyDown={handleKeyDown}
             />
           </div>
         </div>
