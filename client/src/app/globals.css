@@ -514,6 +514,129 @@ a {
   opacity: 0.65;
 }
 
+._reaction_modal_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1090;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: rgba(15, 23, 42, 0.36);
+  backdrop-filter: blur(2px);
+}
+
+._reaction_modal_card {
+  width: min(500px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  border-radius: 8px;
+  background: var(--bg2);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.18);
+}
+
+._reaction_modal_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 62px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(102, 102, 102, 0.18);
+}
+
+._reaction_modal_title {
+  color: var(--color6);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+}
+
+._reaction_modal_close {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s all ease;
+}
+
+._reaction_modal_close:hover {
+  background: rgba(24, 144, 255, 0.08);
+  color: var(--color5);
+}
+
+._reaction_modal_body {
+  padding: 14px 18px 18px;
+}
+
+._reaction_user_list {
+  display: grid;
+  gap: 10px;
+}
+
+._reaction_user_item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+._reaction_user_img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+._reaction_user_name {
+  color: var(--color6);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 4px;
+}
+
+._reaction_user_meta,
+._reaction_modal_empty {
+  color: var(--color7);
+  font-size: 13px;
+  line-height: 1.3;
+  margin: 0;
+}
+
+._reaction_modal_overlay._dark_wrapper {
+  background: rgba(3, 12, 24, 0.58);
+}
+
+._reaction_modal_overlay._dark_wrapper ._reaction_modal_card {
+  background: var(--bg5);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.34);
+}
+
+._reaction_modal_overlay._dark_wrapper ._reaction_modal_header {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+._reaction_modal_overlay._dark_wrapper ._reaction_modal_title,
+._reaction_modal_overlay._dark_wrapper ._reaction_user_name {
+  color: var(--bg2);
+}
+
+._reaction_modal_overlay._dark_wrapper ._reaction_modal_close,
+._reaction_modal_overlay._dark_wrapper ._reaction_modal_empty {
+  color: #8c8f95;
+}
+
+._reaction_modal_overlay._dark_wrapper ._reaction_modal_close:hover {
+  background: #123150;
+  color: var(--bg2);
+}
+
 @media (max-width: 575px) {
   ._post_modal_feed_actions._feed_inner_text_area_bottom {
     align-items: stretch;

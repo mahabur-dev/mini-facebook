@@ -1,26 +1,38 @@
 import { cn } from "@/lib/cn";
+import type { Reaction } from "@/features/reactions/types/reaction.types";
 
 type PostActionsProps = {
   liked: boolean;
   likes: number;
   comments: number;
   shares: number;
+  reactionUsersPreview?: Reaction[];
   onToggleLike?: () => void;
   onOpenReactions?: () => void;
 };
 
-export function PostActions({ liked, likes, comments, shares, onToggleLike, onOpenReactions }: PostActionsProps) {
+function getFallbackAvatar(userId: string) {
+  const avatars = ["/assets/images/profile.png", "/assets/images/profile-1.png", "/assets/images/txt_img.png", "/assets/images/people1.png"];
+  const index = Math.abs(userId.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0)) % avatars.length;
+  return avatars[index];
+}
+
+export function PostActions({ liked, likes, comments, shares, reactionUsersPreview = [], onToggleLike, onOpenReactions }: PostActionsProps) {
   const reactionCount = likes > 9 ? "9+" : String(likes);
+  const previewUsers = reactionUsersPreview.slice(0, 5);
 
   return (
     <>
       <div className="_feed_inner_timeline_total_reacts _padd_r24 _padd_l24 _mar_b26">
         <div className="_feed_inner_timeline_total_reacts_image">
-          <img src="/assets/images/react_img1.png" alt="Image" className="_react_img1" />
-          <img src="/assets/images/react_img2.png" alt="Image" className="_react_img" />
-          <img src="/assets/images/react_img3.png" alt="Image" className="_react_img _rect_img_mbl_none" />
-          <img src="/assets/images/react_img4.png" alt="Image" className="_react_img _rect_img_mbl_none" />
-          <img src="/assets/images/react_img5.png" alt="Image" className="_react_img _rect_img_mbl_none" />
+          {previewUsers.map((user, index) => (
+            <img
+              key={user.id}
+              src={user.profileImageUrl ?? getFallbackAvatar(user.id)}
+              alt={user.name}
+              className={cn(index === 0 ? "_react_img1" : "_react_img", index > 1 && "_rect_img_mbl_none")}
+            />
+          ))}
           <button type="button" className="_feed_inner_timeline_total_reacts_para _reaction_count_btn" onClick={onOpenReactions}>
             {reactionCount}
           </button>

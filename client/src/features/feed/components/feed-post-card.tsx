@@ -14,6 +14,7 @@ import { PostComposerModal } from "@/features/posts/components/post-composer-mod
 import { useUpdatePost } from "@/features/posts/hooks/use-update-post";
 import { useDeletePost } from "@/features/posts/hooks/use-delete-post";
 import { ReactionUsersModal } from "@/features/reactions/components/reaction-users-modal";
+import { useReactionUsers } from "@/features/reactions/hooks/use-reaction-users";
 
 type FeedPostCardProps = {
   post: FeedPostMock;
@@ -27,6 +28,7 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
   const deletePost = useDeletePost();
   const [liked, setLiked] = useState(Boolean(post.liked));
   const [likes, setLikes] = useState(post.likes);
+  const reactionUsersQuery = useReactionUsers(post.id, "post", { enabled: likes > 0 });
   const [commentCount, setCommentCount] = useState(post.comments);
   const [menuOpen, setMenuOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -147,6 +149,7 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
             likes={likes}
             comments={commentCount}
             shares={post.shares}
+            reactionUsersPreview={reactionUsersQuery.data ?? []}
             onToggleLike={handleToggleLike}
             onOpenReactions={() => setReactionUsersOpen(true)}
           />
