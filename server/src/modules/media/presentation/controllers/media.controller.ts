@@ -44,6 +44,8 @@ export class MediaController {
     return { media: presentMedia(result.media) };
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: "Upload media for later attachment" })
   @Post("images")
   @UseInterceptors(FileInterceptor("file"))

@@ -24,6 +24,8 @@ function mapFeedPost(post: any, viewerId: string): FeedPostEntity {
     media: post.media
       ? {
           ...post.media,
+          fileUrl: post.media.imageUrl,
+          fileSize: post.media.fileSize,
         }
       : null,
     statistics: post.statistics
