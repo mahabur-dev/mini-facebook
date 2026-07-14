@@ -320,6 +320,52 @@ a {
   object-fit: cover;
 }
 
+._post_modal_file_preview,
+._post_file_attachment {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid rgba(17, 32, 50, 0.12);
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #112032;
+  text-decoration: none;
+}
+
+._post_modal_file_badge,
+._post_file_attachment_icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 36px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: #1890ff;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+._post_modal_file_name,
+._post_file_attachment_text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+._reaction_count_btn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
 ._post_modal_media_remove {
   position: absolute;
   right: 10px;

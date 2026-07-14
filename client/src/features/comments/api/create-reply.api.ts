@@ -1,14 +1,11 @@
-import { mockDb } from "@/lib/mock/mock-db";
+import { apiClient } from "@/lib/api/api-client";
+import type { BackendComment } from "../types/comment.types";
+import { mapComment } from "./comment.mapper";
 
-export async function createReply(input: { commentId: string; author: string; content: string }) {
-  await new Promise((resolve) => setTimeout(resolve, 100));
-  const parentComment = mockDb.comments.find((comment) => comment.id === input.commentId);
-
-  return mockDb.addReply({
-    id: mockDb.nextReplyId(),
-    postId: parentComment?.postId ?? "",
-    parentCommentId: input.commentId,
-    author: input.author,
-    content: input.content,
+export async function createReply(input: { commentId: string; content: string }) {
+  const response = await apiClient<{ comment: BackendComment }>(`/comments/${input.commentId}/replies`, {
+    method: "POST",
+    body: JSON.stringify({ content: input.content }),
   });
+  return mapComment(response.comment);
 }

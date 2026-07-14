@@ -19,7 +19,7 @@ export class UpdatePostService {
     postId: string,
     input: { content?: string | null; visibility?: PostVisibility },
   ): Promise<{ post: PostEntity }> {
-    return this.prisma.$transaction(async (tx) => {
+    return this.prisma.$transaction(async (tx: any) => {
       const current = await this.postsRepository.findById(postId, tx);
       this.postOwnershipPolicy.canManage(userId, current);
 

@@ -2,7 +2,7 @@ export type MediaEntity = {
   id: string;
   ownerId: string;
   postId: string | null;
-  imageUrl: string;
+  fileUrl: string;
   storageKey: string;
   mimeType: string;
   fileSize: bigint;

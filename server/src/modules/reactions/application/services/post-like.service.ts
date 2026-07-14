@@ -14,7 +14,7 @@ export class PostLikeService {
   ) {}
 
   async execute(userId: string, postId: string) {
-    return this.prisma.$transaction(async (tx) => {
+    return this.prisma.$transaction(async (tx: any) => {
       const post = await this.postsRepository.findById(postId, tx);
       this.postLikePolicy.canLike(userId, post);
 

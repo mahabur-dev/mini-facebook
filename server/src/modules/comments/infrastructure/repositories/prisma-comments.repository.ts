@@ -50,8 +50,8 @@ export class PrismaCommentsRepository implements CommentsRepository {
   }
 
   async findById(id: string, tx?: unknown): Promise<CommentEntity | null> {
-    const comment = await this.client(tx).comment.findUnique({
-      where: { id },
+    const comment = await this.client(tx).comment.findFirst({
+      where: { id, deletedAt: null },
       include: { author: true, statistics: true },
     });
     return mapComment(comment);
@@ -59,20 +59,20 @@ export class PrismaCommentsRepository implements CommentsRepository {
 
   async findByPost(postId: string, tx?: unknown): Promise<CommentEntity[]> {
     const comments = await this.client(tx).comment.findMany({
-      where: { postId },
+      where: { postId, deletedAt: null },
       orderBy: [{ createdAt: "asc" }, { id: "asc" }],
       include: { author: true, statistics: true },
     });
-    return comments.map((comment) => mapComment(comment)!).filter(Boolean);
+    return comments.map((comment: any) => mapComment(comment)!).filter(Boolean);
   }
 
   async findReplies(parentCommentId: string, tx?: unknown): Promise<CommentEntity[]> {
     const comments = await this.client(tx).comment.findMany({
-      where: { parentCommentId },
+      where: { parentCommentId, deletedAt: null },
       orderBy: [{ createdAt: "asc" }, { id: "asc" }],
       include: { author: true, statistics: true },
     });
-    return comments.map((comment) => mapComment(comment)!).filter(Boolean);
+    return comments.map((comment: any) => mapComment(comment)!).filter(Boolean);
   }
 
   async findByPostPaginated(
@@ -93,6 +93,7 @@ export class PrismaCommentsRepository implements CommentsRepository {
       where: {
         postId,
         parentCommentId: null,
+        deletedAt: null,
         ...(cursorFilter ? { AND: [cursorFilter] } : {}),
       },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
@@ -102,7 +103,7 @@ export class PrismaCommentsRepository implements CommentsRepository {
 
     const hasNextPage = comments.length > input.limit;
     const trimmed = hasNextPage ? comments.slice(0, input.limit) : comments;
-    const items = trimmed.map((comment) => mapComment(comment)!).filter(Boolean);
+    const items = trimmed.map((comment: any) => mapComment(comment)!).filter(Boolean);
     const last = trimmed[trimmed.length - 1];
 
     return { items, nextCursor: hasNextPage && last ? { createdAt: last.createdAt, id: last.id } : null };
@@ -125,6 +126,7 @@ export class PrismaCommentsRepository implements CommentsRepository {
     const comments = await this.client(tx).comment.findMany({
       where: {
         parentCommentId,
+        deletedAt: null,
         ...(cursorFilter ? { AND: [cursorFilter] } : {}),
       },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
@@ -134,7 +136,7 @@ export class PrismaCommentsRepository implements CommentsRepository {
 
     const hasNextPage = comments.length > input.limit;
     const trimmed = hasNextPage ? comments.slice(0, input.limit) : comments;
-    const items = trimmed.map((comment) => mapComment(comment)!).filter(Boolean);
+    const items = trimmed.map((comment: any) => mapComment(comment)!).filter(Boolean);
     const last = trimmed[trimmed.length - 1];
 
     return { items, nextCursor: hasNextPage && last ? { createdAt: last.createdAt, id: last.id } : null };

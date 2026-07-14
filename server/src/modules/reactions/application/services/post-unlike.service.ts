@@ -6,7 +6,7 @@ export class PostUnlikeService {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(userId: string, postId: string) {
-    return this.prisma.$transaction(async (tx) => {
+    return this.prisma.$transaction(async (tx: any) => {
       const existing = await tx.postLike.findUnique({
         where: { postId_userId: { postId, userId } },
       });

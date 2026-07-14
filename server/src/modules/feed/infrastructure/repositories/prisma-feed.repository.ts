@@ -75,7 +75,7 @@ export class PrismaFeedRepository implements FeedRepository {
 
     const hasNextPage = posts.length > input.limit;
     const trimmed = hasNextPage ? posts.slice(0, input.limit) : posts;
-    const items = trimmed.map((post) => mapFeedPost(post, input.viewerId));
+    const items = trimmed.map((post: any) => mapFeedPost(post, input.viewerId));
     const last = trimmed[trimmed.length - 1];
     const nextCursor = hasNextPage && last ? { createdAt: last.createdAt, id: last.id } : null;
 

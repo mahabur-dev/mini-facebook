@@ -6,7 +6,7 @@ import { StorageModule } from "../../infrastructure/storage/storage.module";
 import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
 import { MEDIA_REPOSITORY } from "./domain/repository-contracts/media.repository";
 import { PrismaMediaRepository } from "./infrastructure/repositories/prisma-media.repository";
-import { ImageUploadPolicy } from "./domain/policies/image-upload.policy";
+import { MediaUploadPolicy } from "./domain/policies/media-upload.policy";
 import { MediaOwnershipPolicy } from "./domain/policies/media-ownership.policy";
 import { UploadMediaService } from "./application/services/upload-media.service";
 import { MediaController } from "./presentation/controllers/media.controller";
@@ -32,7 +32,7 @@ import { MediaController } from "./presentation/controllers/media.controller";
       useClass: PrismaMediaRepository,
     },
     UploadMediaService,
-    ImageUploadPolicy,
+    MediaUploadPolicy,
     MediaOwnershipPolicy,
     JwtAuthGuard,
   ],

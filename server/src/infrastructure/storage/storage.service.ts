@@ -7,9 +7,13 @@ export type UploadableImageFile = {
   buffer: Buffer;
   mimetype: string;
   size: number;
+  originalname?: string;
 };
 
-export type UploadedImage = {
+export type UploadableFile = UploadableImageFile;
+
+export type UploadedFileAsset = {
+  fileUrl: string;
   imageUrl: string;
   storageKey: string;
   mimeType: string;
@@ -17,6 +21,8 @@ export type UploadedImage = {
   width?: number;
   height?: number;
 };
+
+export type UploadedImage = UploadedFileAsset;
 
 @Injectable()
 export class StorageService {
@@ -29,15 +35,17 @@ export class StorageService {
     });
   }
 
-  async uploadImage(file: UploadableImageFile): Promise<UploadedImage> {
+  async uploadFile(file: UploadableFile): Promise<UploadedFileAsset> {
     const folder = this.configService.get<string>("CLOUDINARY_FOLDER") ?? "mini-facebook";
-    const resourceType = file.mimetype.startsWith("video/") ? "video" : "image";
+    const resourceType = this.getResourceType(file.mimetype);
 
-    return new Promise<UploadedImage>((resolve, reject) => {
+    return new Promise<UploadedFileAsset>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder,
           resource_type: resourceType,
+          use_filename: Boolean(file.originalname),
+          unique_filename: true,
         },
         (error, result) => {
           if (error || !result) {
@@ -46,6 +54,7 @@ export class StorageService {
           }
 
           resolve({
+            fileUrl: result.secure_url,
             imageUrl: result.secure_url,
             storageKey: result.public_id,
             mimeType: file.mimetype,
@@ -60,8 +69,31 @@ export class StorageService {
     });
   }
 
+  async uploadImage(file: UploadableImageFile): Promise<UploadedImage> {
+    return this.uploadFile(file);
+  }
+
+  async deleteFile(storageKey: string): Promise<void> {
+    await Promise.allSettled([
+      cloudinary.uploader.destroy(storageKey, { resource_type: "image" }),
+      cloudinary.uploader.destroy(storageKey, { resource_type: "video" }),
+      cloudinary.uploader.destroy(storageKey, { resource_type: "raw" }),
+    ]);
+  }
+
   async deleteImage(storageKey: string): Promise<void> {
-    await cloudinary.uploader.destroy(storageKey, { resource_type: "image" });
-    await cloudinary.uploader.destroy(storageKey, { resource_type: "video" });
+    await this.deleteFile(storageKey);
+  }
+
+  private getResourceType(mimeType: string): "image" | "video" | "raw" {
+    if (mimeType.startsWith("image/")) {
+      return "image";
+    }
+
+    if (mimeType.startsWith("video/")) {
+      return "video";
+    }
+
+    return "raw";
   }
 }

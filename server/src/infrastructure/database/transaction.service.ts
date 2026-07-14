@@ -6,6 +6,6 @@ export class TransactionService {
   constructor(private readonly prisma: PrismaService) {}
 
   execute<T>(work: (transaction: PrismaService) => Promise<T>) {
-    return this.prisma.$transaction(async (transaction) => work(transaction as PrismaService));
+    return this.prisma.$transaction(async (transaction: any) => work(transaction as PrismaService));
   }
 }

@@ -47,7 +47,7 @@ export function PostComposer({
   authorAvatar = "/assets/images/txt_img.png",
   authorName = "Current user",
 }: PostComposerProps) {
-  const actionLabels = ["Photo", "Video", "Event", "Article"] as const;
+  const actionLabels = ["Photo", "Video", "File", "Event"] as const;
 
   return (
     <div

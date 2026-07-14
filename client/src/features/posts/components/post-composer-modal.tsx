@@ -31,7 +31,7 @@ type PostComposerModalProps = {
   error?: string | null;
 };
 
-const actionLabels = ["Photo", "Video", "Event", "Article"] as const;
+const actionLabels = ["Photo", "Video", "File", "Event"] as const;
 
 export function PostComposerModal({
   open,
@@ -78,7 +78,7 @@ export function PostComposerModal({
   }
 
   const firstName = authorName.split(" ")[0] || "there";
-  const isVideo = Boolean(media?.mimeType.startsWith("video/"));
+  const mediaKind = inferMediaKind(media?.mimeType);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const [file] = Array.from(event.target.files ?? []);
@@ -89,9 +89,9 @@ export function PostComposerModal({
     }
   };
 
-  const handleTextPreset = (label: "Event" | "Article") => {
+  const handleTextPreset = (label: "Event") => {
     if (!value.trim()) {
-      onChange(label === "Event" ? "Event: " : "Article: ");
+      onChange("Event: ");
     }
     textareaRef.current?.focus();
   };
@@ -173,16 +173,27 @@ export function PostComposerModal({
                   </svg>
                 </button>
               ) : null}
-              {isVideo ? (
+              {mediaKind === "video" ? (
                 <video src={media.previewUrl} className="_post_modal_media" controls playsInline />
+              ) : mediaKind === "document" || mediaKind === "file" ? (
+                <div className="_post_modal_file_preview">
+                  <span className="_post_modal_file_badge">{media.mimeType === "application/pdf" ? "PDF" : "FILE"}</span>
+                  <span className="_post_modal_file_name">{media.name}</span>
+                </div>
               ) : (
                 <img src={media.previewUrl} alt={media.name} className="_post_modal_media" />
               )}
             </div>
           ) : null}
 
-          <input ref={photoInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="_post_modal_file" onChange={handleFileChange} />
-          <input ref={videoInputRef} type="file" accept="video/mp4,video/webm,video/quicktime" className="_post_modal_file" onChange={handleFileChange} />
+          <input ref={photoInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="_post_modal_file" onChange={handleFileChange} />
+          <input
+            ref={videoInputRef}
+            type="file"
+            accept="video/mp4,video/webm,video/quicktime,application/pdf,text/plain,text/csv,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            className="_post_modal_file"
+            onChange={handleFileChange}
+          />
 
           <div className="_post_modal_feed_actions _feed_inner_text_area_bottom">
             <div className="_feed_inner_text_area_item">
@@ -191,11 +202,13 @@ export function PostComposerModal({
                   <button
                     type="button"
                     className="_feed_inner_text_area_bottom_photo_link"
-                    disabled={(label === "Photo" || label === "Video") && !onMediaSelect}
+                    disabled={(label === "Photo" || label === "Video" || label === "File") && !onMediaSelect}
                     onClick={() => {
                       if (label === "Photo") {
                         photoInputRef.current?.click();
                       } else if (label === "Video") {
+                        videoInputRef.current?.click();
+                      } else if (label === "File") {
                         videoInputRef.current?.click();
                       } else {
                         handleTextPreset(label);
@@ -227,4 +240,24 @@ export function PostComposerModal({
     </div>,
     document.body,
   );
+}
+
+function inferMediaKind(mimeType?: string | null) {
+  if (!mimeType) {
+    return "file";
+  }
+
+  if (mimeType.startsWith("image/")) {
+    return "image";
+  }
+
+  if (mimeType.startsWith("video/")) {
+    return "video";
+  }
+
+  if (mimeType === "application/pdf" || mimeType.startsWith("text/") || mimeType.includes("document") || mimeType.includes("spreadsheet")) {
+    return "document";
+  }
+
+  return "file";
 }

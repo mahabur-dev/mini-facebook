@@ -15,7 +15,7 @@ type BackendFeedUser = {
   deletedAt: string | null;
 };
 
-type BackendFeedPost = {
+export type BackendFeedPost = {
   id: string;
   authorId: string;
   content: string | null;
@@ -28,9 +28,11 @@ type BackendFeedPost = {
     id: string;
     ownerId: string;
     postId: string | null;
-    imageUrl: string;
+    fileUrl?: string;
+    imageUrl?: string;
     storageKey: string;
     mimeType: string;
+    mediaType?: "image" | "video" | "document" | "file";
     fileSize: string;
     width: number | null;
     height: number | null;
@@ -85,7 +87,7 @@ function formatRelativeTime(value: string) {
   return `${diffDays} day${diffDays === 1 ? "" : "s"} ago`;
 }
 
-function mapFeedPost(post: BackendFeedPost): FeedPostMock {
+export function mapFeedPost(post: BackendFeedPost): FeedPostMock {
   const authorName = `${post.author.firstName} ${post.author.lastName}`.trim();
 
   return {
@@ -95,14 +97,56 @@ function mapFeedPost(post: BackendFeedPost): FeedPostMock {
     timeLabel: formatRelativeTime(post.createdAt),
     visibility: post.visibility === "PRIVATE" ? "Private" : "Public",
     text: post.content ?? "",
-    media: post.media?.imageUrl ?? null,
+    media: post.media?.fileUrl ?? post.media?.imageUrl ?? null,
     mediaType: post.media?.mimeType ?? null,
+    mediaKind: post.media?.mediaType ?? inferMediaKind(post.media?.mimeType),
+    mediaName: post.media ? getMediaName(post.media.mimeType) : null,
     likes: post.statistics?.likeCount ?? 0,
     comments: (post.statistics?.commentCount ?? 0) + (post.statistics?.replyCount ?? 0),
     shares: 0,
     liked: post.isLikedByCurrentUser,
     isOwner: post.isOwner,
   };
+}
+
+function inferMediaKind(mimeType?: string | null) {
+  if (!mimeType) {
+    return null;
+  }
+
+  if (mimeType.startsWith("image/")) {
+    return "image";
+  }
+
+  if (mimeType.startsWith("video/")) {
+    return "video";
+  }
+
+  if (mimeType === "application/pdf" || mimeType.startsWith("text/") || mimeType.includes("document") || mimeType.includes("spreadsheet")) {
+    return "document";
+  }
+
+  return "file";
+}
+
+function getMediaName(mimeType: string) {
+  if (mimeType === "application/pdf") {
+    return "PDF attachment";
+  }
+
+  if (mimeType.startsWith("text/")) {
+    return "Text attachment";
+  }
+
+  if (mimeType.includes("spreadsheet")) {
+    return "Spreadsheet attachment";
+  }
+
+  if (mimeType.includes("document")) {
+    return "Document attachment";
+  }
+
+  return "Attachment";
 }
 
 export async function getFeed(cursor?: string | null) {

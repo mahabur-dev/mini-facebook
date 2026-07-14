@@ -12,7 +12,7 @@ export class DeletePostService {
   ) {}
 
   async execute(userId: string, postId: string) {
-    return this.prisma.$transaction(async (tx) => {
+    return this.prisma.$transaction(async (tx: any) => {
       const post = await this.postsRepository.findById(postId, tx);
       this.postDeletionPolicy.canDelete(userId, post);
       await this.postsRepository.delete(postId, new Date(), tx);
