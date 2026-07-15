@@ -166,12 +166,6 @@ PATCH  /api/v1/users/me
 PATCH  /api/v1/users/me/avatar
 ```
 
-Swagger is available at:
-
-```text
-https://mini-facebook-production.up.railway.app/docs
-```
-
 
 ## Local Setup
 
