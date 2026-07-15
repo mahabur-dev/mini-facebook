@@ -1,4 +1,4 @@
-# Jolynn Fred Social Feed
+# Fred Social Feed
 
 A full-stack social feed application built with Next.js and NestJS. The project converts the provided login, register, and feed UI into a working application with authentication, posts, media upload, comments, replies, reactions, and profile updates.
 
