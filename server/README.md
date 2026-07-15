@@ -1,49 +1,35 @@
-# Mini Facebook Backend
+# Jolynn Fred Backend
 
-Professional NestJS backend scaffold for the assignment.
+NestJS backend for the Jolynn Fred social feed application.
 
-## What is included
+## Implemented
 
-- Modular NestJS application structure
-- Prisma schema for auth sessions
-- Authentication module foundation
-- Shared database, cache, and storage abstractions
-- Swagger setup at `/docs`
+- JWT authentication with refresh-token sessions
+- PostgreSQL persistence through Prisma
+- Modular Prisma schema in `prisma/schema`
+- Feed, posts, comments, replies, reactions, media, users, and health modules
+- Cloudinary media upload
+- Swagger docs at `/docs`
+- Docker/Railway deployment config
 
-## Local run
-
-1. Copy `.env.example` to `.env`
-2. Install dependencies
-3. Generate Prisma client
-4. Run the app
-
-Example:
+## Local Run
 
 ```bash
 npm install
-npx prisma generate
+npm run prisma:generate
 npm run start:dev
 ```
 
-The API starts at:
+Run migrations:
 
-- `http://localhost:4000/api/v1`
-- Swagger: `http://localhost:4000/docs`
+```bash
+npx prisma migrate deploy --schema prisma/schema
+```
 
-## Current feature slice
+API base URL:
 
-- `POST /api/v1/auth/register`
-- `POST /api/v1/auth/login`
-- `POST /api/v1/auth/refresh`
-- `DELETE /api/v1/auth/logout`
-- `GET /api/v1/auth/me`
-- `GET /api/v1/health`
+```text
+http://localhost:4000/api/v1
+```
 
-## Next feature slices
-
-1. Users module read model
-2. Posts module and Prisma schema expansion
-3. Feed query and cursor pagination
-4. Comments and replies
-5. Reactions and liker lists
-6. Cloudinary upload integration
+See the root `README.md` for the full project overview and feature list.
