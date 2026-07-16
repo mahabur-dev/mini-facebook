@@ -12,6 +12,13 @@ import { setupSwagger } from "./common/swagger/setup-swagger";
 const API_PREFIX = "api/v1";
 const DEFAULT_PORT = 4000;
 const DEFAULT_NODE_ENV = "development";
+const allowedCorsHeaders = [
+  "Authorization",
+  "Cache-Control",
+  "Content-Type",
+  "Pragma",
+  "X-Requested-With",
+];
 const defaultAllowedOrigins = [
   "http://localhost:3000",
   "http://127.0.0.1:3000",
@@ -46,6 +53,8 @@ async function bootstrap(): Promise<void> {
   app.enableCors({
     origin: createCorsOriginValidator(configService),
     credentials: true,
+    allowedHeaders: allowedCorsHeaders,
+    exposedHeaders: ["Content-Type"],
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
     optionsSuccessStatus: 204,
   });
