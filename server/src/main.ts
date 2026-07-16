@@ -30,6 +30,7 @@ const defaultAllowedOrigins = [
 ];
 const allowedOriginPatterns = [
   /^https:\/\/[a-z0-9-]+\.vercel\.app$/,
+  /^https:\/\/([a-z0-9-]+\.)?messzen\.com$/,
 ];
 
 async function bootstrap(): Promise<void> {
