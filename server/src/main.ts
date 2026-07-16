@@ -317,12 +317,44 @@ function createSwaggerThemeScript() {
   `;
 }
 
-function createCorsOriginValidator(configService: ConfigService, port: number) {
+// function createCorsOriginValidator(configService: ConfigService, port: number) {
+//   const configuredOrigins =
+//     configService
+//       .get<string>("CLIENT_ORIGINS")
+//       ?.split(",")
+//       .map((origin) => origin.trim())
+//       .filter(Boolean) ?? [];
+
+//   const allowedOrigins = new Set([
+//     "http://localhost:3000",
+//     "http://127.0.0.1:3000",
+//     "http://localhost:3001",
+//     "http://127.0.0.1:3001",
+//     "https://mini-facebook-ochre.vercel.app",
+//     "https://mini-facebook-git-main-mahabur1814031-8144s-projects.vercel.app",
+//     "https://mini-facebook-production.up.railway.app",
+//     `http://localhost:${port}`,
+//     ...configuredOrigins,
+//   ]);
+
+//   return (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) => {
+//     if (!origin || allowedOrigins.has(origin)) {
+//       callback(null, true);
+//       return;
+//     }
+
+//     callback(new Error(`CORS blocked origin: ${origin}`), false);
+//   };
+// }
+function createCorsOriginValidator(
+  configService: ConfigService,
+  port: number,
+) {
   const configuredOrigins =
     configService
       .get<string>("CLIENT_ORIGINS")
       ?.split(",")
-      .map((origin) => origin.trim())
+      .map((origin) => origin.trim().replace(/\/$/, ""))
       .filter(Boolean) ?? [];
 
   const allowedOrigins = new Set([
@@ -332,18 +364,29 @@ function createCorsOriginValidator(configService: ConfigService, port: number) {
     "http://127.0.0.1:3001",
     "https://mini-facebook-ochre.vercel.app",
     "https://mini-facebook-git-main-mahabur1814031-8144s-projects.vercel.app",
-    "https://mini-facebook-production.up.railway.app",
     `http://localhost:${port}`,
     ...configuredOrigins,
   ]);
 
-  return (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) => {
-    if (!origin || allowedOrigins.has(origin)) {
+  return (
+    origin: string | undefined,
+    callback: (error: Error | null, allow?: boolean) => void,
+  ) => {
+    const normalizedOrigin = origin?.replace(/\/$/, "");
+
+    console.log("Incoming CORS origin:", normalizedOrigin);
+    console.log("Allowed origin:", normalizedOrigin
+      ? allowedOrigins.has(normalizedOrigin)
+      : true,
+    );
+
+    if (!normalizedOrigin || allowedOrigins.has(normalizedOrigin)) {
       callback(null, true);
       return;
     }
 
-    callback(new Error(`CORS blocked origin: ${origin}`), false);
+    console.error(`CORS blocked origin: ${normalizedOrigin}`);
+    callback(new Error(`CORS blocked origin: ${normalizedOrigin}`), false);
   };
 }
 
