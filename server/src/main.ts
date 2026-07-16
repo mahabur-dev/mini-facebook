@@ -26,9 +26,11 @@ const defaultAllowedOrigins = [
   "http://127.0.0.1:3001",
   "https://mini-facebook-ochre.vercel.app",
   "https://mini-facebook-git-main-mahabur1814031-8144s-projects.vercel.app",
+  "https://facebook.messzen.com",
 ];
 const allowedOriginPatterns = [
   /^https:\/\/[a-z0-9-]+\.vercel\.app$/,
+  /^https:\/\/([a-z0-9-]+\.)?messzen\.com$/,
 ];
 
 async function bootstrap(): Promise<void> {
