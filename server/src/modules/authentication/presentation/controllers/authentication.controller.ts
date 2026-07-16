@@ -84,7 +84,7 @@ export class AuthenticationController {
   private attachRefreshCookie(response: Response, refreshToken: string) {
     response.cookie("refresh_token", refreshToken, {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/api/v1/auth",
     });
