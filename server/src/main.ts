@@ -27,6 +27,9 @@ const defaultAllowedOrigins = [
   "https://mini-facebook-ochre.vercel.app",
   "https://mini-facebook-git-main-mahabur1814031-8144s-projects.vercel.app",
 ];
+const allowedOriginPatterns = [
+  /^https:\/\/[a-z0-9-]+\.vercel\.app$/,
+];
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -98,11 +101,16 @@ function createCorsOriginValidator(configService: ConfigService) {
   ) => {
     const normalizedOrigin = normalizeOrigin(origin);
 
-    if (!normalizedOrigin || allowedOrigins.has(normalizedOrigin)) {
+    if (
+      !normalizedOrigin ||
+      allowedOrigins.has(normalizedOrigin) ||
+      allowedOriginPatterns.some((pattern) => pattern.test(normalizedOrigin))
+    ) {
       callback(null, true);
       return;
     }
 
+    console.warn(`CORS blocked origin: ${normalizedOrigin}`);
     callback(new Error(`CORS blocked origin: ${normalizedOrigin}`), false);
   };
 }
