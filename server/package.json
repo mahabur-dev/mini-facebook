@@ -8,9 +8,9 @@
   "scripts": {
     "build": "nest build",
     "postinstall": "prisma generate --schema prisma/schema",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
+    "start": "node api.js && nest start",
+    "start:dev": "node api.js && nest start --watch",
+    "start:debug": "node api.js && nest start --debug --watch",
     "lint": "eslint \"src/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\" \"prisma/**/*.prisma\"",
     "test": "jest",

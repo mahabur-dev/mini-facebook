@@ -33,15 +33,12 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # Environment files
-.env
-.env.local
 .env.*.local
 
 # OS / editor
 .DS_Store
 Thumbs.db
 [Dd]esktop.ini
-.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -49,3 +46,7 @@ Thumbs.db
 !.vscode/*.code-snippets
 .history/
 *.vsix
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+config.bat
